@@ -27,6 +27,7 @@ namespace Crochet2Ebook
         private Bitmap Originalbild;
         private Bitmap Zoombild;
         private Bitmap Displaybild;
+        private Bitmap Rasterbild;
         private bool DisplayRatioCorrection = true;
         private double RatioCorrFactor = 0.6;
         private int additionalZoomfactor = 1;
@@ -120,7 +121,7 @@ namespace Crochet2Ebook
                 listView_LineDescription.Enabled = true;
                 numericUpDown1.Enabled = true;
                 button_Zoom.Enabled = true;
-                button_createPDF.Enabled = true;
+                button_create_stuff.Enabled = true;
                 
                 numericUpDown1.Maximum = Originalbild.Height;
                 
@@ -592,7 +593,7 @@ namespace Crochet2Ebook
             }
         }
 
-        private void button_createPDF_Click(object sender, EventArgs e)
+        private void button_createStuff_Click(object sender, EventArgs e)
         {
 
             if (Bildtitel.Equals(""))
@@ -601,27 +602,166 @@ namespace Crochet2Ebook
                 return;
             }
 
-            int unnamedcolors_count = 0;
-            foreach(ListViewItem p in listView_Palette.Items)
+            System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien");
+
+            if (checkBox_pdf.Checked)
             {
-                if(p.Text.Contains("#"))
+                createPDF();
+            }
+
+            if (checkBox_Rasterbild.Checked)
+            {
+                createRasterbild();
+            }
+            
+            //Verzeichnis mit Ergebnissen öffnen
+            Process.Start("explorer.exe", Bildtitel + "_Dateien");
+            
+            //alle Generierungen beendet... alles zurück auf Anfang...
+            progressBar1.Visible = false;
+
+            numericUpDown1.Value = 1;
+            selectedLine = Originalbild.Height - (int)numericUpDown1.Value;
+            Zeile_Auswerten(selectedLine);
+
+        }
+
+        private void createRasterbild()
+        {
+            Color Linecolor1 = HextoColor(textBox_Rasterbild_Linienfarbe1.Text);
+            Brush Rasterbrush1 = new SolidBrush(Linecolor1);
+            progressBar1.Minimum = 1;
+            progressBar1.Value = 1;
+            progressBar1.Maximum = Originalbild.Height;
+            int Pixelgroesse = (int)numericUpDown_Rasterbild_Pixelgroesse.Value;
+            int Linie_1 = (int)numericUpDown_Rasterbild_Liniendicke_1.Value;
+            int Linie_5 = (int)numericUpDown_Rasterbild_Liniendicke_5.Value;
+            int Linie_10 = (int)numericUpDown_Rasterbild_Liniendicke_10.Value;
+
+            //Resultierende Bildgröße berechnen
+            int newWidth = Originalbild.Width * Pixelgroesse;                               //Breite ohne Trennlinien
+            newWidth = newWidth + ((Originalbild.Width - 1) * Linie_1);                     //+ Breite der 1-er Linien
+            newWidth = newWidth + ((Originalbild.Width - 1) / 5) * (Linie_5 - Linie_1);     //+Breite der 5-er Linien  minus breite der wegfallenden 1er linien
+            newWidth = newWidth + ((Originalbild.Width - 1) / 10) * (Linie_10 - Linie_5);   //+Breite der 10-er Linien  minus breite der wegfallenden 5er linien
+            newWidth = newWidth + (Linie_10 * 2);                                           //+Platz für eine Bildumrandung in Dicke der 10er Linien
+
+            int newHeight = Originalbild.Height * Pixelgroesse;                             //Hoehe ohne Trennlinien
+            if (checkBox_Rasterbild_horizontal_auch.Checked)
+            {
+                newHeight = newHeight + ((Originalbild.Height - 1) * Linie_1);                     //+ Breite der 1-er Linien
+                newHeight = newHeight + ((Originalbild.Height - 1) / 5) * (Linie_5 - Linie_1);     //+ Breite der 5-er Linien  minus breite der wegfallenden 1er linien
+                newHeight = newHeight + ((Originalbild.Height - 1) / 10) * (Linie_10 - Linie_5);   //+ Breite der 10-er Linien  minus breite der wegfallenden 5er linien
+                newHeight = newHeight + (Linie_10 * 2);                                            //+Platz für Bildumrandung in Dicke der 10er Linien
+            }
+
+
+            //Image anlegen
+            Rasterbild = new Bitmap(newWidth, newHeight);
+
+            //Hintergrund mit Rasterfarbe füllen... spart das spätere zeichnen des Rasters
+            using (Graphics gr = Graphics.FromImage(Rasterbild))
+            {
+                Rectangle r = new Rectangle(0, 0, newWidth, newHeight); //TODO korrigieren, stimmt vermutlich nicht
+                gr.FillRectangle(Rasterbrush1, r);
+            }
+
+            int cursorY = newHeight - Linie_10;
+
+
+            for (int yy = 1; yy <= Originalbild.Height; yy++)
+            {
+                int cursorX = newWidth - Linie_10;
+                Application.DoEvents(); //damit während der heftigen schleife die Progressbar vom thread aktualisiert werden kann
+                progressBar1.Value = yy;
+                for (int xx = 1; xx <= Originalbild.Width; xx++)
+                {
+                    //Pixelfarbe des Originalbilds ermitteln
+                    Color Pixelcolor = Originalbild.GetPixel(Originalbild.Width - xx, Originalbild.Height - yy);
+
+                    //Pixel zeichnen
+                    Brush Pixelbrush = new SolidBrush(Pixelcolor);
+                    using (Graphics gr = Graphics.FromImage(Rasterbild))
+                    {
+                        Rectangle r = new Rectangle(cursorX - Pixelgroesse, cursorY - Pixelgroesse, Pixelgroesse, Pixelgroesse); //TODO korrigieren, stimmt vermutlich nicht
+                        gr.FillRectangle(Pixelbrush, r);
+                    }
+                    cursorX = cursorX - Pixelgroesse;
+
+                    //prüfen ob 1te, 5te oder 10te Spalte und cursor verschieben
+                    if (xx % 10 == 0)
+                    {//10te Spalte
+                        cursorX = cursorX - Linie_10;
+                    }
+                    else if (xx % 5 == 0)
+                    {//5te Spalte
+                        cursorX = cursorX - Linie_5;
+                    }
+                    else
+                    {//1te Spalte
+                        cursorX = cursorX - Linie_1;
+                    }
+                }
+                cursorY = cursorY - Pixelgroesse;
+
+                //Falls horizontales Raster eingestellt ist, die entsprechende Linie freilassen...
+                if (checkBox_Rasterbild_horizontal_auch.Checked)
+                {
+                    if (yy % 10 == 0)
+                    {//10te Zeile
+                        cursorY = cursorY - Linie_10;
+                    }
+                    else if (yy % 5 == 0)
+                    {//5te Zeile
+                        cursorY = cursorY - Linie_5;
+                    }
+                    else
+                    {//1te Zeile
+                        cursorY = cursorY - Linie_1;
+                    }
+                }
+            }
+
+            //Originalbild als bmp ablegen
+            string filename = Bildtitel + "_Dateien/" + Bildtitel + "_Originalbild.bmp";
+            Originalbild.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
+
+            //generiertes Rasterbild speichern
+
+            //erste Version als bmp für maximale Qualitaet
+            filename = Bildtitel + "_Dateien/" + Bildtitel + "_Rasterbild.bmp";
+            Rasterbild.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
+
+            //zweite Version als png für weniger Speicherbedarf
+            filename = Bildtitel + "_Dateien/" + Bildtitel + "_Rasterbild.png";
+            Rasterbild.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+
+            //Rasterbild mit Viewer öffnen
+            //Process.Start(filename);
+        }
+
+        private void createPDF()
+        {
+            int unnamedcolors_count = 0;
+            foreach (ListViewItem p in listView_Palette.Items)
+            {
+                if (p.Text.Contains("#"))
                 {
                     unnamedcolors_count++;
                 }
             }
-            if(unnamedcolors_count > 0){
-                DialogResult result = MessageBox.Show(unnamedcolors_count + " Farben der Farbpalette haben noch keinen sprechenden Namen.\n\nWirklich fortfahren?","Achtung!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if(result == DialogResult.No)
+            if (unnamedcolors_count > 0)
+            {
+                DialogResult result = MessageBox.Show(unnamedcolors_count + " Farben der Farbpalette haben noch keinen sprechenden Namen.\n\nWirklich fortfahren?", "Achtung!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.No)
                 {
                     return;
                 }
             }
 
-
             // Create a temporary file
 
             //string filename = String.Format(  Bildtitel + "_" + DateTime.Now.ToString("yyyyMMddHHmmssfff") +   ".pdf");
-            string filename = String.Format(Bildtitel + ".pdf");
+            string filename = String.Format(Bildtitel + "_Dateien/" + Bildtitel + ".pdf");
             myPDF = new PdfDocument();
             myPDF.Info.Title = "Häkelvorlage - " + Bildtitel;
             myPDF.Info.Author = "Denise die Wollmaus";
@@ -636,12 +776,12 @@ namespace Crochet2Ebook
 
             XRect rect_untertitel = new XRect(new XPoint(), gfx.PageSize);
             rect_untertitel.Inflate(-10, -40);
-            
+
             XFont font_untertitel = new XFont("Times", 12, XFontStyle.Bold);
-            gfx.DrawString("(" + Originalbild.Height + " Zeilen und " + Originalbild.Width + " Spalten)", font_untertitel , XBrushes.Black, rect_untertitel, XStringFormats.TopCenter);
+            gfx.DrawString("(" + Originalbild.Height + " Zeilen und " + Originalbild.Width + " Spalten)", font_untertitel, XBrushes.Black, rect_untertitel, XStringFormats.TopCenter);
 
             XPen pen_Line = new XPen(Color.Black, 1.5);
-            gfx.DrawLine(pen_Line, 10, 58, page.Width - 10,58);
+            gfx.DrawLine(pen_Line, 10, 58, page.Width - 10, 58);
 
             //DrawPagenumber(page, gfx);
 
@@ -662,7 +802,7 @@ namespace Crochet2Ebook
             double Bild_PlatzhalterRatio = Bild_maxwidth / Bild_maxheight;
             double Bildratio = (double)Zoombild.Width / (double)Zoombild.Height;
 
-            if(Bild_PlatzhalterRatio > Bildratio)
+            if (Bild_PlatzhalterRatio > Bildratio)
             {//Box ist zu Breit, Bild stösst in der Höhe zuerst an
                 Bild_targetheight = Bild_maxheight;
                 Bild_targetwidth = Bildratio * Bild_targetheight;
@@ -674,9 +814,9 @@ namespace Crochet2Ebook
             }
             Bild_targetx = ((Bild_maxwidth - Bild_targetwidth) / 2) + Bild_minX;
             Bild_targety = ((Bild_maxheight - Bild_targetheight) / 2) + Bild_minY;
-            DrawImageScaled(gfx, Zoombild,(int)Bild_targetx, (int)Bild_targety, (int)Bild_targetwidth, (int)Bild_targetheight);
+            DrawImageScaled(gfx, Zoombild, (int)Bild_targetx, (int)Bild_targety, (int)Bild_targetwidth, (int)Bild_targetheight);
 
-            
+
             XPen pen = new XPen(XColors.Black, 2);
 
 
@@ -687,7 +827,7 @@ namespace Crochet2Ebook
             Bild_maxheight = 440;
             Bild_PlatzhalterRatio = Bild_maxwidth / Bild_maxheight;
 
-            
+
 
             int SeitenZahl = 1;
             double Lines_Abstand_linksrechts = 10;
@@ -709,13 +849,13 @@ namespace Crochet2Ebook
             int Text_Schriftgrad_Farbname = 18;
             string Text_Schriftname = "Calibri Bold";
             XColor Text_Farbe = XColors.Black;
-            
+
             XFont font_Pixelcount = new XFont(Text_Schriftname, Text_Schriftgrad_Pixelcount, XFontStyle.Regular);
             XFont font_Farbname = new XFont(Text_Schriftname, Text_Schriftgrad_Farbname, XFontStyle.Regular);
             XPen pen_Colorbox_Rahmen = new XPen(Colorbox_Rahmenfarbe, Colorbox_Rahmendicke);
-            XPen pen_zwischenlinien =  new XPen(Trennlinienfarbe, Trennliniendicke);
+            XPen pen_zwischenlinien = new XPen(Trennlinienfarbe, Trennliniendicke);
 
-            
+
 
             //////////////////////// Beschreibungsseite anlegen ///////////////////////////
 
@@ -733,7 +873,7 @@ namespace Crochet2Ebook
             Bild_targety = ((Bild_maxheight - Bild_targetheight) / 2) + Bild_minY;
 
             //XForms Objekt für ein wiederverwendbares Bild
-            XForm xform_Bild = new XForm(myPDF, Bild_targetwidth,Bild_targetheight);
+            XForm xform_Bild = new XForm(myPDF, Bild_targetwidth, Bild_targetheight);
             XGraphics formGfx = XGraphics.FromForm(xform_Bild);
             formGfx.DrawImage(Zoombild, 0, 0, (int)Bild_targetwidth, (int)Bild_targetheight);
 
@@ -761,13 +901,13 @@ namespace Crochet2Ebook
 
 
                 //DrawImageScaled(gfx, Displaybild, (int)Bild_targetx, (int)Bild_targety, (int)Bild_targetwidth, (int)Bild_targetheight);
-                
+
                 //yform - Variante
                 gfx.DrawImage(xform_Bild, (int)Bild_targetx, (int)Bild_targety, (int)Bild_targetwidth, (int)Bild_targetheight);
 
                 //Zeile markieren...
                 double ZoomFactorY = Bild_targetheight / Originalbild.Height;
-                Rectangle markierung = new Rectangle((int)Bild_targetx, (int)(Math.Round((Originalbild.Height - i) * ZoomFactorY)+Bild_targety), (int)Bild_targetwidth - 1, (int)(Math.Round(ZoomFactorY)));
+                Rectangle markierung = new Rectangle((int)Bild_targetx, (int)(Math.Round((Originalbild.Height - i) * ZoomFactorY) + Bild_targety), (int)Bild_targetwidth - 1, (int)(Math.Round(ZoomFactorY)));
                 XPen markierungspen1 = new XPen(Color.White, 1);
                 XPen markierungspen2 = new XPen(Color.Black, 1);
                 markierungspen2.DashStyle = XDashStyle.Custom;
@@ -799,7 +939,7 @@ namespace Crochet2Ebook
                     //falls die nächste Farbe nicht mehr in die Zeile passt, eine neue anfangen...
                     if (xpos + noetigeBreite + Lines_Abstand_linksrechts > page.Width)
                     {
-                        
+
                         xpos = 10;
                         ypos = ypos + Line_OffsetY;
 
@@ -827,12 +967,12 @@ namespace Crochet2Ebook
                         }
                         else
                         {
-                            gfx.DrawLine(pen_zwischenlinien, 10, ypos -5, page.Width - 10, ypos-5);
+                            gfx.DrawLine(pen_zwischenlinien, 10, ypos - 5, page.Width - 10, ypos - 5);
                         }
 
                     }
 
-                
+
                     XRect myrect = new XRect(xpos + Colorbox_breite + Text_AbstandZuColorbox, ypos, page.Width - xpos, page.Height - ypos);
 
                     gfx.DrawRectangle(pen_Colorbox_Rahmen, new XSolidBrush(XColor.FromArgb(myFillColor)), xpos, ypos, Colorbox_breite, Colorbox_breite);
@@ -843,7 +983,7 @@ namespace Crochet2Ebook
                     xpos = xpos + noetigeBreite + Line_OffsetX;
 
                 }
-                if(SeitenZahl > 1)
+                if (SeitenZahl > 1)
                 {
                     DrawTitle(page, gfx, "Zeile " + i + " -  Seite " + SeitenZahl);
                 }
@@ -856,17 +996,11 @@ namespace Crochet2Ebook
             }
 
 
-            
+
             // Save the pdf...
             myPDF.Save(filename);
             // ...and start a viewer
-            Process.Start(filename);
-            progressBar1.Visible = false;
-
-            numericUpDown1.Value = 1;
-            selectedLine = Originalbild.Height - (int)numericUpDown1.Value;
-            Zeile_Auswerten(selectedLine);
-
+            //Process.Start(filename);
         }
 
         public void DrawTitle(PdfPage page, XGraphics gfx, string title)
