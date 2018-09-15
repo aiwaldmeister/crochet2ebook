@@ -34,6 +34,8 @@ namespace Crochet2Ebook
         private bool imageisloaded = false;
         private int selectedLine = 1;
         private PdfDocument myPDF;
+        private Dictionary<string, string> DictColorNames = new Dictionary<string, string>();
+        private string String_ColorNameList = "";
 
 
         private void button_Palette_generatefromImage_Click(object sender, EventArgs e)
@@ -61,12 +63,22 @@ namespace Crochet2Ebook
             foreach (Color Col in Farbliste)  //...und neu befuellen
             {
                 colorCode = ColortoHex(Col);
-                addNewColor(colorCode, colorCode);
+                addNewColor(colorCode);
             }
         }
 
-        private void addNewColor(String colorName, String colorCode)
+        private void addNewColor(String colorCode)
         {
+            
+            String colorName = colorCode;
+
+            //Namen für die Farbe finden
+            if (DictColorNames.Keys.Contains(colorCode))
+            {
+                colorName = DictColorNames[colorCode];
+            }
+            
+
             ListViewItem item = listView_Palette.Items.Add(colorName);
             item.SubItems.Add(colorCode);
 
@@ -456,9 +468,17 @@ namespace Crochet2Ebook
         private static void SetSetting(string key, string value)
         {
             Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            configuration.AppSettings.Settings[key].Value = value;
+            if (configuration.AppSettings.Settings[key] == null)
+            {
+                configuration.AppSettings.Settings.Add(key, value);
+            }
+            else
+            {
+                configuration.AppSettings.Settings[key].Value = value;
+            }
+         
             configuration.Save(ConfigurationSaveMode.Full, true);
-            ConfigurationManager.RefreshSection("appSettings");
+            ConfigurationManager.RefreshSection("AppSettings");
         }
 
         private void fitImagetoFrame()
@@ -539,12 +559,24 @@ namespace Crochet2Ebook
             string iniLine = GetSetting("Line");
             string iniTitle = GetSetting("Title");
             string iniDisplayRatioCorrection = GetSetting("DisplayRatioCorrection");
-            
+            string iniColorNameList = GetSetting("ColorNameList");
+                        
             int iniLineint = 1;
             int.TryParse(iniLine, out iniLineint);
             
             splitContainer4.Panel2Collapsed = true;
-            
+
+            //initialisiere die Dictionary mit den Farbnamen aus dem String iniColorNameList
+            string[] iniFarbstrings = iniColorNameList.Split(';');
+            foreach (String Farbstring in iniFarbstrings)
+            {
+                if (!Farbstring.Equals(""))
+                {
+                    DictColorNames.Add(Farbstring.Substring(0,7),Farbstring.Substring(8));
+                }
+            }
+
+
             if (System.IO.File.Exists(iniDateiname))
             {
                 Dateiname = iniDateiname;
@@ -582,6 +614,44 @@ namespace Crochet2Ebook
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+
+            //Die Farbnamen aus der Palette zur Dictionary hinzufügen
+            foreach (ListViewItem p in listView_Palette.Items)
+            {
+                String Farbcode = p.SubItems[1].Text;
+                String Farbname = p.Text;
+
+                if (DictColorNames.ContainsKey(Farbcode))
+                {
+                    //falls bereits vorhanden wird mit dem neuen Namen ueberschrieben
+                    DictColorNames[Farbcode] = Farbname;
+                }
+                else
+                {
+                    //falls noch nicht vorhanden wird das keyvaluepaar angelegt
+                    DictColorNames.Add(Farbcode, Farbname);
+                }
+
+            }
+
+            //Aus der Dictionary die ColorNameList für die Config bilden
+            String_ColorNameList = "";
+
+            foreach (KeyValuePair<string, string> entry in DictColorNames)
+            {
+                //Farbcode und Namen zur ColorNameList hinzufuegen
+                String_ColorNameList = String_ColorNameList + entry.Key + "," + entry.Value + ";";
+            }
+
+            //letztes Semikolon entfernen
+            if(String_ColorNameList.EndsWith(";"))
+            {
+                String_ColorNameList = String_ColorNameList.Remove(String_ColorNameList.Length - 1);
+            }
+            
+
+
+            //Status, Settings und Farbnamen in die Config schreiben
             SetSetting("Image", Dateiname);
             SetSetting("Title", Bildtitel);
             SetSetting("Line",numericUpDown1.Value.ToString());
@@ -591,6 +661,7 @@ namespace Crochet2Ebook
             }else{
                 SetSetting("DisplayRatioCorrection", "0");
             }
+            SetSetting("ColorNameList", String_ColorNameList);
         }
 
         private void button_createStuff_Click(object sender, EventArgs e)
@@ -604,15 +675,20 @@ namespace Crochet2Ebook
 
             System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien");
 
+            //PDF generieren
             if (checkBox_pdf.Checked)
             {
                 createPDF();
             }
 
+            //Rasterbild generieren
             if (checkBox_Rasterbild.Checked)
             {
                 createRasterbild();
             }
+
+            //Infodatei generieren
+            createInfofile();
             
             //Verzeichnis mit Ergebnissen öffnen
             Process.Start("explorer.exe", Bildtitel + "_Dateien");
@@ -624,6 +700,16 @@ namespace Crochet2Ebook
             selectedLine = Originalbild.Height - (int)numericUpDown1.Value;
             Zeile_Auswerten(selectedLine);
 
+        }
+
+        private void createInfofile()
+        {
+            //Maschen je Farbe zählen
+
+            //Farbwechsel je Farbe zählen
+
+
+            throw new NotImplementedException();
         }
 
         private void createRasterbild()
