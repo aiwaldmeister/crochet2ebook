@@ -30,10 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
             "42       ",
             "#FFFFFF"}, 0);
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("x 23", 0);
+            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("x 23", 0);
             this.listView_Palette = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -74,6 +74,20 @@
             this.label_Titel = new System.Windows.Forms.Label();
             this.textBox_Titel = new System.Windows.Forms.TextBox();
             this.pictureBox_Display = new System.Windows.Forms.PictureBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.checkBox_InfoDatei = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox_Lauflaenge_Masche = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.textBox_Lauflaenge_Wechsel = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.textBox_Maschenbreite = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.textBox_Maschenhoehe = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.contextMenu_Palette.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -103,6 +117,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rasterbild_Liniendicke_5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rasterbild_Liniendicke_1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Display)).BeginInit();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // listView_Palette
@@ -293,6 +308,7 @@
             // 
             // splitContainer4.Panel2
             // 
+            this.splitContainer4.Panel2.Controls.Add(this.groupBox3);
             this.splitContainer4.Panel2.Controls.Add(this.groupBox2);
             this.splitContainer4.Panel2.Controls.Add(this.groupBox1);
             this.splitContainer4.Panel2.Controls.Add(this.label_Palette);
@@ -331,11 +347,11 @@
             this.listView_LineDescription.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView_LineDescription.Enabled = false;
             this.listView_LineDescription.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            listViewItem1.StateImageIndex = 0;
-            listViewItem1.UseItemStyleForSubItems = false;
+            listViewItem3.StateImageIndex = 0;
+            listViewItem3.UseItemStyleForSubItems = false;
             this.listView_LineDescription.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2});
+            listViewItem3,
+            listViewItem4});
             this.listView_LineDescription.LabelEdit = true;
             this.listView_LineDescription.LargeImageList = this.imageList_Palette;
             this.listView_LineDescription.Location = new System.Drawing.Point(0, 0);
@@ -607,6 +623,144 @@
             this.pictureBox_Display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_Display_MouseClick);
             this.pictureBox_Display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_Display_MouseClick);
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.checkBox_InfoDatei);
+            this.groupBox3.Controls.Add(this.label5);
+            this.groupBox3.Controls.Add(this.label2);
+            this.groupBox3.Controls.Add(this.label8);
+            this.groupBox3.Controls.Add(this.label9);
+            this.groupBox3.Controls.Add(this.label6);
+            this.groupBox3.Controls.Add(this.textBox_Maschenhoehe);
+            this.groupBox3.Controls.Add(this.label4);
+            this.groupBox3.Controls.Add(this.label7);
+            this.groupBox3.Controls.Add(this.textBox_Lauflaenge_Wechsel);
+            this.groupBox3.Controls.Add(this.textBox_Maschenbreite);
+            this.groupBox3.Controls.Add(this.label1);
+            this.groupBox3.Controls.Add(this.textBox_Lauflaenge_Masche);
+            this.groupBox3.Location = new System.Drawing.Point(4, 414);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(123, 160);
+            this.groupBox3.TabIndex = 24;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "groupBox3";
+            // 
+            // checkBox_InfoDatei
+            // 
+            this.checkBox_InfoDatei.AutoSize = true;
+            this.checkBox_InfoDatei.Checked = true;
+            this.checkBox_InfoDatei.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_InfoDatei.Location = new System.Drawing.Point(5, 1);
+            this.checkBox_InfoDatei.Name = "checkBox_InfoDatei";
+            this.checkBox_InfoDatei.Size = new System.Drawing.Size(69, 17);
+            this.checkBox_InfoDatei.TabIndex = 14;
+            this.checkBox_InfoDatei.Text = "InfoDatei";
+            this.checkBox_InfoDatei.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 30);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(63, 13);
+            this.label1.TabIndex = 19;
+            this.label1.Text = "Lauflängen:";
+            // 
+            // textBox_Lauflaenge_Masche
+            // 
+            this.textBox_Lauflaenge_Masche.Location = new System.Drawing.Point(61, 49);
+            this.textBox_Lauflaenge_Masche.Name = "textBox_Lauflaenge_Masche";
+            this.textBox_Lauflaenge_Masche.Size = new System.Drawing.Size(39, 20);
+            this.textBox_Lauflaenge_Masche.TabIndex = 20;
+            this.textBox_Lauflaenge_Masche.Text = "5,8";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(100, 52);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(21, 13);
+            this.label2.TabIndex = 19;
+            this.label2.Text = "cm";
+            // 
+            // textBox_Lauflaenge_Wechsel
+            // 
+            this.textBox_Lauflaenge_Wechsel.Location = new System.Drawing.Point(61, 75);
+            this.textBox_Lauflaenge_Wechsel.Name = "textBox_Lauflaenge_Wechsel";
+            this.textBox_Lauflaenge_Wechsel.Size = new System.Drawing.Size(39, 20);
+            this.textBox_Lauflaenge_Wechsel.TabIndex = 20;
+            this.textBox_Lauflaenge_Wechsel.Text = "16";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 52);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(54, 13);
+            this.label4.TabIndex = 19;
+            this.label4.Text = "Masche =";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(100, 78);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(21, 13);
+            this.label5.TabIndex = 19;
+            this.label5.Text = "cm";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(2, 78);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(58, 13);
+            this.label6.TabIndex = 19;
+            this.label6.Text = "Wechsel =";
+            // 
+            // textBox_Maschenbreite
+            // 
+            this.textBox_Maschenbreite.Location = new System.Drawing.Point(28, 126);
+            this.textBox_Maschenbreite.Name = "textBox_Maschenbreite";
+            this.textBox_Maschenbreite.Size = new System.Drawing.Size(31, 20);
+            this.textBox_Maschenbreite.TabIndex = 20;
+            this.textBox_Maschenbreite.Text = "0,55";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(7, 107);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(109, 13);
+            this.label7.TabIndex = 19;
+            this.label7.Text = "Maschengröße in cm:";
+            // 
+            // textBox_Maschenhoehe
+            // 
+            this.textBox_Maschenhoehe.Location = new System.Drawing.Point(87, 126);
+            this.textBox_Maschenhoehe.Name = "textBox_Maschenhoehe";
+            this.textBox_Maschenhoehe.Size = new System.Drawing.Size(31, 20);
+            this.textBox_Maschenhoehe.TabIndex = 20;
+            this.textBox_Maschenhoehe.Text = "0,66";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(69, 129);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(15, 13);
+            this.label9.TabIndex = 19;
+            this.label9.Text = "H";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(10, 129);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(14, 13);
+            this.label8.TabIndex = 19;
+            this.label8.Text = "B";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -656,6 +810,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rasterbild_Liniendicke_5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rasterbild_Liniendicke_1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Display)).EndInit();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -702,6 +858,20 @@
         private System.Windows.Forms.CheckBox checkBox_pdf;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.CheckBox checkBox_InfoDatei;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox textBox_Lauflaenge_Wechsel;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textBox_Lauflaenge_Masche;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox textBox_Maschenhoehe;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox textBox_Maschenbreite;
     }
 }
 

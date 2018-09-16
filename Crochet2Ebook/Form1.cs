@@ -677,6 +677,25 @@ namespace Crochet2Ebook
                 return;
             }
 
+            int unnamedcolors_count = 0;
+            foreach (ListViewItem p in listView_Palette.Items)
+            {
+                if (p.Text.Contains("#"))
+                {
+                    unnamedcolors_count++;
+                }
+            }
+            if (unnamedcolors_count > 0)
+            {
+                DialogResult result = MessageBox.Show(unnamedcolors_count + " Farben der Farbpalette haben noch keinen sprechenden Namen.\n\nWirklich fortfahren?", "Achtung!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
+            }
+
+
+
             System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien");
 
             //PDF generieren
@@ -696,7 +715,10 @@ namespace Crochet2Ebook
             countMaschenUndFarbwechsel(Originalbild);
 
             //Infodatei generieren
-            createInfofile();
+            if (checkBox_InfoDatei.Checked)
+            {
+                createInfofile();
+            }
             
             //Verzeichnis mit Ergebnissen öffnen
             Process.Start("explorer.exe", Bildtitel + "_Dateien");
@@ -773,17 +795,59 @@ namespace Crochet2Ebook
 
         private void createInfofile()
         {
+            float Lauflaenge_Masche = 0;
+            float Lauflaenge_Wechsel = 0;
+            float Breite_Masche = 0;
+            float Hoehe_Masche = 0;
             string fileinhalt = "";
-            string lauflaengen = "";
-            string maschenzahlen = "Maschenanzahl\r\n";
+            string LauflaengenString = "Lauflängen ca.:\r\n----------------\r\n";
+            string MaschenzahlenString = "Maschenanzahl:\r\n--------------\r\n";
+            string GroessenString = "(" + Originalbild.Width + " x " + Originalbild.Height + " Maschen / ca. ";
+            string IntroString = "Häkeldecke '" + Bildtitel + "'\r\n";
+            
+            
+            
+            //Lauflaengen_Werte aus den Textboxen holen
+            float.TryParse(textBox_Lauflaenge_Masche.Text, out Lauflaenge_Masche);
+            float.TryParse(textBox_Lauflaenge_Wechsel.Text, out Lauflaenge_Wechsel);
+
 
             foreach (ListViewItem item in listView_Palette.Items)
             {
-                maschenzahlen = maschenzahlen + item.Text + ": " + item.SubItems[1].Text + " Maschen\r\n";
+                MaschenzahlenString = MaschenzahlenString + item.Text + ": " + item.SubItems[1].Text + "\r\n";
+
+                float Lauflaenge_DieseFarbe = 0;
+                int Maschenzahl_DieseFarbe = 0;
+                int Wechsel_DieseFarbe = 0;
+
+                Int32.TryParse(item.SubItems[1].Text, out Maschenzahl_DieseFarbe);
+                Int32.TryParse(item.SubItems[2].Text, out Wechsel_DieseFarbe);
+
+                Lauflaenge_DieseFarbe = (Lauflaenge_Masche * Maschenzahl_DieseFarbe) + (Lauflaenge_Wechsel * Wechsel_DieseFarbe);
+
+                if (Lauflaenge_DieseFarbe > 100)
+                {
+                    //als Meter ausgeben
+                    LauflaengenString = LauflaengenString + item.Text + ": " + Math.Ceiling(Lauflaenge_DieseFarbe*0.01).ToString() + " m\r\n";
+                }
+                else
+                {
+                    //als Zentimeter ausgeben
+                    LauflaengenString = LauflaengenString + item.Text + ": " + Math.Ceiling(Lauflaenge_DieseFarbe).ToString() + " cm\r\n";
+                }
+
 
             }
 
-            fileinhalt = maschenzahlen + lauflaengen;
+            //Maschengroessen aus den Textboxen holen
+            float.TryParse(textBox_Maschenbreite.Text, out Breite_Masche);
+            float.TryParse(textBox_Maschenhoehe.Text, out Hoehe_Masche);
+
+            GroessenString = GroessenString + Math.Round(Breite_Masche * Originalbild.Width).ToString() + " x " + Math.Round(Hoehe_Masche * Originalbild.Height).ToString() + " cm)\r\n";
+
+
+
+            fileinhalt = IntroString + GroessenString + "\r\n" + MaschenzahlenString + "\r\n" + LauflaengenString;
 
 
             //Infodatei erzeugen
@@ -911,22 +975,7 @@ namespace Crochet2Ebook
 
         private void createPDF()
         {
-            int unnamedcolors_count = 0;
-            foreach (ListViewItem p in listView_Palette.Items)
-            {
-                if (p.Text.Contains("#"))
-                {
-                    unnamedcolors_count++;
-                }
-            }
-            if (unnamedcolors_count > 0)
-            {
-                DialogResult result = MessageBox.Show(unnamedcolors_count + " Farben der Farbpalette haben noch keinen sprechenden Namen.\n\nWirklich fortfahren?", "Achtung!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.No)
-                {
-                    return;
-                }
-            }
+
 
             // Create a temporary file
 
