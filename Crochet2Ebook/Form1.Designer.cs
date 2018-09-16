@@ -55,25 +55,25 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button_ToggleOptions = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.checkBox_pdf = new System.Windows.Forms.CheckBox();
+            this.checkBox_Ratiocorrection = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBox_Rasterbild = new System.Windows.Forms.CheckBox();
+            this.label_Rasterbild_Pixelgroesse = new System.Windows.Forms.Label();
             this.checkBox_Rasterbild_horizontal_auch = new System.Windows.Forms.CheckBox();
-            this.textBox_Rasterbild_Linienfarbe1 = new System.Windows.Forms.TextBox();
+            this.numericUpDown_Rasterbild_Pixelgroesse = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
-            this.label_Rasterbild_Liniendichen = new System.Windows.Forms.Label();
+            this.textBox_Rasterbild_Linienfarbe1 = new System.Windows.Forms.TextBox();
             this.numericUpDown_Rasterbild_Liniendicke_10 = new System.Windows.Forms.NumericUpDown();
+            this.label_Rasterbild_Liniendichen = new System.Windows.Forms.Label();
             this.numericUpDown_Rasterbild_Liniendicke_5 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown_Rasterbild_Liniendicke_1 = new System.Windows.Forms.NumericUpDown();
-            this.label_Rasterbild_Pixelgroesse = new System.Windows.Forms.Label();
-            this.numericUpDown_Rasterbild_Pixelgroesse = new System.Windows.Forms.NumericUpDown();
-            this.checkBox_Rasterbild = new System.Windows.Forms.CheckBox();
-            this.checkBox_Ratiocorrection = new System.Windows.Forms.CheckBox();
             this.label_Palette = new System.Windows.Forms.Label();
             this.button_create_stuff = new System.Windows.Forms.Button();
             this.label_Titel = new System.Windows.Forms.Label();
             this.textBox_Titel = new System.Windows.Forms.TextBox();
             this.pictureBox_Display = new System.Windows.Forms.PictureBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.contextMenu_Palette.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -96,13 +96,13 @@
             this.splitContainer5.Panel1.SuspendLayout();
             this.splitContainer5.Panel2.SuspendLayout();
             this.splitContainer5.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rasterbild_Pixelgroesse)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rasterbild_Liniendicke_10)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rasterbild_Liniendicke_5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rasterbild_Liniendicke_1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rasterbild_Pixelgroesse)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Display)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // listView_Palette
@@ -367,6 +367,17 @@
             this.button_ToggleOptions.UseVisualStyleBackColor = true;
             this.button_ToggleOptions.Click += new System.EventHandler(this.button_ToggleOptions_Click);
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.checkBox_pdf);
+            this.groupBox2.Controls.Add(this.checkBox_Ratiocorrection);
+            this.groupBox2.Location = new System.Drawing.Point(4, 224);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(123, 50);
+            this.groupBox2.TabIndex = 23;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "groupBox2";
+            // 
             // checkBox_pdf
             // 
             this.checkBox_pdf.AutoSize = true;
@@ -378,6 +389,59 @@
             this.checkBox_pdf.TabIndex = 14;
             this.checkBox_pdf.Text = "PDF generieren";
             this.checkBox_pdf.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_Ratiocorrection
+            // 
+            this.checkBox_Ratiocorrection.AutoSize = true;
+            this.checkBox_Ratiocorrection.Checked = true;
+            this.checkBox_Ratiocorrection.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_Ratiocorrection.Location = new System.Drawing.Point(12, 23);
+            this.checkBox_Ratiocorrection.Name = "checkBox_Ratiocorrection";
+            this.checkBox_Ratiocorrection.Size = new System.Drawing.Size(96, 17);
+            this.checkBox_Ratiocorrection.TabIndex = 14;
+            this.checkBox_Ratiocorrection.Text = "Ratio korrektur";
+            this.checkBox_Ratiocorrection.UseVisualStyleBackColor = true;
+            this.checkBox_Ratiocorrection.CheckedChanged += new System.EventHandler(this.checkBox_Ratiocorrection_CheckedChanged);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.checkBox_Rasterbild);
+            this.groupBox1.Controls.Add(this.label_Rasterbild_Pixelgroesse);
+            this.groupBox1.Controls.Add(this.checkBox_Rasterbild_horizontal_auch);
+            this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Pixelgroesse);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.textBox_Rasterbild_Linienfarbe1);
+            this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Liniendicke_10);
+            this.groupBox1.Controls.Add(this.label_Rasterbild_Liniendichen);
+            this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Liniendicke_5);
+            this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Liniendicke_1);
+            this.groupBox1.Location = new System.Drawing.Point(4, 279);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(123, 132);
+            this.groupBox1.TabIndex = 22;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "groupBox1";
+            // 
+            // checkBox_Rasterbild
+            // 
+            this.checkBox_Rasterbild.AutoSize = true;
+            this.checkBox_Rasterbild.Checked = true;
+            this.checkBox_Rasterbild.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_Rasterbild.Location = new System.Drawing.Point(5, 1);
+            this.checkBox_Rasterbild.Name = "checkBox_Rasterbild";
+            this.checkBox_Rasterbild.Size = new System.Drawing.Size(73, 17);
+            this.checkBox_Rasterbild.TabIndex = 15;
+            this.checkBox_Rasterbild.Text = "Rasterbild";
+            this.checkBox_Rasterbild.UseVisualStyleBackColor = true;
+            // 
+            // label_Rasterbild_Pixelgroesse
+            // 
+            this.label_Rasterbild_Pixelgroesse.AutoSize = true;
+            this.label_Rasterbild_Pixelgroesse.Location = new System.Drawing.Point(9, 20);
+            this.label_Rasterbild_Pixelgroesse.Name = "label_Rasterbild_Pixelgroesse";
+            this.label_Rasterbild_Pixelgroesse.Size = new System.Drawing.Size(56, 13);
+            this.label_Rasterbild_Pixelgroesse.TabIndex = 17;
+            this.label_Rasterbild_Pixelgroesse.Text = "Pixelgröße";
             // 
             // checkBox_Rasterbild_horizontal_auch
             // 
@@ -391,13 +455,27 @@
             this.checkBox_Rasterbild_horizontal_auch.Text = "horizontal auch";
             this.checkBox_Rasterbild_horizontal_auch.UseVisualStyleBackColor = true;
             // 
-            // textBox_Rasterbild_Linienfarbe1
+            // numericUpDown_Rasterbild_Pixelgroesse
             // 
-            this.textBox_Rasterbild_Linienfarbe1.Location = new System.Drawing.Point(68, 83);
-            this.textBox_Rasterbild_Linienfarbe1.Name = "textBox_Rasterbild_Linienfarbe1";
-            this.textBox_Rasterbild_Linienfarbe1.Size = new System.Drawing.Size(53, 20);
-            this.textBox_Rasterbild_Linienfarbe1.TabIndex = 20;
-            this.textBox_Rasterbild_Linienfarbe1.Text = "#555555";
+            this.numericUpDown_Rasterbild_Pixelgroesse.Location = new System.Drawing.Point(71, 18);
+            this.numericUpDown_Rasterbild_Pixelgroesse.Maximum = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            this.numericUpDown_Rasterbild_Pixelgroesse.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown_Rasterbild_Pixelgroesse.Name = "numericUpDown_Rasterbild_Pixelgroesse";
+            this.numericUpDown_Rasterbild_Pixelgroesse.Size = new System.Drawing.Size(38, 20);
+            this.numericUpDown_Rasterbild_Pixelgroesse.TabIndex = 16;
+            this.numericUpDown_Rasterbild_Pixelgroesse.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
             // 
             // label3
             // 
@@ -408,14 +486,13 @@
             this.label3.TabIndex = 19;
             this.label3.Text = "LinienFarbe:";
             // 
-            // label_Rasterbild_Liniendichen
+            // textBox_Rasterbild_Linienfarbe1
             // 
-            this.label_Rasterbild_Liniendichen.AutoSize = true;
-            this.label_Rasterbild_Liniendichen.Location = new System.Drawing.Point(6, 41);
-            this.label_Rasterbild_Liniendichen.Name = "label_Rasterbild_Liniendichen";
-            this.label_Rasterbild_Liniendichen.Size = new System.Drawing.Size(70, 13);
-            this.label_Rasterbild_Liniendichen.TabIndex = 19;
-            this.label_Rasterbild_Liniendichen.Text = "Liniendicken:";
+            this.textBox_Rasterbild_Linienfarbe1.Location = new System.Drawing.Point(68, 83);
+            this.textBox_Rasterbild_Linienfarbe1.Name = "textBox_Rasterbild_Linienfarbe1";
+            this.textBox_Rasterbild_Linienfarbe1.Size = new System.Drawing.Size(53, 20);
+            this.textBox_Rasterbild_Linienfarbe1.TabIndex = 20;
+            this.textBox_Rasterbild_Linienfarbe1.Text = "#555555";
             // 
             // numericUpDown_Rasterbild_Liniendicke_10
             // 
@@ -433,6 +510,15 @@
             0,
             0,
             0});
+            // 
+            // label_Rasterbild_Liniendichen
+            // 
+            this.label_Rasterbild_Liniendichen.AutoSize = true;
+            this.label_Rasterbild_Liniendichen.Location = new System.Drawing.Point(6, 41);
+            this.label_Rasterbild_Liniendichen.Name = "label_Rasterbild_Liniendichen";
+            this.label_Rasterbild_Liniendichen.Size = new System.Drawing.Size(70, 13);
+            this.label_Rasterbild_Liniendichen.TabIndex = 19;
+            this.label_Rasterbild_Liniendichen.Text = "Liniendicken:";
             // 
             // numericUpDown_Rasterbild_Liniendicke_5
             // 
@@ -467,62 +553,6 @@
             0,
             0,
             0});
-            // 
-            // label_Rasterbild_Pixelgroesse
-            // 
-            this.label_Rasterbild_Pixelgroesse.AutoSize = true;
-            this.label_Rasterbild_Pixelgroesse.Location = new System.Drawing.Point(9, 20);
-            this.label_Rasterbild_Pixelgroesse.Name = "label_Rasterbild_Pixelgroesse";
-            this.label_Rasterbild_Pixelgroesse.Size = new System.Drawing.Size(56, 13);
-            this.label_Rasterbild_Pixelgroesse.TabIndex = 17;
-            this.label_Rasterbild_Pixelgroesse.Text = "Pixelgröße";
-            // 
-            // numericUpDown_Rasterbild_Pixelgroesse
-            // 
-            this.numericUpDown_Rasterbild_Pixelgroesse.Location = new System.Drawing.Point(71, 18);
-            this.numericUpDown_Rasterbild_Pixelgroesse.Maximum = new decimal(new int[] {
-            50,
-            0,
-            0,
-            0});
-            this.numericUpDown_Rasterbild_Pixelgroesse.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numericUpDown_Rasterbild_Pixelgroesse.Name = "numericUpDown_Rasterbild_Pixelgroesse";
-            this.numericUpDown_Rasterbild_Pixelgroesse.Size = new System.Drawing.Size(38, 20);
-            this.numericUpDown_Rasterbild_Pixelgroesse.TabIndex = 16;
-            this.numericUpDown_Rasterbild_Pixelgroesse.Value = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-            // 
-            // checkBox_Rasterbild
-            // 
-            this.checkBox_Rasterbild.AutoSize = true;
-            this.checkBox_Rasterbild.Checked = true;
-            this.checkBox_Rasterbild.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_Rasterbild.Location = new System.Drawing.Point(5, 1);
-            this.checkBox_Rasterbild.Name = "checkBox_Rasterbild";
-            this.checkBox_Rasterbild.Size = new System.Drawing.Size(73, 17);
-            this.checkBox_Rasterbild.TabIndex = 15;
-            this.checkBox_Rasterbild.Text = "Rasterbild";
-            this.checkBox_Rasterbild.UseVisualStyleBackColor = true;
-            // 
-            // checkBox_Ratiocorrection
-            // 
-            this.checkBox_Ratiocorrection.AutoSize = true;
-            this.checkBox_Ratiocorrection.Checked = true;
-            this.checkBox_Ratiocorrection.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_Ratiocorrection.Location = new System.Drawing.Point(12, 23);
-            this.checkBox_Ratiocorrection.Name = "checkBox_Ratiocorrection";
-            this.checkBox_Ratiocorrection.Size = new System.Drawing.Size(96, 17);
-            this.checkBox_Ratiocorrection.TabIndex = 14;
-            this.checkBox_Ratiocorrection.Text = "Ratio korrektur";
-            this.checkBox_Ratiocorrection.UseVisualStyleBackColor = true;
-            this.checkBox_Ratiocorrection.CheckedChanged += new System.EventHandler(this.checkBox_Ratiocorrection_CheckedChanged);
             // 
             // label_Palette
             // 
@@ -577,36 +607,6 @@
             this.pictureBox_Display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_Display_MouseClick);
             this.pictureBox_Display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_Display_MouseClick);
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.checkBox_Rasterbild);
-            this.groupBox1.Controls.Add(this.label_Rasterbild_Pixelgroesse);
-            this.groupBox1.Controls.Add(this.checkBox_Rasterbild_horizontal_auch);
-            this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Pixelgroesse);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.textBox_Rasterbild_Linienfarbe1);
-            this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Liniendicke_10);
-            this.groupBox1.Controls.Add(this.label_Rasterbild_Liniendichen);
-            this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Liniendicke_5);
-            this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Liniendicke_1);
-            this.groupBox1.Location = new System.Drawing.Point(4, 279);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(123, 132);
-            this.groupBox1.TabIndex = 22;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "groupBox1";
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.checkBox_pdf);
-            this.groupBox2.Controls.Add(this.checkBox_Ratiocorrection);
-            this.groupBox2.Location = new System.Drawing.Point(4, 224);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(123, 50);
-            this.groupBox2.TabIndex = 23;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "groupBox2";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -647,15 +647,15 @@
             this.splitContainer5.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).EndInit();
             this.splitContainer5.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rasterbild_Pixelgroesse)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rasterbild_Liniendicke_10)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rasterbild_Liniendicke_5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rasterbild_Liniendicke_1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rasterbild_Pixelgroesse)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Display)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }

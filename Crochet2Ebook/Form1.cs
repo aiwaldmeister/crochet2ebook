@@ -81,6 +81,10 @@ namespace Crochet2Ebook
 
             ListViewItem item = listView_Palette.Items.Add(colorName);
             item.SubItems.Add(colorCode);
+            item.SubItems.Add(0.ToString());   //für die Maschenzahl dieser Farbe
+            item.SubItems.Add(0.ToString());   //für die Anzahl Farbanfaenge mit dieser Farbe
+            item.SubItems.Add(0.ToString());   //für die Anzahl Farbenden mit dieser Farbe
+
 
             //neues Bild für die Farbvorschau in die Imagelist aufnehmen...
             imageList_Palette.Images.Add(colorCode, generateColorPreviewImage(HextoColor(colorCode)));
@@ -687,6 +691,10 @@ namespace Crochet2Ebook
                 createRasterbild();
             }
 
+
+            //Maschen und Farbwechsel ermitteln
+            countMaschenUndFarbwechsel(Originalbild);
+
             //Infodatei generieren
             createInfofile();
             
@@ -702,14 +710,90 @@ namespace Crochet2Ebook
 
         }
 
+        private void countMaschenUndFarbwechsel(Bitmap Bild)
+        {
+            Color pixelfarbe_current;
+            Color pixelfarbe_last;
+
+            const int Maschenanzahl = 1;
+            const int Farbanfang = 2;
+            const int Farbende = 3;
+
+            //Die Zähler für jede Farbe leeren
+            foreach (ListViewItem item in listView_Palette.Items)
+            {
+                item.SubItems[1].Text = 0.ToString();
+                item.SubItems[2].Text = 0.ToString();
+                item.SubItems[3].Text = 0.ToString();
+            }
+
+
+            pixelfarbe_last = Bild.GetPixel(0, 0);
+            //einen Farbanfang für die erste Farbe zählen
+            increaseSubitemCounter(pixelfarbe_last, Farbanfang);
+            
+
+
+            //Maschen je Farbe zählen
+            for (int y = 0; y < Bild.Size.Height; y++)
+            {
+                for (int x = 0; x < Bild.Size.Width; x++)
+                {
+                    pixelfarbe_current = Bild.GetPixel(x, y);
+
+                    //Maschencounter für Farbe hochzählen
+                    increaseSubitemCounter(pixelfarbe_current, Maschenanzahl);
+
+                    //Mit voriger Farbe vergleichen und ggf. beide Farbwechselcounter hochzählen (anfangend für aktuelle Farbe, endend für letzte Farbe)
+                    if (pixelfarbe_current!=pixelfarbe_last)
+                    {
+                        increaseSubitemCounter(pixelfarbe_current, Farbanfang);
+                        increaseSubitemCounter(pixelfarbe_last, Farbende);
+                    }
+                    pixelfarbe_last = pixelfarbe_current;
+                }
+            }
+
+            increaseSubitemCounter(pixelfarbe_last, Farbende);
+        }
+
+        private void increaseSubitemCounter(Color Farbe, int Index)
+        {
+            foreach (ListViewItem item in listView_Palette.Items)
+            {
+                if (item.ToolTipText == ColortoHex(Farbe))
+                {
+                    int count = 0;
+                    Int32.TryParse(item.SubItems[Index].Text, out count);
+                    count++;
+                    item.SubItems[Index].Text = count.ToString();
+                }
+            }
+        }
+
         private void createInfofile()
         {
-            //Maschen je Farbe zählen
+            string fileinhalt = "";
+            string lauflaengen = "";
+            string maschenzahlen = "Maschenanzahl\r\n";
 
-            //Farbwechsel je Farbe zählen
+            foreach (ListViewItem item in listView_Palette.Items)
+            {
+                maschenzahlen = maschenzahlen + item.Text + ": " + item.SubItems[1].Text + " Maschen\r\n";
+
+            }
+
+            fileinhalt = maschenzahlen + lauflaengen;
 
 
-            throw new NotImplementedException();
+            //Infodatei erzeugen
+            string filename = String.Format(Bildtitel + "_Dateien/" + Bildtitel + "_Info.txt");
+            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(filename))
+            {
+                sw.Write(fileinhalt);
+            }
+
+
         }
 
         private void createRasterbild()
