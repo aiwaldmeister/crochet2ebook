@@ -29,7 +29,8 @@ namespace Crochet2Ebook
         private Bitmap Displaybild;
         private Bitmap Rasterbild;
         private bool DisplayRatioCorrection = true;
-        private double RatioCorrFactor = 0.6;
+        private double RatioCorrFactor_option = 0.6;
+        private double active_RatioCorrFactor = 0.6;
         private int additionalZoomfactor = 1;
         private bool imageisloaded = false;
         private int selectedLine = 1;
@@ -153,26 +154,26 @@ namespace Crochet2Ebook
         {
             if (DisplayRatioCorrection)
             {
-                RatioCorrFactor = 0.6;
+                active_RatioCorrFactor = RatioCorrFactor_option;
             }
             else
             {
-                RatioCorrFactor = 1;
+                active_RatioCorrFactor = 1;
             }
             int newWidth, newHeight;
 
             int maxWidth = splitContainer1.Panel2.Width-2;
             int maxHeight = splitContainer1.Panel2.Height-2;
 
-            if (((double)Originalbild.Width * RatioCorrFactor) / ((double)Originalbild.Height) > (double)maxWidth / (double)maxHeight)
+            if (((double)Originalbild.Width * active_RatioCorrFactor) / ((double)Originalbild.Height) > (double)maxWidth / (double)maxHeight)
             {//Bild ist (mit korrekturfaktor) breiter als hoch... breite auf breite der Picturebox setzen, höhe verhältnis
                 newWidth = maxWidth;
-                newHeight = (int)((((double)maxWidth / (double)Originalbild.Width) * (double)Originalbild.Height) / RatioCorrFactor);
+                newHeight = (int)((((double)maxWidth / (double)Originalbild.Width) * (double)Originalbild.Height) / active_RatioCorrFactor);
             }
             else
             {//Bild ist (mit korrekturfaktor) hoeher als breit... hoehe auf hoehe der Picturebox setzen, breite im verhältnis
                 newHeight = (int)((double)maxHeight);
-                newWidth = (int)((((double)maxHeight / (double)Originalbild.Height) * (double)Originalbild.Width) * RatioCorrFactor);
+                newWidth = (int)((((double)maxHeight / (double)Originalbild.Height) * (double)Originalbild.Width) * active_RatioCorrFactor);
             }
 
             //newHeight = newHeight * additionalZoomfactor;
@@ -962,8 +963,8 @@ namespace Crochet2Ebook
             //generiertes Rasterbild speichern
 
             //erste Version als bmp für maximale Qualitaet
-            filename = Bildtitel + "_Dateien/" + Bildtitel + "_Rasterbild.bmp";
-            Rasterbild.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
+            //filename = Bildtitel + "_Dateien/" + Bildtitel + "_Rasterbild.bmp";
+            //Rasterbild.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
 
             //zweite Version als png für weniger Speicherbedarf
             filename = Bildtitel + "_Dateien/" + Bildtitel + "_Rasterbild.png";
@@ -1306,6 +1307,34 @@ namespace Crochet2Ebook
                 selectedLine = Originalbild.Height - (int)numericUpDown1.Value;
                 Zeile_Auswerten(selectedLine);
             }
+        }
+
+        private void splitContainer4_Panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void textBox_Ratokorrfaktor_TextChanged(object sender, EventArgs e)
+        {
+            double faktor = RatioCorrFactor_option;
+            if (double.TryParse(textBox_Ratokorrfaktor.Text, out faktor))
+            {
+                if(faktor>0)
+                {
+                    RatioCorrFactor_option = faktor;
+                    if (imageisloaded)
+                    {
+                        generateZoomedImage();
+                        Displaybild = Zoombild;
+                        fitImagetoFrame();
+
+                        Zeilemarkieren(selectedLine);
+                        refreshDisplay();
+                    }
+                }
+
+            }
+
         }
     }
 }
