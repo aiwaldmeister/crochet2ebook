@@ -336,7 +336,7 @@ namespace Crochet2Ebook
             {
                 if (HextoColor(item.SubItems[1].Text) == laufendeFarbe)
                 {
-                    Farbname = item.SubItems[0].Text;
+                    Farbname = item.Text;
                     
                     break;
                 }
@@ -1146,7 +1146,7 @@ namespace Crochet2Ebook
                 {
                     Color myFillColor = System.Drawing.ColorTranslator.FromHtml(item.SubItems[1].Text);
                     string myPixelcount = item.Text;
-                    string myColorname = item.SubItems[4].Text;
+                    string myColorname = item.SubItems[7].Text;
 
                     double noetigeBreite = gfx.MeasureString(myPixelcount, font_Pixelcount).Width;
                     if (gfx.MeasureString(myColorname, font_Farbname).Width > noetigeBreite)
