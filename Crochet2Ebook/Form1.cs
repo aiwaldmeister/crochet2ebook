@@ -394,8 +394,8 @@ namespace Crochet2Ebook
                 int startpixel = 0;
                 int pixelanzahl = 0;
 
-                int.TryParse(selection.SubItems[2].Text, out startpixel);
-                int.TryParse(selection.SubItems[3].Text, out pixelanzahl);
+                int.TryParse(selection.SubItems[5].Text, out startpixel);
+                int.TryParse(selection.SubItems[6].Text, out pixelanzahl);
 
                 float ZoomFactorX = getZoomFactorX();
                 float ZoomFactorY = getZoomFactorY();
@@ -738,16 +738,16 @@ namespace Crochet2Ebook
             Color pixelfarbe_current;
             Color pixelfarbe_last;
 
-            const int Maschenanzahl = 1;
-            const int Farbanfang = 2;
-            const int Farbende = 3;
+            const int Maschenanzahl = 2;
+            const int Farbanfang = 3;
+            const int Farbende = 4;
 
             //Die Zähler für jede Farbe leeren
             foreach (ListViewItem item in listView_Palette.Items)
             {
-                item.SubItems[1].Text = 0.ToString();
                 item.SubItems[2].Text = 0.ToString();
                 item.SubItems[3].Text = 0.ToString();
+                item.SubItems[4].Text = 0.ToString();
             }
 
 
@@ -815,14 +815,14 @@ namespace Crochet2Ebook
 
             foreach (ListViewItem item in listView_Palette.Items)
             {
-                MaschenzahlenString = MaschenzahlenString + item.Text + ": " + item.SubItems[1].Text + "\r\n";
+                MaschenzahlenString = MaschenzahlenString + item.Text + ": " + item.SubItems[2].Text + "\r\n";
 
                 float Lauflaenge_DieseFarbe = 0;
                 int Maschenzahl_DieseFarbe = 0;
                 int Wechsel_DieseFarbe = 0;
 
-                Int32.TryParse(item.SubItems[1].Text, out Maschenzahl_DieseFarbe);
-                Int32.TryParse(item.SubItems[2].Text, out Wechsel_DieseFarbe);
+                Int32.TryParse(item.SubItems[2].Text, out Maschenzahl_DieseFarbe);
+                Int32.TryParse(item.SubItems[3].Text, out Wechsel_DieseFarbe);
 
                 Lauflaenge_DieseFarbe = (Lauflaenge_Masche * Maschenzahl_DieseFarbe) + (Lauflaenge_Wechsel * Wechsel_DieseFarbe);
 
