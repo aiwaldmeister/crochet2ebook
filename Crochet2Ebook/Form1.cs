@@ -571,6 +571,9 @@ namespace Crochet2Ebook
             
             splitContainer4.Panel2Collapsed = true;
 
+            //Imagelist leeren
+            imageList_Palette.Images.Clear();
+
             //initialisiere die Dictionary mit den Farbnamen aus dem String iniColorNameList
             string[] iniFarbstrings = iniColorNameList.Split(';');
             foreach (String Farbstring in iniFarbstrings)
@@ -720,7 +723,15 @@ namespace Crochet2Ebook
             {
                 createInfofile();
             }
-            
+
+            //Farbbilder abspeichern
+            foreach (String Farbbildkey in imageList_Palette.Images.Keys)
+            {
+                String filename = Bildtitel + "_Dateien/" + Farbbildkey + ".png";
+                imageList_Palette.Images[Farbbildkey].Save(filename, System.Drawing.Imaging.ImageFormat.Png);                
+            }
+
+
             //Verzeichnis mit Ergebnissen öffnen
             Process.Start("explorer.exe", Bildtitel + "_Dateien");
             
@@ -817,6 +828,7 @@ namespace Crochet2Ebook
             {
                 MaschenzahlenString = MaschenzahlenString + item.Text + ": " + item.SubItems[2].Text + "\r\n";
 
+                const double grammprometer = 0.4;
                 float Lauflaenge_DieseFarbe = 0;
                 int Maschenzahl_DieseFarbe = 0;
                 int Wechsel_DieseFarbe = 0;
@@ -829,12 +841,12 @@ namespace Crochet2Ebook
                 if (Lauflaenge_DieseFarbe > 100)
                 {
                     //als Meter ausgeben
-                    LauflaengenString = LauflaengenString + item.Text + ": " + Math.Ceiling(Lauflaenge_DieseFarbe*0.01).ToString() + " m\r\n";
+                    LauflaengenString = LauflaengenString + item.Text + ": " + Math.Ceiling(Lauflaenge_DieseFarbe*0.01).ToString() + " m (~" + Math.Ceiling(Lauflaenge_DieseFarbe * 0.01 * grammprometer).ToString() + "g)\r\n";
                 }
                 else
                 {
                     //als Zentimeter ausgeben
-                    LauflaengenString = LauflaengenString + item.Text + ": " + Math.Ceiling(Lauflaenge_DieseFarbe).ToString() + " cm\r\n";
+                    LauflaengenString = LauflaengenString + item.Text + ": " + Math.Ceiling(Lauflaenge_DieseFarbe).ToString() + " cm (~" + Math.Ceiling(Lauflaenge_DieseFarbe * 0.01 * grammprometer).ToString() + "g)\r\n";
                 }
 
 
@@ -847,8 +859,67 @@ namespace Crochet2Ebook
             GroessenString = GroessenString + Math.Round(Breite_Masche * Originalbild.Width).ToString() + " x " + Math.Round(Hoehe_Masche * Originalbild.Height).ToString() + " cm)\r\n";
 
 
+            //Beispielzeilen_Anleitung
 
-            fileinhalt = IntroString + GroessenString + "\r\n" + MaschenzahlenString + "\r\n" + LauflaengenString;
+            int beispielzeilennummer1 = 0;
+            int beispielzeilennummer2 = 0;
+            int farbenindieserZeile = 0;
+            Int32.TryParse(textBox_Beispielreihe1.Text, out beispielzeilennummer1);
+            Int32.TryParse(textBox_Beispielreihe2.Text, out beispielzeilennummer2);
+
+
+
+            Zeile_Auswerten(beispielzeilennummer1);
+            farbenindieserZeile = (listView_LineDescription.Items.Count - 1);
+            String Beispielzeile1 = "Als Beispiel hier eine ausführliche Beschreibung für Zeile " + beispielzeilennummer1 + ". Wir fangen auf der rechten Seite an zu zählen. ";
+
+            foreach (ListViewItem Item in listView_LineDescription.Items)
+            {
+                if (Item.Index == 0)
+                {
+                    //Anleitungssatz fuer die erste Farbe formulieren
+                    Beispielzeile1 = Beispielzeile1 + "Zuerst werden " + Item.Text + " Maschen in " + Item.SubItems[7].Text + " gearbeitet. ";
+                }
+                else if (Item.Index == listView_LineDescription.Items.Count - 1)
+                {
+                    //Anleitungssatz fuer die letzte Farbe formulieren
+                    Beispielzeile1 = Beispielzeile1 + "Zum Schluss wird die Zeile noch mit " + Item.Text + " Maschen in " + Item.SubItems[7].Text + " beendet. ";
+                }
+                else
+                {
+                    //Anleitungssatz fuer die Farben in der Mitte formulieren
+                    Beispielzeile1 = Beispielzeile1 + "Dann " + Item.Text + " in " + Item.SubItems[7].Text + ". ";
+                }
+            }
+
+            Zeile_Auswerten(beispielzeilennummer2);
+            farbenindieserZeile = (listView_LineDescription.Items.Count - 1);
+            String Beispielzeile2 = "Als zweites Beispiel noch Zeile " + beispielzeilennummer2 +". Wir beginnen wieder auf der rechten Seite. ";
+
+            foreach (ListViewItem Item in listView_LineDescription.Items)
+            {
+                if (Item.Index == 0)
+                {
+                    //Anleitungssatz fuer die erste Farbe formulieren
+                    Beispielzeile2 = Beispielzeile2 + "Zuerst werden " + Item.Text + " Maschen in " + Item.SubItems[7].Text + " gearbeitet. ";
+                }
+                else if (Item.Index == listView_LineDescription.Items.Count - 1)
+                {
+                    //Anleitungssatz fuer die letzte Farbe formulieren
+                    Beispielzeile2 = Beispielzeile2 + "Zum Schluss wird die Zeile noch mit " + Item.Text + " Maschen in " + Item.SubItems[7].Text + " beendet. ";
+                }
+                else
+                {
+                    //Anleitungssatz fuer die Farben in der Mitte formulieren
+                    Beispielzeile2 = Beispielzeile2 + "Dann " + Item.Text + " in " + Item.SubItems[7].Text + ". ";
+                }
+            }
+
+
+
+
+
+            fileinhalt = IntroString + GroessenString + "\r\n" + MaschenzahlenString + "\r\n" + LauflaengenString + "\r\n" + Beispielzeile1 + "\r\n\r\n" + Beispielzeile2;
 
 
             //Infodatei erzeugen
