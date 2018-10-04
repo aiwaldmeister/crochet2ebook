@@ -725,10 +725,12 @@ namespace Crochet2Ebook
             }
 
             //Farbbilder abspeichern
-            foreach (String Farbbildkey in imageList_Palette.Images.Keys)
+            foreach (ListViewItem item in listView_Palette.Items)
             {
-                String filename = Bildtitel + "_Dateien/" + Farbbildkey + ".png";
-                imageList_Palette.Images[Farbbildkey].Save(filename, System.Drawing.Imaging.ImageFormat.Png);                
+                String farbname = item.SubItems[0].Text;
+                String Farbbildkey = item.SubItems[1].Text;
+                String filename = Bildtitel + "_Dateien/" + farbname + ".png";
+                imageList_Palette.Images[Farbbildkey].Save(filename, System.Drawing.Imaging.ImageFormat.Png);
             }
 
 
