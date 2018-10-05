@@ -24,6 +24,7 @@ namespace Crochet2Ebook
 
         private string Dateiname = "";
         private string Bildtitel = "Unbenannt";
+        private string latexfiles_path = "";
         private Bitmap Originalbild;
         private Bitmap Zoombild;
         private Bitmap Displaybild;
@@ -565,7 +566,13 @@ namespace Crochet2Ebook
             string iniTitle = GetSetting("Title");
             string iniDisplayRatioCorrection = GetSetting("DisplayRatioCorrection");
             string iniColorNameList = GetSetting("ColorNameList");
-            
+
+            //den Pfad der allgemein gehaltenen LaTex-Files aus der Config holen...
+            latexfiles_path = GetSetting("latexfiles");
+            if (latexfiles_path == "")
+            {
+                MessageBox.Show("Bitte in der Config den Pfad zu den allgemeinen LaTex-Files unter dem Key 'latexfiles' nachtragen...");
+            }
 
             int iniLineint = 1;
             int.TryParse(iniLine, out iniLineint);
@@ -735,7 +742,7 @@ namespace Crochet2Ebook
             {
                 String farbname = item.SubItems[0].Text;
                 String Farbbildkey = item.SubItems[1].Text;
-                String filename = Bildtitel + "_Dateien/" + farbname + ".png";
+                String filename = Bildtitel + "_Dateien/" + entferneUmlautefuerDateinamen(farbname) + ".png";
                 imageList_Palette.Images[Farbbildkey].Save(filename, System.Drawing.Imaging.ImageFormat.Png);
             }
 
@@ -820,16 +827,64 @@ namespace Crochet2Ebook
             float Breite_Masche = 0;
             float Hoehe_Masche = 0;
             string inhalt_Infofile = "";
+
+            string name_texfile_Main = Bildtitel + "_Dateien/" + "main.tex";
+            string inhalt_texfile_Main = "";
+            string name_texfile_titelseite = Bildtitel + "_Dateien/" + "titelseite.tex";
+            string inhalt_texfile_titelseite = "";
+            string name_texfile_wollmengen = Bildtitel + "_Dateien/" + "wollmengen.tex";
+            string inhalt_texfile_wollmengen = "";
+            string name_texfile_beispielreihen = Bildtitel + "_Dateien/" + "beispielreihen.tex";
+            string inhalt_texfile_beispielreihen = "";
+            string name_projektfile = Bildtitel + "_Dateien/" + "Anleitung Babydecke - " + Bildtitel + ".tcp";
+            string inhalt_projektfile = "";
+            
             string LauflaengenString = "Lauflängen ca.:\r\n----------------\r\n";
             string MaschenzahlenString = "Maschenanzahl:\r\n--------------\r\n";
             string GroessenString = "(" + Originalbild.Width + " x " + Originalbild.Height + " Maschen / ca. ";
             string IntroString = "Häkeldecke '" + Bildtitel + "'\r\n";
-            
-            
-            
+
+
+            //die allgemeinen texfiles vom latexfile-path in den Ordner dieses Projekts kopieren...
+            System.IO.File.Copy(latexfiles_path + "anleitung_decke_annaehen_allgemein.tex", Bildtitel + "_Dateien/" + "anleitung_decke_annaehen_allgemein.tex", true);
+            System.IO.File.Copy(latexfiles_path + "anleitung_motiv_allgemein.tex", Bildtitel + "_Dateien/" + "anleitung_motiv_allgemein.tex", true);
+            System.IO.File.Copy(latexfiles_path + "disclaimer_allgemein.tex", Bildtitel + "_Dateien/" + "disclaimer_allgemein.tex", true);
+            System.IO.File.Copy(latexfiles_path + "schlusstext_allgemein.tex", Bildtitel + "_Dateien/" + "schlusstext_allgemein.tex", true);
+            System.IO.File.Copy(latexfiles_path + "werkzeug_allgemein.tex", Bildtitel + "_Dateien/" + "werkzeug_allgemein.tex", true);
+            System.IO.File.Copy(latexfiles_path + "struktur_allgemein.tex", Bildtitel + "_Dateien/" + "struktur_allgemein.tex", true);
+            System.IO.File.Copy(latexfiles_path + "rasterbild_allgemein.tex", Bildtitel + "_Dateien/" + "rasterbild_allgemein.tex", true);
+
+
+            inhalt_projektfile = 
+                "[FormatInfo]\r\n"+
+                "Type=TeXnicCenterProjectInformation\r\n"+
+                "Version=4\r\n"+
+                "\r\n"+
+                "[ProjectInfo]\r\n"+
+                "MainFile=main.tex\r\n"+
+                "UseBibTeX=0\r\n"+
+                "UseMakeIndex=0\r\n"+
+                "ActiveProfile=LaTeX ⇨ PDF\r\n"+
+                "ProjectLanguage=de\r\n"+
+                "ProjectDialect=DE\r\n"+
+                "\r\n";
+            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_projektfile))
+            {
+                sw.Write(inhalt_projektfile);
+            }
+
+
+
+
+
             //Lauflaengen_Werte aus den Textboxen holen
             float.TryParse(textBox_Lauflaenge_Masche.Text, out Lauflaenge_Masche);
             float.TryParse(textBox_Lauflaenge_Wechsel.Text, out Lauflaenge_Wechsel);
+
+
+            inhalt_texfile_wollmengen = 
+                "Wieviel Wolle du von jeder Farbe genau brauchst h\"angt davon ab, wie locker bzw.fest du h\"akelst und wieviel Faden du bei den Farbwechseln stehen l\"asst. " + 
+                "Die folgenden Mengenangaben sind meine Erfahrungswerte und dienen nur zur groben Absch\"atzung.:\\\\\r\n";
 
 
             foreach (ListViewItem item in listView_Palette.Items)
@@ -845,19 +900,39 @@ namespace Crochet2Ebook
                 Int32.TryParse(item.SubItems[3].Text, out Wechsel_DieseFarbe);
 
                 Lauflaenge_DieseFarbe = (Lauflaenge_Masche * Maschenzahl_DieseFarbe) + (Lauflaenge_Wechsel * Wechsel_DieseFarbe);
+                string Lauflaenge_DieseFarbe_mitEinheit = "";
+                string Gewicht_DieseFarbe_mitEinheit = "";
+                string Farbname_DieseFarbe = "";
+
+                Farbname_DieseFarbe = item.Text;
+                Gewicht_DieseFarbe_mitEinheit = Math.Ceiling(Lauflaenge_DieseFarbe * 0.01 * grammprometer).ToString() + "g";
 
                 if (Lauflaenge_DieseFarbe > 100)
                 {
                     //als Meter ausgeben
-                    LauflaengenString = LauflaengenString + item.Text + ": " + Math.Ceiling(Lauflaenge_DieseFarbe*0.01).ToString() + " m (~" + Math.Ceiling(Lauflaenge_DieseFarbe * 0.01 * grammprometer).ToString() + "g)\r\n";
+                    Lauflaenge_DieseFarbe_mitEinheit = Math.Ceiling(Lauflaenge_DieseFarbe * 0.01).ToString() + " m";
                 }
                 else
                 {
                     //als Zentimeter ausgeben
-                    LauflaengenString = LauflaengenString + item.Text + ": " + Math.Ceiling(Lauflaenge_DieseFarbe).ToString() + " cm (~" + Math.Ceiling(Lauflaenge_DieseFarbe * 0.01 * grammprometer).ToString() + "g)\r\n";
+                    Lauflaenge_DieseFarbe_mitEinheit = Math.Ceiling(Lauflaenge_DieseFarbe).ToString() + " cm";
                 }
 
+                LauflaengenString = LauflaengenString + Farbname_DieseFarbe + ": " + Lauflaenge_DieseFarbe_mitEinheit +  " (~" + Gewicht_DieseFarbe_mitEinheit + ")\r\n";
 
+                inhalt_texfile_wollmengen =
+                    inhalt_texfile_wollmengen +
+                    "\\begin{minipage}[c][20mm]{0.5\\linewidth}\r\n" +
+                    "\\begin{center}\r\n" +
+                    "\\includegraphics[width=10mm]{" + entferneUmlautefuerDateinamen(Farbname_DieseFarbe) + ".png}\r\n" +
+                    "\\caption{" + entferneUmlautefuerLaTex(Farbname_DieseFarbe) + "\\\\ " + Lauflaenge_DieseFarbe_mitEinheit + " (\\approx " + Gewicht_DieseFarbe_mitEinheit + ")\\\\}\r\n" +
+                    "\\end{center}\r\n" +
+                    "\\end{minipage}\r\n";
+            }
+
+            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_wollmengen))
+            {
+                sw.Write(inhalt_texfile_wollmengen);
             }
 
             //Maschengroessen aus den Textboxen holen
@@ -865,6 +940,33 @@ namespace Crochet2Ebook
             float.TryParse(textBox_Maschenhoehe.Text, out Hoehe_Masche);
 
             GroessenString = GroessenString + Math.Round(Breite_Masche * Originalbild.Width).ToString() + " x " + Math.Round(Hoehe_Masche * Originalbild.Height).ToString() + " cm)\r\n";
+
+            inhalt_texfile_Main = 
+                "\\author{Denise die Wollmaus}\r\n"+
+                "\\newcommand{\\motivbreite}{" + Originalbild.Width + "}\r\n" +
+                "\\newcommand{\\deckenbreite}{" + Math.Round(Breite_Masche * Originalbild.Width + 10).ToString() + "}\r\n" +
+                "\\newcommand{\\deckenhoehe}{" + Math.Round(Hoehe_Masche * Originalbild.Height + 10 ).ToString() + "}\r\n" +
+                "\\newcommand{\\motivtitel}{Meerschweinchen}\r\n" +
+                "\\title{H\"akelanleitung - Babydecke(\\motivtitel)}\r\n"+
+                "\\input{struktur_allgemein.tex}\r\n";
+            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_Main))
+            {
+                sw.Write(inhalt_texfile_Main);
+            }
+
+
+            inhalt_texfile_titelseite =
+                "\\begin{center}\r\n" +
+                "\\section *{H\"akelanleitung - Babydecke (\\motivtitel)}\r\n" +
+                "\\label{ sec: BabydeckeBildTitel}\r\n" +
+                "\\end{center}\r\n" +
+                "\\begin{center}\r\n" +
+                "\\includegraphics[height = 1.00\\textwidth]{\\motivtitel_Titelbild} %Titelbild\r\n" +
+                "\\end{center}\r\n";
+            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_titelseite))
+            {
+                sw.Write(inhalt_texfile_titelseite);
+            }
 
 
             //Beispielzeilen_Anleitung
@@ -879,7 +981,7 @@ namespace Crochet2Ebook
 
             Zeile_Auswerten(Originalbild.Height - beispielzeilennummer1);
             farbenindieserZeile = (listView_LineDescription.Items.Count - 1);
-            String Beispielzeile1 = "Als Beispiel hier eine ausführliche Beschreibung für Zeile " + beispielzeilennummer1 + ". Wir fangen auf der rechten Seite an zu zählen. ";
+            String Beispielzeile1 = "\\textbf{Beispiele: }Als Beispiel hier eine ausführliche Beschreibung für Zeile " + beispielzeilennummer1 + " von unten. Wir fangen auf der rechten Seite des Motivs an zu zählen. ";
 
             foreach (ListViewItem Item in listView_LineDescription.Items)
             {
@@ -923,7 +1025,11 @@ namespace Crochet2Ebook
                 }
             }
 
-
+            inhalt_texfile_beispielreihen = entferneUmlautefuerLaTex(Beispielzeile1) + "\r\n\r\n" + entferneUmlautefuerLaTex(Beispielzeile2);
+            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_beispielreihen))
+            {
+                sw.Write(inhalt_texfile_beispielreihen);
+            }
 
 
 
@@ -938,6 +1044,36 @@ namespace Crochet2Ebook
             }
 
 
+        }
+
+        private string entferneUmlautefuerLaTex(string sourceText)
+        {
+            string targetText = sourceText;
+
+            targetText = targetText.Replace("ß", "\"s");
+            targetText = targetText.Replace("Ä", "\"A");
+            targetText = targetText.Replace("ä", "\"a");
+            targetText = targetText.Replace("Ö", "\"O");
+            targetText = targetText.Replace("ö", "\"o");
+            targetText = targetText.Replace("Ü", "\"U");
+            targetText = targetText.Replace("ü", "\"u");
+
+            return targetText;
+        }
+
+        private string entferneUmlautefuerDateinamen(string sourceText)
+        {
+            string targetText = sourceText;
+
+            targetText = targetText.Replace("ß", "ss");
+            targetText = targetText.Replace("Ä", "Ae");
+            targetText = targetText.Replace("ä", "ae");
+            targetText = targetText.Replace("Ö", "Oe");
+            targetText = targetText.Replace("ö", "oe");
+            targetText = targetText.Replace("Ü", "Ue");
+            targetText = targetText.Replace("ü", "ue");
+
+            return targetText;
         }
 
         private void createRasterbild()
