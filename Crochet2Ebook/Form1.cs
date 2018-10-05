@@ -30,8 +30,8 @@ namespace Crochet2Ebook
         private Bitmap Displaybild;
         private Bitmap Rasterbild;
         private bool DisplayRatioCorrection = true;
-        private double RatioCorrFactor_option = 0.6;
-        private double active_RatioCorrFactor = 0.6;
+        private double RatioCorrFactor_option = 0.8;
+        private double active_RatioCorrFactor = 0.8;
         private int additionalZoomfactor = 1;
         private bool imageisloaded = false;
         private int selectedLine = 1;
@@ -724,7 +724,7 @@ namespace Crochet2Ebook
             //Rasterbild generieren
             if (checkBox_Rasterbild.Checked)
             {
-                createRasterbild();
+                createImagefiles();
             }
 
 
@@ -737,12 +737,14 @@ namespace Crochet2Ebook
                 createTextfiles();
             }
 
+            //Verzeichnis fuer die Palettenbilder erstellen
+            System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien/Palette");
             //Farbbilder abspeichern
             foreach (ListViewItem item in listView_Palette.Items)
             {
                 String farbname = item.SubItems[0].Text;
                 String Farbbildkey = item.SubItems[1].Text;
-                String filename = Bildtitel + "_Dateien/" + entferneUmlautefuerDateinamen(farbname) + ".png";
+                String filename = Bildtitel + "_Dateien/Palette/" + entferneUmlautefuerDateinamen(farbname) + ".png";
                 imageList_Palette.Images[Farbbildkey].Save(filename, System.Drawing.Imaging.ImageFormat.Png);
             }
 
@@ -828,15 +830,15 @@ namespace Crochet2Ebook
             float Hoehe_Masche = 0;
             string inhalt_Infofile = "";
 
-            string name_texfile_Main = Bildtitel + "_Dateien/" + "main.tex";
+            string name_texfile_Main = Bildtitel + "_Dateien/Latex_Dateien/" + "Anleitung_Babydecke_-_" + Bildtitel + ".tex";
             string inhalt_texfile_Main = "";
-            string name_texfile_titelseite = Bildtitel + "_Dateien/" + "titelseite.tex";
+            string name_texfile_titelseite = Bildtitel + "_Dateien/Latex_Dateien/" + "titelseite.tex";
             string inhalt_texfile_titelseite = "";
-            string name_texfile_wollmengen = Bildtitel + "_Dateien/" + "wollmengen.tex";
+            string name_texfile_wollmengen = Bildtitel + "_Dateien/Latex_Dateien/" + "wollmengen.tex";
             string inhalt_texfile_wollmengen = "";
-            string name_texfile_beispielreihen = Bildtitel + "_Dateien/" + "beispielreihen.tex";
+            string name_texfile_beispielreihen = Bildtitel + "_Dateien/Latex_Dateien/" + "beispielreihen.tex";
             string inhalt_texfile_beispielreihen = "";
-            string name_projektfile = Bildtitel + "_Dateien/" + "Anleitung Babydecke - " + Bildtitel + ".tcp";
+            string name_projektfile = Bildtitel + "_Dateien/" + "Anleitung_Babydecke_-_" + Bildtitel + ".tcp";
             string inhalt_projektfile = "";
             
             string LauflaengenString = "Lauflängen ca.:\r\n----------------\r\n";
@@ -845,14 +847,16 @@ namespace Crochet2Ebook
             string IntroString = "Häkeldecke '" + Bildtitel + "'\r\n";
 
 
+            //Verzeichnis fuer die LaTex Dateien erstellen
+            System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien/Latex_Dateien");
             //die allgemeinen texfiles vom latexfile-path in den Ordner dieses Projekts kopieren...
-            System.IO.File.Copy(latexfiles_path + "anleitung_decke_annaehen_allgemein.tex", Bildtitel + "_Dateien/" + "anleitung_decke_annaehen_allgemein.tex", true);
-            System.IO.File.Copy(latexfiles_path + "anleitung_motiv_allgemein.tex", Bildtitel + "_Dateien/" + "anleitung_motiv_allgemein.tex", true);
-            System.IO.File.Copy(latexfiles_path + "disclaimer_allgemein.tex", Bildtitel + "_Dateien/" + "disclaimer_allgemein.tex", true);
-            System.IO.File.Copy(latexfiles_path + "schlusstext_allgemein.tex", Bildtitel + "_Dateien/" + "schlusstext_allgemein.tex", true);
-            System.IO.File.Copy(latexfiles_path + "werkzeug_allgemein.tex", Bildtitel + "_Dateien/" + "werkzeug_allgemein.tex", true);
-            System.IO.File.Copy(latexfiles_path + "struktur_allgemein.tex", Bildtitel + "_Dateien/" + "struktur_allgemein.tex", true);
-            System.IO.File.Copy(latexfiles_path + "rasterbild_allgemein.tex", Bildtitel + "_Dateien/" + "rasterbild_allgemein.tex", true);
+            System.IO.File.Copy(latexfiles_path + "anleitung_decke_annaehen_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_decke_annaehen_allgemein.tex", true);
+            System.IO.File.Copy(latexfiles_path + "anleitung_motiv_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_motiv_allgemein.tex", true);
+            System.IO.File.Copy(latexfiles_path + "disclaimer_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "disclaimer_allgemein.tex", true);
+            System.IO.File.Copy(latexfiles_path + "schlusstext_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "schlusstext_allgemein.tex", true);
+            System.IO.File.Copy(latexfiles_path + "werkzeug_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "werkzeug_allgemein.tex", true);
+            System.IO.File.Copy(latexfiles_path + "struktur_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "struktur_allgemein.tex", true);
+            System.IO.File.Copy(latexfiles_path + "rasterbild_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "rasterbild_allgemein.tex", true);
 
 
             inhalt_projektfile = 
@@ -861,7 +865,7 @@ namespace Crochet2Ebook
                 "Version=4\r\n"+
                 "\r\n"+
                 "[ProjectInfo]\r\n"+
-                "MainFile=main.tex\r\n"+
+                "MainFile=Latex_Dateien/Anleitung_Babydecke_-_" + Bildtitel + ".tex\r\n"+
                 "UseBibTeX=0\r\n"+
                 "UseMakeIndex=0\r\n"+
                 "ActiveProfile=LaTeX ⇨ PDF\r\n"+
@@ -922,10 +926,10 @@ namespace Crochet2Ebook
 
                 inhalt_texfile_wollmengen =
                     inhalt_texfile_wollmengen +
-                    "\\begin{minipage}[c][20mm]{0.5\\linewidth}\r\n" +
+                    "\\begin{minipage}[c][22mm]{0.33\\linewidth}\r\n" +
                     "\\begin{center}\r\n" +
-                    "\\includegraphics[width=10mm]{" + entferneUmlautefuerDateinamen(Farbname_DieseFarbe) + ".png}\r\n" +
-                    "\\caption{" + entferneUmlautefuerLaTex(Farbname_DieseFarbe) + "\\\\ " + Lauflaenge_DieseFarbe_mitEinheit + " (\\approx " + Gewicht_DieseFarbe_mitEinheit + ")\\\\}\r\n" +
+                    "\\includegraphics[width=10mm]{../Palette/" + entferneUmlautefuerDateinamen(Farbname_DieseFarbe) + ".png}\r\n" +
+                    "\\caption{\\\\" + entferneUmlautefuerLaTex(Farbname_DieseFarbe) + ": " + Lauflaenge_DieseFarbe_mitEinheit + " (" + Gewicht_DieseFarbe_mitEinheit + ")\\\\}\r\n" +
                     "\\end{center}\r\n" +
                     "\\end{minipage}\r\n";
             }
@@ -946,8 +950,9 @@ namespace Crochet2Ebook
                 "\\newcommand{\\motivbreite}{" + Originalbild.Width + "}\r\n" +
                 "\\newcommand{\\deckenbreite}{" + Math.Round(Breite_Masche * Originalbild.Width + 10).ToString() + "}\r\n" +
                 "\\newcommand{\\deckenhoehe}{" + Math.Round(Hoehe_Masche * Originalbild.Height + 10 ).ToString() + "}\r\n" +
-                "\\newcommand{\\motivtitel}{Meerschweinchen}\r\n" +
-                "\\title{H\"akelanleitung - Babydecke(\\motivtitel)}\r\n"+
+                "\\newcommand{\\motivtitel}{" + Bildtitel + "}\r\n" +
+                "\\newcommand{\\motivtitelohnesonderzeichen}{" + entferneUmlautefuerDateinamen(Bildtitel) + "}\r\n" +
+                "\\title{H\"akelanleitung - Babydecke(\\motivtitel)}\r\n" +
                 "\\input{struktur_allgemein.tex}\r\n";
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_Main))
             {
@@ -961,7 +966,7 @@ namespace Crochet2Ebook
                 "\\label{ sec: BabydeckeBildTitel}\r\n" +
                 "\\end{center}\r\n" +
                 "\\begin{center}\r\n" +
-                "\\includegraphics[height = 1.00\\textwidth]{\\motivtitel_Titelbild} %Titelbild\r\n" +
+                "\\fbox{\\includegraphics[height = 1.00\\textwidth]{../\\motivtitelohnesonderzeichen_Titelbild}}\r\n" +
                 "\\end{center}\r\n";
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_titelseite))
             {
@@ -981,7 +986,7 @@ namespace Crochet2Ebook
 
             Zeile_Auswerten(Originalbild.Height - beispielzeilennummer1);
             farbenindieserZeile = (listView_LineDescription.Items.Count - 1);
-            String Beispielzeile1 = "\\textbf{Beispiele: }Als Beispiel hier eine ausführliche Beschreibung für Zeile " + beispielzeilennummer1 + " von unten. Wir fangen auf der rechten Seite des Motivs an zu zählen. ";
+            String Beispielzeile1 = "\\textbf{Beispiele: }Zur Verdeutlichung hier eine ausf\"uhrliche Beschreibung für Zeile " + beispielzeilennummer1 + " (von unten). Wir fangen auf der rechten Seite des Motivs an zu zählen. ";
 
             foreach (ListViewItem Item in listView_LineDescription.Items)
             {
@@ -1072,11 +1077,12 @@ namespace Crochet2Ebook
             targetText = targetText.Replace("ö", "oe");
             targetText = targetText.Replace("Ü", "Ue");
             targetText = targetText.Replace("ü", "ue");
+            targetText = targetText.Replace(" ", "_");
 
             return targetText;
         }
 
-        private void createRasterbild()
+        private void createImagefiles()
         {
             Color Linecolor1 = HextoColor(textBox_Rasterbild_Linienfarbe1.Text);
             Brush Rasterbrush1 = new SolidBrush(Linecolor1);
@@ -1172,8 +1178,12 @@ namespace Crochet2Ebook
             }
 
             //Originalbild als bmp ablegen
-            string filename = Bildtitel + "_Dateien/" + Bildtitel + "_Originalbild.bmp";
+            string filename = Bildtitel + "_Dateien/" + entferneUmlautefuerDateinamen(Bildtitel) + "_Originalbild.bmp";
             Originalbild.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
+
+            //Originalbild ein zweites mal als vorlaufiges Titelbild png abspeichern
+            filename = Bildtitel + "_Dateien/" + entferneUmlautefuerDateinamen(Bildtitel) + "_Titelbild.png";
+            Originalbild.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
 
             //generiertes Rasterbild speichern
 
@@ -1182,7 +1192,7 @@ namespace Crochet2Ebook
             //Rasterbild.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
 
             //zweite Version als png für weniger Speicherbedarf
-            filename = Bildtitel + "_Dateien/" + Bildtitel + "_Rasterbild.png";
+            filename = Bildtitel + "_Dateien/" + entferneUmlautefuerDateinamen(Bildtitel) + "_Rasterbild.png";
             Rasterbild.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
 
             //Rasterbild mit Viewer öffnen

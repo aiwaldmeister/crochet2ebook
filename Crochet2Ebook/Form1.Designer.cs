@@ -64,8 +64,12 @@
             this.label6 = new System.Windows.Forms.Label();
             this.textBox_Maschenhoehe = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.textBox_Lauflaenge_Wechsel = new System.Windows.Forms.TextBox();
+            this.textBox_Beispielreihe2 = new System.Windows.Forms.TextBox();
+            this.textBox_Beispielreihe1 = new System.Windows.Forms.TextBox();
             this.textBox_Maschenbreite = new System.Windows.Forms.TextBox();
             this.textBox_Lauflaenge_Masche = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -88,10 +92,6 @@
             this.label_Titel = new System.Windows.Forms.Label();
             this.textBox_Titel = new System.Windows.Forms.TextBox();
             this.pictureBox_Display = new System.Windows.Forms.PictureBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBox_Beispielreihe1 = new System.Windows.Forms.TextBox();
-            this.textBox_Beispielreihe2 = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
             this.contextMenu_Palette.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -487,6 +487,24 @@
             this.label4.TabIndex = 19;
             this.label4.Text = "Masche =";
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(107, 102);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(13, 13);
+            this.label10.TabIndex = 19;
+            this.label10.Text = "&&";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 102);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(75, 13);
+            this.label1.TabIndex = 19;
+            this.label1.Text = "Beispielreihen:";
+            // 
             // label7
             // 
             this.label7.AutoSize = true;
@@ -503,6 +521,22 @@
             this.textBox_Lauflaenge_Wechsel.Size = new System.Drawing.Size(39, 20);
             this.textBox_Lauflaenge_Wechsel.TabIndex = 20;
             this.textBox_Lauflaenge_Wechsel.Text = "16";
+            // 
+            // textBox_Beispielreihe2
+            // 
+            this.textBox_Beispielreihe2.Location = new System.Drawing.Point(120, 99);
+            this.textBox_Beispielreihe2.Name = "textBox_Beispielreihe2";
+            this.textBox_Beispielreihe2.Size = new System.Drawing.Size(25, 20);
+            this.textBox_Beispielreihe2.TabIndex = 20;
+            this.textBox_Beispielreihe2.Text = "2";
+            // 
+            // textBox_Beispielreihe1
+            // 
+            this.textBox_Beispielreihe1.Location = new System.Drawing.Point(81, 99);
+            this.textBox_Beispielreihe1.Name = "textBox_Beispielreihe1";
+            this.textBox_Beispielreihe1.Size = new System.Drawing.Size(25, 20);
+            this.textBox_Beispielreihe1.TabIndex = 20;
+            this.textBox_Beispielreihe1.Text = "1";
             // 
             // textBox_Maschenbreite
             // 
@@ -563,7 +597,7 @@
             this.textBox_Ratokorrfaktor.Name = "textBox_Ratokorrfaktor";
             this.textBox_Ratokorrfaktor.Size = new System.Drawing.Size(39, 20);
             this.textBox_Ratokorrfaktor.TabIndex = 20;
-            this.textBox_Ratokorrfaktor.Text = "0,6";
+            this.textBox_Ratokorrfaktor.Text = "0,8";
             this.textBox_Ratokorrfaktor.TextChanged += new System.EventHandler(this.textBox_Ratokorrfaktor_TextChanged);
             // 
             // groupBox1
@@ -769,40 +803,6 @@
             this.pictureBox_Display.Visible = false;
             this.pictureBox_Display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_Display_MouseClick);
             this.pictureBox_Display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_Display_MouseClick);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 102);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 13);
-            this.label1.TabIndex = 19;
-            this.label1.Text = "Beispielreihen:";
-            // 
-            // textBox_Beispielreihe1
-            // 
-            this.textBox_Beispielreihe1.Location = new System.Drawing.Point(81, 99);
-            this.textBox_Beispielreihe1.Name = "textBox_Beispielreihe1";
-            this.textBox_Beispielreihe1.Size = new System.Drawing.Size(25, 20);
-            this.textBox_Beispielreihe1.TabIndex = 20;
-            this.textBox_Beispielreihe1.Text = "1";
-            // 
-            // textBox_Beispielreihe2
-            // 
-            this.textBox_Beispielreihe2.Location = new System.Drawing.Point(120, 99);
-            this.textBox_Beispielreihe2.Name = "textBox_Beispielreihe2";
-            this.textBox_Beispielreihe2.Size = new System.Drawing.Size(25, 20);
-            this.textBox_Beispielreihe2.TabIndex = 20;
-            this.textBox_Beispielreihe2.Text = "2";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(107, 102);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(13, 13);
-            this.label10.TabIndex = 19;
-            this.label10.Text = "&&";
             // 
             // Form1
             // 
