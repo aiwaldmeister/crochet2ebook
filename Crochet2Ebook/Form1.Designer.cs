@@ -92,6 +92,8 @@
             this.label_Titel = new System.Windows.Forms.Label();
             this.textBox_Titel = new System.Windows.Forms.TextBox();
             this.pictureBox_Display = new System.Windows.Forms.PictureBox();
+            this.radioButton_deutsch = new System.Windows.Forms.RadioButton();
+            this.radioButton_englisch = new System.Windows.Forms.RadioButton();
             this.contextMenu_Palette.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -390,6 +392,8 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.radioButton_englisch);
+            this.groupBox3.Controls.Add(this.radioButton_deutsch);
             this.groupBox3.Controls.Add(this.checkBox_InfoDatei);
             this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.label2);
@@ -804,6 +808,28 @@
             this.pictureBox_Display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_Display_MouseClick);
             this.pictureBox_Display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_Display_MouseClick);
             // 
+            // radioButton_deutsch
+            // 
+            this.radioButton_deutsch.AutoSize = true;
+            this.radioButton_deutsch.Checked = true;
+            this.radioButton_deutsch.Location = new System.Drawing.Point(6, 142);
+            this.radioButton_deutsch.Name = "radioButton_deutsch";
+            this.radioButton_deutsch.Size = new System.Drawing.Size(63, 17);
+            this.radioButton_deutsch.TabIndex = 21;
+            this.radioButton_deutsch.TabStop = true;
+            this.radioButton_deutsch.Text = "deutsch";
+            this.radioButton_deutsch.UseVisualStyleBackColor = true;
+            // 
+            // radioButton_englisch
+            // 
+            this.radioButton_englisch.AutoSize = true;
+            this.radioButton_englisch.Location = new System.Drawing.Point(75, 142);
+            this.radioButton_englisch.Name = "radioButton_englisch";
+            this.radioButton_englisch.Size = new System.Drawing.Size(64, 17);
+            this.radioButton_englisch.TabIndex = 21;
+            this.radioButton_englisch.Text = "englisch";
+            this.radioButton_englisch.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -919,6 +945,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox_Beispielreihe2;
         private System.Windows.Forms.TextBox textBox_Beispielreihe1;
+        private System.Windows.Forms.RadioButton radioButton_englisch;
+        private System.Windows.Forms.RadioButton radioButton_deutsch;
     }
 }
 

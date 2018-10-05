@@ -829,17 +829,35 @@ namespace Crochet2Ebook
             float Breite_Masche = 0;
             float Hoehe_Masche = 0;
             string inhalt_Infofile = "";
+            string file_langsuffix = "";
 
-            string name_texfile_Main = Bildtitel + "_Dateien/Latex_Dateien/" + "Anleitung_Babydecke_-_" + Bildtitel + ".tex";
+            bool eng = radioButton_englisch.Checked;
+            bool deu = radioButton_deutsch.Checked;
+            if (eng)
+            {
+                file_langsuffix = "_eng";
+            }
+
             string inhalt_texfile_Main = "";
-            string name_texfile_titelseite = Bildtitel + "_Dateien/Latex_Dateien/" + "titelseite.tex";
-            string inhalt_texfile_titelseite = "";
-            string name_texfile_wollmengen = Bildtitel + "_Dateien/Latex_Dateien/" + "wollmengen.tex";
-            string inhalt_texfile_wollmengen = "";
-            string name_texfile_beispielreihen = Bildtitel + "_Dateien/Latex_Dateien/" + "beispielreihen.tex";
-            string inhalt_texfile_beispielreihen = "";
-            string name_projektfile = Bildtitel + "_Dateien/" + "Anleitung_Babydecke_-_" + Bildtitel + ".tcp";
             string inhalt_projektfile = "";
+            string inhalt_texfile_titelseite = "";
+            string inhalt_texfile_wollmengen = "";
+            string inhalt_texfile_beispielreihen = "";
+            string name_texfile_titelseite = Bildtitel + "_Dateien/Latex_Dateien/" + "titelseite" + file_langsuffix + ".tex";
+            string name_texfile_wollmengen = Bildtitel + "_Dateien/Latex_Dateien/" + "wollmengen" + file_langsuffix + ".tex";
+            string name_texfile_beispielreihen = Bildtitel + "_Dateien/Latex_Dateien/" + "beispielreihen" + file_langsuffix + ".tex";
+            string name_texfile_Main = "";
+            string name_projektfile = "";
+            if (deu)
+            {
+                name_texfile_Main = Bildtitel + "_Dateien/Latex_Dateien/" + "Anleitung_Babydecke_-_" + Bildtitel + ".tex";
+                name_projektfile = Bildtitel + "_Dateien/" + "Anleitung_Babydecke_-_" + Bildtitel + ".tcp";
+            }
+            if (eng)
+            {
+                name_texfile_Main = Bildtitel + "_Dateien/Latex_Dateien/" + "Tutorial_Blanket_-_" + Bildtitel + ".tex";
+                name_projektfile = Bildtitel + "_Dateien/" + "Tutorial_Blanket_-_" + Bildtitel + file_langsuffix + ".tcp";
+            }
             
             string LauflaengenString = "Lauflängen ca.:\r\n----------------\r\n";
             string MaschenzahlenString = "Maschenanzahl:\r\n--------------\r\n";
@@ -847,31 +865,67 @@ namespace Crochet2Ebook
             string IntroString = "Häkeldecke '" + Bildtitel + "'\r\n";
 
 
+
             //Verzeichnis fuer die LaTex Dateien erstellen
             System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien/Latex_Dateien");
             //die allgemeinen texfiles vom latexfile-path in den Ordner dieses Projekts kopieren...
-            System.IO.File.Copy(latexfiles_path + "anleitung_decke_annaehen_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_decke_annaehen_allgemein.tex", true);
-            System.IO.File.Copy(latexfiles_path + "anleitung_motiv_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_motiv_allgemein.tex", true);
-            System.IO.File.Copy(latexfiles_path + "disclaimer_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "disclaimer_allgemein.tex", true);
-            System.IO.File.Copy(latexfiles_path + "schlusstext_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "schlusstext_allgemein.tex", true);
-            System.IO.File.Copy(latexfiles_path + "werkzeug_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "werkzeug_allgemein.tex", true);
-            System.IO.File.Copy(latexfiles_path + "struktur_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "struktur_allgemein.tex", true);
-            System.IO.File.Copy(latexfiles_path + "rasterbild_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "rasterbild_allgemein.tex", true);
+            if (deu)
+            {
+                System.IO.File.Copy(latexfiles_path + "anleitung_decke_annaehen_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_decke_annaehen_allgemein.tex", true);
+                System.IO.File.Copy(latexfiles_path + "anleitung_motiv_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_motiv_allgemein.tex", true);
+                System.IO.File.Copy(latexfiles_path + "disclaimer_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "disclaimer_allgemein.tex", true);
+                System.IO.File.Copy(latexfiles_path + "schlusstext_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "schlusstext_allgemein.tex", true);
+                System.IO.File.Copy(latexfiles_path + "werkzeug_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "werkzeug_allgemein.tex", true);
+                System.IO.File.Copy(latexfiles_path + "struktur_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "struktur_allgemein.tex", true);
+                System.IO.File.Copy(latexfiles_path + "rasterbild_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "rasterbild_allgemein.tex", true);
+            }
+
+            if (eng)
+            {
+                System.IO.File.Copy(latexfiles_path + "anleitung_decke_annaehen_allgemein_eng.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_decke_annaehen_allgemein_eng.tex", true);
+                System.IO.File.Copy(latexfiles_path + "anleitung_motiv_allgemein_eng.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_motiv_allgemein_eng.tex", true);
+                System.IO.File.Copy(latexfiles_path + "disclaimer_allgemein_eng.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "disclaimer_allgemein_eng.tex", true);
+                System.IO.File.Copy(latexfiles_path + "schlusstext_allgemein_eng.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "schlusstext_allgemein_eng.tex", true);
+                System.IO.File.Copy(latexfiles_path + "werkzeug_allgemein_eng.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "werkzeug_allgemein_eng.tex", true);
+                System.IO.File.Copy(latexfiles_path + "struktur_allgemein_eng.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "struktur_allgemein_eng.tex", true);
+                System.IO.File.Copy(latexfiles_path + "rasterbild_allgemein_eng.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "rasterbild_allgemein_eng.tex", true);
+            }
 
 
-            inhalt_projektfile = 
-                "[FormatInfo]\r\n"+
-                "Type=TeXnicCenterProjectInformation\r\n"+
-                "Version=4\r\n"+
-                "\r\n"+
-                "[ProjectInfo]\r\n"+
-                "MainFile=Latex_Dateien/Anleitung_Babydecke_-_" + Bildtitel + ".tex\r\n"+
-                "UseBibTeX=0\r\n"+
-                "UseMakeIndex=0\r\n"+
-                "ActiveProfile=LaTeX ⇨ PDF\r\n"+
-                "ProjectLanguage=de\r\n"+
-                "ProjectDialect=DE\r\n"+
-                "\r\n";
+
+            if (deu)
+            {
+                inhalt_projektfile = 
+                    "[FormatInfo]\r\n"+
+                    "Type=TeXnicCenterProjectInformation\r\n"+
+                    "Version=4\r\n"+
+                    "\r\n"+
+                    "[ProjectInfo]\r\n"+
+                    "MainFile=Latex_Dateien/Anleitung_Babydecke_-_" + Bildtitel + ".tex\r\n"+
+                    "UseBibTeX=0\r\n"+
+                    "UseMakeIndex=0\r\n"+
+                    "ActiveProfile=LaTeX ⇨ PDF\r\n"+
+                    "ProjectLanguage=de\r\n"+
+                    "ProjectDialect=DE\r\n"+
+                    "\r\n";
+            }
+            if (eng)
+            {
+                inhalt_projektfile =
+                    "[FormatInfo]\r\n" +
+                    "Type=TeXnicCenterProjectInformation\r\n" +
+                    "Version=4\r\n" +
+                    "\r\n" +
+                    "[ProjectInfo]\r\n" +
+                    "MainFile=Latex_Dateien/Tutorial_Blanket_-_" + Bildtitel + ".tex\r\n" +
+                    "UseBibTeX=0\r\n" +
+                    "UseMakeIndex=0\r\n" +
+                    "ActiveProfile=LaTeX ⇨ PDF\r\n" +
+                    "ProjectLanguage=en\r\n" +
+                    "ProjectDialect=US\r\n" +
+                    "\r\n";
+            }
+
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_projektfile))
             {
                 sw.Write(inhalt_projektfile);
@@ -885,10 +939,18 @@ namespace Crochet2Ebook
             float.TryParse(textBox_Lauflaenge_Masche.Text, out Lauflaenge_Masche);
             float.TryParse(textBox_Lauflaenge_Wechsel.Text, out Lauflaenge_Wechsel);
 
-
-            inhalt_texfile_wollmengen = 
-                "Wieviel Wolle du von jeder Farbe genau brauchst h\"angt davon ab, wie locker bzw.fest du h\"akelst und wieviel Faden du bei den Farbwechseln stehen l\"asst. " + 
-                "Die folgenden Mengenangaben sind meine Erfahrungswerte und dienen nur zur groben Absch\"atzung.:\\\\\r\n";
+            if (deu)
+            {
+                inhalt_texfile_wollmengen = 
+                    "Wieviel Wolle du von jeder Farbe genau brauchst h\"angt davon ab, wie locker bzw.fest du h\"akelst und wieviel Faden du bei den Farbwechseln stehen l\"asst. " + 
+                    "Die folgenden Mengenangaben sind meine Erfahrungswerte und dienen nur zur groben Absch\"atzung.:\\\\\r\n";
+            }
+            if (eng)
+            {
+                inhalt_texfile_wollmengen =
+                    "How much wool of each colour you really need depends on how tight or loose you crochet and how much slack you leave when colours change. " +
+                    "The following numbers are estimates based on my experience to use as a rough guidance.:\\\\\r\n";
+            }
 
 
             foreach (ListViewItem item in listView_Palette.Items)
@@ -924,14 +986,28 @@ namespace Crochet2Ebook
 
                 LauflaengenString = LauflaengenString + Farbname_DieseFarbe + ": " + Lauflaenge_DieseFarbe_mitEinheit +  " (~" + Gewicht_DieseFarbe_mitEinheit + ")\r\n";
 
-                inhalt_texfile_wollmengen =
-                    inhalt_texfile_wollmengen +
-                    "\\begin{minipage}[c][22mm]{0.33\\linewidth}\r\n" +
-                    "\\begin{center}\r\n" +
-                    "\\includegraphics[width=10mm]{../Palette/" + entferneUmlautefuerDateinamen(Farbname_DieseFarbe) + ".png}\r\n" +
-                    "\\caption{\\\\" + entferneUmlautefuerLaTex(Farbname_DieseFarbe) + ": " + Lauflaenge_DieseFarbe_mitEinheit + " (" + Gewicht_DieseFarbe_mitEinheit + ")\\\\}\r\n" +
-                    "\\end{center}\r\n" +
-                    "\\end{minipage}\r\n";
+                if (deu)
+                {
+                    inhalt_texfile_wollmengen =
+                        inhalt_texfile_wollmengen +
+                        "\\begin{minipage}[c][22mm]{0.33\\linewidth}\r\n" +
+                        "\\begin{center}\r\n" +
+                        "\\includegraphics[width=10mm]{../Palette/" + entferneUmlautefuerDateinamen(Farbname_DieseFarbe) + ".png}\r\n" +
+                        "\\caption{\\\\" + entferneUmlautefuerLaTex(Farbname_DieseFarbe) + ": " + Lauflaenge_DieseFarbe_mitEinheit + " (" + Gewicht_DieseFarbe_mitEinheit + ")\\\\}\r\n" +
+                        "\\end{center}\r\n" +
+                        "\\end{minipage}\r\n";
+                }
+                if (eng)
+                {
+                    inhalt_texfile_wollmengen =
+                        inhalt_texfile_wollmengen +
+                        "\\begin{minipage}[c][22mm]{0.33\\linewidth}\r\n" +
+                        "\\begin{center}\r\n" +
+                        "\\includegraphics[width=10mm]{../Palette/" + entferneUmlautefuerDateinamen(Farbname_DieseFarbe) + ".png}\r\n" +
+                        "\\caption{\\\\" + entferneUmlautefuerLaTex(Farbname_DieseFarbe) + ": " + Lauflaenge_DieseFarbe_mitEinheit + " (" + Gewicht_DieseFarbe_mitEinheit + ")\\\\}\r\n" +
+                        "\\end{center}\r\n" +
+                        "\\end{minipage}\r\n";
+                }
             }
 
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_wollmengen))
@@ -944,30 +1020,58 @@ namespace Crochet2Ebook
             float.TryParse(textBox_Maschenhoehe.Text, out Hoehe_Masche);
 
             GroessenString = GroessenString + Math.Round(Breite_Masche * Originalbild.Width).ToString() + " x " + Math.Round(Hoehe_Masche * Originalbild.Height).ToString() + " cm)\r\n";
+            if (deu)
+            {
+                inhalt_texfile_Main = 
+                    "\\author{Denise die Wollmaus}\r\n"+
+                    "\\newcommand{\\motivbreite}{" + Originalbild.Width + "}\r\n" +
+                    "\\newcommand{\\deckenbreite}{" + Math.Round(Breite_Masche * Originalbild.Width + 10).ToString() + "}\r\n" +
+                    "\\newcommand{\\deckenhoehe}{" + Math.Round(Hoehe_Masche * Originalbild.Height + 10 ).ToString() + "}\r\n" +
+                    "\\newcommand{\\motivtitel}{" + Bildtitel + "}\r\n" +
+                    "\\newcommand{\\motivtitelohnesonderzeichen}{" + entferneUmlautefuerDateinamen(Bildtitel) + "}\r\n" +
+                    "\\title{H\"akelanleitung - Babydecke(\\motivtitel)}\r\n" +
+                    "\\input{struktur_allgemein.tex}\r\n";
+            }
+            if (eng)
+            {
+                inhalt_texfile_Main =
+                    "\\author{Denise die Wollmaus}\r\n" +
+                    "\\newcommand{\\motivbreite}{" + Originalbild.Width + "}\r\n" +
+                    "\\newcommand{\\deckenbreite}{" + Math.Round(Breite_Masche * Originalbild.Width + 10).ToString() + "}\r\n" +
+                    "\\newcommand{\\deckenhoehe}{" + Math.Round(Hoehe_Masche * Originalbild.Height + 10).ToString() + "}\r\n" +
+                    "\\newcommand{\\motivtitel}{" + Bildtitel + "}\r\n" +
+                    "\\newcommand{\\motivtitelohnesonderzeichen}{" + entferneUmlautefuerDateinamen(Bildtitel) + "}\r\n" +
+                    "\\title{H\"akelanleitung - Babydecke(\\motivtitel)}\r\n" +
+                    "\\input{struktur_allgemein_eng.tex}\r\n";
+            }
 
-            inhalt_texfile_Main = 
-                "\\author{Denise die Wollmaus}\r\n"+
-                "\\newcommand{\\motivbreite}{" + Originalbild.Width + "}\r\n" +
-                "\\newcommand{\\deckenbreite}{" + Math.Round(Breite_Masche * Originalbild.Width + 10).ToString() + "}\r\n" +
-                "\\newcommand{\\deckenhoehe}{" + Math.Round(Hoehe_Masche * Originalbild.Height + 10 ).ToString() + "}\r\n" +
-                "\\newcommand{\\motivtitel}{" + Bildtitel + "}\r\n" +
-                "\\newcommand{\\motivtitelohnesonderzeichen}{" + entferneUmlautefuerDateinamen(Bildtitel) + "}\r\n" +
-                "\\title{H\"akelanleitung - Babydecke(\\motivtitel)}\r\n" +
-                "\\input{struktur_allgemein.tex}\r\n";
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_Main))
             {
                 sw.Write(inhalt_texfile_Main);
             }
 
-
-            inhalt_texfile_titelseite =
-                "\\begin{center}\r\n" +
-                "\\section *{H\"akelanleitung - Babydecke (\\motivtitel)}\r\n" +
-                "\\label{ sec: BabydeckeBildTitel}\r\n" +
-                "\\end{center}\r\n" +
-                "\\begin{center}\r\n" +
-                "\\fbox{\\includegraphics[height = 1.00\\textwidth]{../\\motivtitelohnesonderzeichen_Titelbild}}\r\n" +
-                "\\end{center}\r\n";
+            if (deu)
+            {
+                inhalt_texfile_titelseite =
+                    "\\begin{center}\r\n" +
+                    "\\section *{H\"akelanleitung - Babydecke (\\motivtitel)}\r\n" +
+                    "\\label{ sec: BabydeckeBildTitel}\r\n" +
+                    "\\end{center}\r\n" +
+                    "\\begin{center}\r\n" +
+                    "\\fbox{\\includegraphics[height = 1.00\\textwidth]{../\\motivtitelohnesonderzeichen_Titelbild}}\r\n" +
+                    "\\end{center}\r\n";
+            }
+            if (eng)
+            {
+                inhalt_texfile_titelseite =
+                    "\\begin{center}\r\n" +
+                    "\\section *{Crochet Tutorial - Blanket (\\motivtitel)}\r\n" +
+                    "\\label{ sec: BlanketBildTitel}\r\n" +
+                    "\\end{center}\r\n" +
+                    "\\begin{center}\r\n" +
+                    "\\fbox{\\includegraphics[height = 1.00\\textwidth]{../\\motivtitelohnesonderzeichen_Titelbild}}\r\n" +
+                    "\\end{center}\r\n";
+            }
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_titelseite))
             {
                 sw.Write(inhalt_texfile_titelseite);
@@ -986,51 +1090,110 @@ namespace Crochet2Ebook
 
             Zeile_Auswerten(Originalbild.Height - beispielzeilennummer1);
             farbenindieserZeile = (listView_LineDescription.Items.Count - 1);
-            String Beispielzeile1 = "\\textbf{Beispiele: }Zur Verdeutlichung hier eine ausf\"uhrliche Beschreibung für Zeile " + beispielzeilennummer1 + " (von unten). Wir fangen auf der rechten Seite des Motivs an zu zählen. ";
+            String Beispielzeile1 = "";
+            if (deu)
+            {
+                Beispielzeile1 = "\\textbf{Beispiele: }Zur Verdeutlichung hier eine ausf\"uhrliche Beschreibung für Zeile " + beispielzeilennummer1 + " (von unten). Wir fangen auf der rechten Seite des Motivs an zu zählen. ";
+            }
+            if (eng)
+            {
+                Beispielzeile1 = "\\textbf{Examples: }For clarification, this is a detailed description of line " + beispielzeilennummer1 + " (from the bottom). We start counting from the right side of the motive. ";
+            }
 
             foreach (ListViewItem Item in listView_LineDescription.Items)
             {
                 if (Item.Index == 0)
                 {
                     //Anleitungssatz fuer die erste Farbe formulieren
-                    Beispielzeile1 = Beispielzeile1 + "Zuerst werden " + Item.Text + " Maschen in " + Item.SubItems[7].Text + " gearbeitet. ";
+                    if (deu)
+                    {
+                        Beispielzeile1 = Beispielzeile1 + "Zuerst werden " + Item.Text + " Maschen in " + Item.SubItems[7].Text + " gearbeitet. ";
+                    }
+                    if (eng)
+                    {
+                        Beispielzeile1 = Beispielzeile1 + "First we work " + Item.Text + " Meshes in " + Item.SubItems[7].Text + ". ";
+                    }
                 }
                 else if (Item.Index == listView_LineDescription.Items.Count - 1)
                 {
                     //Anleitungssatz fuer die letzte Farbe formulieren
-                    Beispielzeile1 = Beispielzeile1 + "Zum Schluss wird die Zeile noch mit " + Item.Text + " Maschen in " + Item.SubItems[7].Text + " beendet. ";
+                    if (deu)
+                    {
+                        Beispielzeile1 = Beispielzeile1 + "Zum Schluss wird die Zeile noch mit " + Item.Text + " Maschen in " + Item.SubItems[7].Text + " beendet. ";
+                    }
+                    if (eng)
+                    {
+                        Beispielzeile1 = Beispielzeile1 + "Then we end the row with " + Item.Text + " Meshes in " + Item.SubItems[7].Text + ". ";
+                    }
                 }
                 else
                 {
                     //Anleitungssatz fuer die Farben in der Mitte formulieren
-                    Beispielzeile1 = Beispielzeile1 + "Dann " + Item.Text + " in " + Item.SubItems[7].Text + ". ";
+                    if (deu)
+                    {
+                        Beispielzeile1 = Beispielzeile1 + "Dann " + Item.Text + " in " + Item.SubItems[7].Text + ". ";
+                    }
+                    if (eng)
+                    {
+                        Beispielzeile1 = Beispielzeile1 + "Then " + Item.Text + " in " + Item.SubItems[7].Text + ". ";
+                    }
                 }
             }
 
             Zeile_Auswerten(Originalbild.Height - beispielzeilennummer2);
             farbenindieserZeile = (listView_LineDescription.Items.Count - 1);
-            String Beispielzeile2 = "Als zweites Beispiel noch Zeile " + beispielzeilennummer2 +". Wir beginnen wieder auf der rechten Seite. ";
+            String Beispielzeile2 = "";
+            if (deu)
+            {
+                Beispielzeile2 = "Als zweites Beispiel noch Zeile " + beispielzeilennummer2 +". Wir beginnen wieder auf der rechten Seite. ";
+            }
+            if (eng)
+            {
+                Beispielzeile2 = "For the second example we look at line " + beispielzeilennummer2 + ". Again we start from the right side. ";
+            }
 
             foreach (ListViewItem Item in listView_LineDescription.Items)
             {
                 if (Item.Index == 0)
                 {
                     //Anleitungssatz fuer die erste Farbe formulieren
-                    Beispielzeile2 = Beispielzeile2 + "Zuerst werden " + Item.Text + " Maschen in " + Item.SubItems[7].Text + " gearbeitet. ";
+                    if (deu)
+                    {
+                        Beispielzeile2 = Beispielzeile2 + "Zuerst werden " + Item.Text + " Maschen in " + Item.SubItems[7].Text + " gearbeitet. ";
+                    }
+                    if (eng)
+                    {
+                        Beispielzeile2 = Beispielzeile2 + "First we work " + Item.Text + " Meshes in " + Item.SubItems[7].Text + ". ";
+                    }
                 }
                 else if (Item.Index == listView_LineDescription.Items.Count - 1)
                 {
                     //Anleitungssatz fuer die letzte Farbe formulieren
-                    Beispielzeile2 = Beispielzeile2 + "Zum Schluss wird die Zeile noch mit " + Item.Text + " Maschen in " + Item.SubItems[7].Text + " beendet. ";
+                    if (deu)
+                    {
+                        Beispielzeile2 = Beispielzeile2 + "Zum Schluss wird die Zeile noch mit " + Item.Text + " Maschen in " + Item.SubItems[7].Text + " beendet. ";
+                    }
+                    if (eng)
+                    {
+                        Beispielzeile2 = Beispielzeile2 + "Then we end the row with " + Item.Text + " Meshes in " + Item.SubItems[7].Text + ". ";
+                    }
                 }
                 else
                 {
                     //Anleitungssatz fuer die Farben in der Mitte formulieren
-                    Beispielzeile2 = Beispielzeile2 + "Dann " + Item.Text + " in " + Item.SubItems[7].Text + ". ";
+                    if (deu)
+                    {
+                        Beispielzeile2 = Beispielzeile2 + "Dann " + Item.Text + " in " + Item.SubItems[7].Text + ". ";
+                    }
+                    if (eng)
+                    {
+                        Beispielzeile2 = Beispielzeile2 + "Then " + Item.Text + " in " + Item.SubItems[7].Text + ". ";
+                    }
                 }
             }
 
             inhalt_texfile_beispielreihen = entferneUmlautefuerLaTex(Beispielzeile1) + "\r\n\r\n" + entferneUmlautefuerLaTex(Beispielzeile2);
+
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_beispielreihen))
             {
                 sw.Write(inhalt_texfile_beispielreihen);
@@ -1047,6 +1210,10 @@ namespace Crochet2Ebook
             {
                 sw.Write(inhalt_Infofile);
             }
+
+            //pdf-generierung anstossen
+            //System.Diagnostics.Process.Start("CMD.exe", "/C pdflatex.exe --output-directory=../ " + name_texfile_Main); //funktioniert so nicht...
+
 
 
         }
