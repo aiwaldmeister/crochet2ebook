@@ -565,7 +565,8 @@ namespace Crochet2Ebook
             string iniTitle = GetSetting("Title");
             string iniDisplayRatioCorrection = GetSetting("DisplayRatioCorrection");
             string iniColorNameList = GetSetting("ColorNameList");
-                        
+            
+
             int iniLineint = 1;
             int.TryParse(iniLine, out iniLineint);
             
@@ -575,6 +576,11 @@ namespace Crochet2Ebook
             imageList_Palette.Images.Clear();
 
             //initialisiere die Dictionary mit den Farbnamen aus dem String iniColorNameList
+            if (iniColorNameList == null)
+            {
+                iniColorNameList = "";
+            }
+
             string[] iniFarbstrings = iniColorNameList.Split(';');
             foreach (String Farbstring in iniFarbstrings)
             {
@@ -721,7 +727,7 @@ namespace Crochet2Ebook
             //Infodatei generieren
             if (checkBox_InfoDatei.Checked)
             {
-                createInfofile();
+                createTextfiles();
             }
 
             //Farbbilder abspeichern
@@ -807,13 +813,13 @@ namespace Crochet2Ebook
             }
         }
 
-        private void createInfofile()
+        private void createTextfiles()
         {
             float Lauflaenge_Masche = 0;
             float Lauflaenge_Wechsel = 0;
             float Breite_Masche = 0;
             float Hoehe_Masche = 0;
-            string fileinhalt = "";
+            string inhalt_Infofile = "";
             string LauflaengenString = "Lauflängen ca.:\r\n----------------\r\n";
             string MaschenzahlenString = "Maschenanzahl:\r\n--------------\r\n";
             string GroessenString = "(" + Originalbild.Width + " x " + Originalbild.Height + " Maschen / ca. ";
@@ -871,7 +877,7 @@ namespace Crochet2Ebook
 
 
 
-            Zeile_Auswerten(beispielzeilennummer1);
+            Zeile_Auswerten(Originalbild.Height - beispielzeilennummer1);
             farbenindieserZeile = (listView_LineDescription.Items.Count - 1);
             String Beispielzeile1 = "Als Beispiel hier eine ausführliche Beschreibung für Zeile " + beispielzeilennummer1 + ". Wir fangen auf der rechten Seite an zu zählen. ";
 
@@ -894,7 +900,7 @@ namespace Crochet2Ebook
                 }
             }
 
-            Zeile_Auswerten(beispielzeilennummer2);
+            Zeile_Auswerten(Originalbild.Height - beispielzeilennummer2);
             farbenindieserZeile = (listView_LineDescription.Items.Count - 1);
             String Beispielzeile2 = "Als zweites Beispiel noch Zeile " + beispielzeilennummer2 +". Wir beginnen wieder auf der rechten Seite. ";
 
@@ -921,14 +927,14 @@ namespace Crochet2Ebook
 
 
 
-            fileinhalt = IntroString + GroessenString + "\r\n" + MaschenzahlenString + "\r\n" + LauflaengenString + "\r\n" + Beispielzeile1 + "\r\n\r\n" + Beispielzeile2;
+            inhalt_Infofile = IntroString + GroessenString + "\r\n" + MaschenzahlenString + "\r\n" + LauflaengenString + "\r\n" + Beispielzeile1 + "\r\n\r\n" + Beispielzeile2;
 
 
             //Infodatei erzeugen
             string filename = String.Format(Bildtitel + "_Dateien/" + Bildtitel + "_Info.txt");
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(filename))
             {
-                sw.Write(fileinhalt);
+                sw.Write(inhalt_Infofile);
             }
 
 
@@ -1377,6 +1383,8 @@ namespace Crochet2Ebook
         {   if(e.Button == MouseButtons.Left)
             {
                 numericUpDown1.Value = Originalbild.Height - (int)((double)e.Y / getZoomFactorY());
+                textBox_Beispielreihe1.Text = numericUpDown1.Value.ToString();
+                textBox_Beispielreihe2.Text = (numericUpDown1.Value +1 ).ToString();
                 selectedLine = Originalbild.Height - (int)numericUpDown1.Value;
                 Zeile_Auswerten(selectedLine);
             }
