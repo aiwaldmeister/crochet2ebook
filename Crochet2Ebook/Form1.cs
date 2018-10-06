@@ -1093,11 +1093,11 @@ namespace Crochet2Ebook
             String Beispielzeile1 = "";
             if (deu)
             {
-                Beispielzeile1 = "\\textbf{Beispiele: }Zur Verdeutlichung hier eine ausf\"uhrliche Beschreibung für Zeile " + beispielzeilennummer1 + " (von unten). Wir fangen auf der rechten Seite des Motivs an zu zählen. ";
+                Beispielzeile1 = "\\textbf{Beispiele: }Zur Verdeutlichung wie gez\"ahlt wird, hier eine ausf\"uhrliche Beschreibung für Zeile " + beispielzeilennummer1 + " (von unten). Wir fangen auf der rechten Seite des Motivs an zu z\"ahlen. ";
             }
             if (eng)
             {
-                Beispielzeile1 = "\\textbf{Examples: }For clarification, this is a detailed description of line " + beispielzeilennummer1 + " (from the bottom). We start counting from the right side of the motive. ";
+                Beispielzeile1 = "\\textbf{Examples: }For clarification on how to count, this is a detailed description of line " + beispielzeilennummer1 + " (from the bottom). We start counting from the right side of the pattern. ";
             }
 
             foreach (ListViewItem Item in listView_LineDescription.Items)
@@ -1111,7 +1111,7 @@ namespace Crochet2Ebook
                     }
                     if (eng)
                     {
-                        Beispielzeile1 = Beispielzeile1 + "First we work " + Item.Text + " Meshes in " + Item.SubItems[7].Text + ". ";
+                        Beispielzeile1 = Beispielzeile1 + "First we work " + Item.Text + " stitches in " + Item.SubItems[7].Text + ". ";
                     }
                 }
                 else if (Item.Index == listView_LineDescription.Items.Count - 1)
@@ -1123,7 +1123,7 @@ namespace Crochet2Ebook
                     }
                     if (eng)
                     {
-                        Beispielzeile1 = Beispielzeile1 + "Then we end the row with " + Item.Text + " Meshes in " + Item.SubItems[7].Text + ". ";
+                        Beispielzeile1 = Beispielzeile1 + "Finally we end the row with " + Item.Text + " stitches in " + Item.SubItems[7].Text + ". ";
                     }
                 }
                 else
@@ -1149,7 +1149,7 @@ namespace Crochet2Ebook
             }
             if (eng)
             {
-                Beispielzeile2 = "For the second example we look at line " + beispielzeilennummer2 + ". Again we start from the right side. ";
+                Beispielzeile2 = "For a second example we now look at line " + beispielzeilennummer2 + ". Again we start from the right side. ";
             }
 
             foreach (ListViewItem Item in listView_LineDescription.Items)
@@ -1163,7 +1163,7 @@ namespace Crochet2Ebook
                     }
                     if (eng)
                     {
-                        Beispielzeile2 = Beispielzeile2 + "First we work " + Item.Text + " Meshes in " + Item.SubItems[7].Text + ". ";
+                        Beispielzeile2 = Beispielzeile2 + "First we work " + Item.Text + " stitches in " + Item.SubItems[7].Text + ". ";
                     }
                 }
                 else if (Item.Index == listView_LineDescription.Items.Count - 1)
@@ -1175,7 +1175,7 @@ namespace Crochet2Ebook
                     }
                     if (eng)
                     {
-                        Beispielzeile2 = Beispielzeile2 + "Then we end the row with " + Item.Text + " Meshes in " + Item.SubItems[7].Text + ". ";
+                        Beispielzeile2 = Beispielzeile2 + "Finally we end the row with " + Item.Text + " stitches in " + Item.SubItems[7].Text + ". ";
                     }
                 }
                 else
