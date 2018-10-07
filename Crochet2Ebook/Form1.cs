@@ -850,13 +850,13 @@ namespace Crochet2Ebook
             string name_projektfile = "";
             if (deu)
             {
-                name_texfile_Main = Bildtitel + "_Dateien/Latex_Dateien/" + "Anleitung_Babydecke_-_" + Bildtitel + ".tex";
-                name_projektfile = Bildtitel + "_Dateien/" + "Anleitung_Babydecke_-_" + Bildtitel + ".tcp";
+                name_texfile_Main = Bildtitel + "_Dateien/Latex_Dateien/" + "Anleitung_Kinderdecke_-_" + Bildtitel + ".tex";
+                name_projektfile = Bildtitel + "_Dateien/" + "Anleitung_Kinderdecke_-_" + Bildtitel + ".tcp";
             }
             if (eng)
             {
-                name_texfile_Main = Bildtitel + "_Dateien/Latex_Dateien/" + "Tutorial_Blanket_-_" + Bildtitel + ".tex";
-                name_projektfile = Bildtitel + "_Dateien/" + "Tutorial_Blanket_-_" + Bildtitel + file_langsuffix + ".tcp";
+                name_texfile_Main = Bildtitel + "_Dateien/Latex_Dateien/" + "Tutorial_Childrens_Blanket_-_" + Bildtitel + ".tex";
+                name_projektfile = Bildtitel + "_Dateien/" + "Tutorial_Childrens_Blanket_-_" + Bildtitel + file_langsuffix + ".tcp";
             }
             
             string LauflaengenString = "Lauflängen ca.:\r\n----------------\r\n";
@@ -901,7 +901,7 @@ namespace Crochet2Ebook
                     "Version=4\r\n"+
                     "\r\n"+
                     "[ProjectInfo]\r\n"+
-                    "MainFile=Latex_Dateien/Anleitung_Babydecke_-_" + Bildtitel + ".tex\r\n"+
+                    "MainFile=Latex_Dateien/Anleitung_Kinderdecke_-_" + Bildtitel + ".tex\r\n"+
                     "UseBibTeX=0\r\n"+
                     "UseMakeIndex=0\r\n"+
                     "ActiveProfile=LaTeX ⇨ PDF\r\n"+
@@ -917,7 +917,7 @@ namespace Crochet2Ebook
                     "Version=4\r\n" +
                     "\r\n" +
                     "[ProjectInfo]\r\n" +
-                    "MainFile=Latex_Dateien/Tutorial_Blanket_-_" + Bildtitel + ".tex\r\n" +
+                    "MainFile=Latex_Dateien/Tutorial_Childrens_Blanket_-_" + Bildtitel + ".tex\r\n" +
                     "UseBibTeX=0\r\n" +
                     "UseMakeIndex=0\r\n" +
                     "ActiveProfile=LaTeX ⇨ PDF\r\n" +
@@ -976,12 +976,12 @@ namespace Crochet2Ebook
                 if (Lauflaenge_DieseFarbe > 100)
                 {
                     //als Meter ausgeben
-                    Lauflaenge_DieseFarbe_mitEinheit = Math.Ceiling(Lauflaenge_DieseFarbe * 0.01).ToString() + " m";
+                    Lauflaenge_DieseFarbe_mitEinheit = Math.Ceiling(Lauflaenge_DieseFarbe * 0.01).ToString() + "m";
                 }
                 else
                 {
                     //als Zentimeter ausgeben
-                    Lauflaenge_DieseFarbe_mitEinheit = Math.Ceiling(Lauflaenge_DieseFarbe).ToString() + " cm";
+                    Lauflaenge_DieseFarbe_mitEinheit = Math.Ceiling(Lauflaenge_DieseFarbe).ToString() + "cm";
                 }
 
                 LauflaengenString = LauflaengenString + Farbname_DieseFarbe + ": " + Lauflaenge_DieseFarbe_mitEinheit +  " (~" + Gewicht_DieseFarbe_mitEinheit + ")\r\n";
@@ -993,7 +993,7 @@ namespace Crochet2Ebook
                         "\\begin{minipage}[c][22mm]{0.33\\linewidth}\r\n" +
                         "\\begin{center}\r\n" +
                         "\\includegraphics[width=10mm]{../Palette/" + entferneUmlautefuerDateinamen(Farbname_DieseFarbe) + ".png}\r\n" +
-                        "\\caption{\\\\" + entferneUmlautefuerLaTex(Farbname_DieseFarbe) + ": " + Lauflaenge_DieseFarbe_mitEinheit + " (" + Gewicht_DieseFarbe_mitEinheit + ")\\\\}\r\n" +
+                        "\\\\" + entferneUmlautefuerLaTex(Farbname_DieseFarbe) + ": " + Lauflaenge_DieseFarbe_mitEinheit + " (" + Gewicht_DieseFarbe_mitEinheit + ")\r\n" +
                         "\\end{center}\r\n" +
                         "\\end{minipage}\r\n";
                 }
@@ -1004,7 +1004,7 @@ namespace Crochet2Ebook
                         "\\begin{minipage}[c][22mm]{0.33\\linewidth}\r\n" +
                         "\\begin{center}\r\n" +
                         "\\includegraphics[width=10mm]{../Palette/" + entferneUmlautefuerDateinamen(Farbname_DieseFarbe) + ".png}\r\n" +
-                        "\\caption{\\\\" + entferneUmlautefuerLaTex(Farbname_DieseFarbe) + ": " + Lauflaenge_DieseFarbe_mitEinheit + " (" + Gewicht_DieseFarbe_mitEinheit + ")\\\\}\r\n" +
+                        "\\\\" + entferneUmlautefuerLaTex(Farbname_DieseFarbe) + ": " + Lauflaenge_DieseFarbe_mitEinheit + " (" + Gewicht_DieseFarbe_mitEinheit + ")\r\n" +
                         "\\end{center}\r\n" +
                         "\\end{minipage}\r\n";
                 }
@@ -1029,7 +1029,7 @@ namespace Crochet2Ebook
                     "\\newcommand{\\deckenhoehe}{" + Math.Round(Hoehe_Masche * Originalbild.Height + 10 ).ToString() + "}\r\n" +
                     "\\newcommand{\\motivtitel}{" + Bildtitel + "}\r\n" +
                     "\\newcommand{\\motivtitelohnesonderzeichen}{" + entferneUmlautefuerDateinamen(Bildtitel) + "}\r\n" +
-                    "\\title{H\"akelanleitung - Babydecke(\\motivtitel)}\r\n" +
+                    "\\title{H\"akelanleitung - Kinderdecke (\\motivtitel)}\r\n" +
                     "\\input{struktur_allgemein.tex}\r\n";
             }
             if (eng)
@@ -1041,7 +1041,7 @@ namespace Crochet2Ebook
                     "\\newcommand{\\deckenhoehe}{" + Math.Round(Hoehe_Masche * Originalbild.Height + 10).ToString() + "}\r\n" +
                     "\\newcommand{\\motivtitel}{" + Bildtitel + "}\r\n" +
                     "\\newcommand{\\motivtitelohnesonderzeichen}{" + entferneUmlautefuerDateinamen(Bildtitel) + "}\r\n" +
-                    "\\title{H\"akelanleitung - Babydecke(\\motivtitel)}\r\n" +
+                    "\\title{Tutorial - Childrens Blanket (\\motivtitel)}\r\n" +
                     "\\input{struktur_allgemein_eng.tex}\r\n";
             }
 
@@ -1054,8 +1054,9 @@ namespace Crochet2Ebook
             {
                 inhalt_texfile_titelseite =
                     "\\begin{center}\r\n" +
-                    "\\section *{H\"akelanleitung - Babydecke (\\motivtitel)}\r\n" +
-                    "\\label{ sec: BabydeckeBildTitel}\r\n" +
+                    "\\section *{H\"akelanleitung - Kinderdecke \\\\"+
+                    "\\Huge\\motivtitel}\r\n" +
+                    "\\label{ sec: KinderdeckeBildTitel}\r\n" +
                     "\\end{center}\r\n" +
                     "\\begin{center}\r\n" +
                     "\\fbox{\\includegraphics[height = 1.00\\textwidth]{../\\motivtitelohnesonderzeichen_Titelbild}}\r\n" +
@@ -1065,7 +1066,8 @@ namespace Crochet2Ebook
             {
                 inhalt_texfile_titelseite =
                     "\\begin{center}\r\n" +
-                    "\\section *{Crochet Tutorial - Blanket (\\motivtitel)}\r\n" +
+                    "\\section *{Crocheting Tutorial - Childrens Blanket \\\\" +
+                    "\\Huge\\motivtitel}\r\n" +
                     "\\label{ sec: BlanketBildTitel}\r\n" +
                     "\\end{center}\r\n" +
                     "\\begin{center}\r\n" +
@@ -1229,6 +1231,7 @@ namespace Crochet2Ebook
             targetText = targetText.Replace("ö", "\"o");
             targetText = targetText.Replace("Ü", "\"U");
             targetText = targetText.Replace("ü", "\"u");
+            targetText = targetText.Replace("#", "\\#");
 
             return targetText;
         }
@@ -1245,6 +1248,7 @@ namespace Crochet2Ebook
             targetText = targetText.Replace("Ü", "Ue");
             targetText = targetText.Replace("ü", "ue");
             targetText = targetText.Replace(" ", "_");
+            targetText = targetText.Replace("#", "");
 
             return targetText;
         }
@@ -1368,29 +1372,61 @@ namespace Crochet2Ebook
 
         private void createPDF()
         {
-
-
+            bool eng = radioButton_englisch.Checked;
+            bool deu = radioButton_deutsch.Checked;
+            string filename = "";
             // Create a temporary file
 
             //string filename = String.Format(  Bildtitel + "_" + DateTime.Now.ToString("yyyyMMddHHmmssfff") +   ".pdf");
-            string filename = String.Format(Bildtitel + "_Dateien/" + Bildtitel + ".pdf");
+            if (deu)
+            {
+                filename = String.Format(Bildtitel + "_Dateien/" + "Vorlage_" + entferneUmlautefuerDateinamen(Bildtitel)+ ".pdf");
+            }
+            if (eng)
+            {
+                filename = String.Format(Bildtitel + "_Dateien/" + "Pattern_" + entferneUmlautefuerDateinamen(Bildtitel) + ".pdf");
+            }
             myPDF = new PdfDocument();
-            myPDF.Info.Title = "Häkelvorlage - " + Bildtitel;
-            myPDF.Info.Author = "Denise die Wollmaus";
-            myPDF.Info.Subject = "Crocheting Pattern";
-            myPDF.Info.Keywords = "XGraphics";
+            if (deu)
+            {
+                myPDF.Info.Title = "Vorlage - " + Bildtitel;
+                myPDF.Info.Author = "Denise die Wollmaus";
+                myPDF.Info.Subject = "Vorlage";
+                myPDF.Info.Keywords = "XGraphics";
+            }
+            if (eng)
+            {
+                myPDF.Info.Title = "Pattern - " + Bildtitel;
+                myPDF.Info.Author = "Denise die Wollmaus";
+                myPDF.Info.Subject = "Pattern";
+                myPDF.Info.Keywords = "XGraphics";
+            }
 
             ////////// Titelseite erstellen ////////////
             PdfPage page = myPDF.AddPage();
             XGraphics gfx = XGraphics.FromPdfPage(page);
-            DrawTitle(page, gfx, Bildtitel);
+            if (deu)
+            {
+                DrawTitle(page, gfx, "Vorlage - " + Bildtitel);
+            }
+            if (eng)
+            {
+                DrawTitle(page, gfx, "Pattern - " + Bildtitel);
+            }
 
 
             XRect rect_untertitel = new XRect(new XPoint(), gfx.PageSize);
             rect_untertitel.Inflate(-10, -40);
-
             XFont font_untertitel = new XFont("Times", 12, XFontStyle.Bold);
-            gfx.DrawString("(" + Originalbild.Height + " Zeilen und " + Originalbild.Width + " Spalten)", font_untertitel, XBrushes.Black, rect_untertitel, XStringFormats.TopCenter);
+
+            if (deu)
+            {
+                gfx.DrawString("(" + Originalbild.Height + " Reihen und " + Originalbild.Width + " Spalten)", font_untertitel, XBrushes.Black, rect_untertitel, XStringFormats.TopCenter);
+            }
+            if (eng)
+            {
+                gfx.DrawString("(" + Originalbild.Height + " rows and " + Originalbild.Width + " columns)", font_untertitel, XBrushes.Black, rect_untertitel, XStringFormats.TopCenter);
+            }
 
             XPen pen_Line = new XPen(Color.Black, 1.5);
             gfx.DrawLine(pen_Line, 10, 58, page.Width - 10, 58);
@@ -1558,8 +1594,14 @@ namespace Crochet2Ebook
                         //falls die neue Zeile nicht mehr auf die Seite passt, eine neue anfangen...
                         if (ypos + Line_OffsetY + Lines_Abstand_unten > page.Height)
                         {
-
-                            DrawTitle(page, gfx, "Zeile " + i + " -  Seite " + SeitenZahl);
+                            if (deu)
+                            {
+                                DrawTitle(page, gfx, "Reihe " + i + " -  Seite " + SeitenZahl);
+                            }
+                            if (eng)
+                            {
+                                DrawTitle(page, gfx, "Row " + i + " -  Page " + SeitenZahl);
+                            }
                             page = myPDF.AddPage();
                             gfx = XGraphics.FromPdfPage(page);
 
@@ -1597,11 +1639,25 @@ namespace Crochet2Ebook
                 }
                 if (SeitenZahl > 1)
                 {
-                    DrawTitle(page, gfx, "Zeile " + i + " -  Seite " + SeitenZahl);
+                    if (deu)
+                    {
+                        DrawTitle(page, gfx, "Reihe " + i + " -  Seite " + SeitenZahl);
+                    }
+                    if (eng)
+                    {
+                        DrawTitle(page, gfx, "Row " + i + " -  Page " + SeitenZahl);
+                    }
                 }
                 else
                 {
-                    DrawTitle(page, gfx, "Zeile " + i);
+                    if (deu)
+                    {
+                        DrawTitle(page, gfx, "Reihe " + i);
+                    }
+                    if (eng)
+                    {
+                        DrawTitle(page, gfx, "Row " + i);
+                    }
                 }
                 SeitenZahl = 1;
 
