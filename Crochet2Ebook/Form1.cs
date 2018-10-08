@@ -806,6 +806,10 @@ namespace Crochet2Ebook
             }
 
             increaseSubitemCounter(pixelfarbe_last, Farbende);
+
+            //Farbliste nach Maschenzahlen absteigend sortieren
+            //TODO:
+
         }
 
         private void increaseSubitemCounter(Color Farbe, int Index)
@@ -986,28 +990,18 @@ namespace Crochet2Ebook
 
                 LauflaengenString = LauflaengenString + Farbname_DieseFarbe + ": " + Lauflaenge_DieseFarbe_mitEinheit +  " (~" + Gewicht_DieseFarbe_mitEinheit + ")\r\n";
 
-                if (deu)
-                {
-                    inhalt_texfile_wollmengen =
-                        inhalt_texfile_wollmengen +
-                        "\\begin{minipage}[c][22mm]{0.33\\linewidth}\r\n" +
-                        "\\begin{center}\r\n" +
-                        "\\includegraphics[width=10mm]{../Palette/" + entferneUmlautefuerDateinamen(Farbname_DieseFarbe) + ".png}\r\n" +
-                        "\\\\" + entferneUmlautefuerLaTex(Farbname_DieseFarbe) + ": " + Lauflaenge_DieseFarbe_mitEinheit + " (" + Gewicht_DieseFarbe_mitEinheit + ")\r\n" +
-                        "\\end{center}\r\n" +
-                        "\\end{minipage}\r\n";
-                }
-                if (eng)
-                {
-                    inhalt_texfile_wollmengen =
-                        inhalt_texfile_wollmengen +
-                        "\\begin{minipage}[c][22mm]{0.33\\linewidth}\r\n" +
-                        "\\begin{center}\r\n" +
-                        "\\includegraphics[width=10mm]{../Palette/" + entferneUmlautefuerDateinamen(Farbname_DieseFarbe) + ".png}\r\n" +
-                        "\\\\" + entferneUmlautefuerLaTex(Farbname_DieseFarbe) + ": " + Lauflaenge_DieseFarbe_mitEinheit + " (" + Gewicht_DieseFarbe_mitEinheit + ")\r\n" +
-                        "\\end{center}\r\n" +
-                        "\\end{minipage}\r\n";
-                }
+                inhalt_texfile_wollmengen =
+                    inhalt_texfile_wollmengen +
+                    "\\begin{minipage}[c][25mm]{0.33\\linewidth}\r\n" +
+                    "  \\begin{minipage}[c][22mm]{0.3\\linewidth}\r\n" +
+                    "    \\centering\r\n" +
+                    "    \\includegraphics[width=12mm]{../Palette/" + entferneUmlautefuerDateinamen(Farbname_DieseFarbe) + ".png}\r\n" +
+                    "  \\end{minipage}\r\n" +
+                    "  \\begin{minipage}[c][22mm]{0.68\\linewidth}\r\n" +
+                    "    " + entferneUmlautefuerLaTex(Farbname_DieseFarbe) + "\\\\" + Lauflaenge_DieseFarbe_mitEinheit + " (" + Gewicht_DieseFarbe_mitEinheit + ")\r\n" +
+                    "  \\end{minipage}\r\n" +
+                    "\\end{minipage}\r\n";
+                
             }
 
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_wollmengen))
