@@ -799,7 +799,7 @@ namespace Crochet2Ebook
                     if (pixelfarbe_current!=pixelfarbe_last)
                     {
                         increaseSubitemCounter(pixelfarbe_current, Farbanfang);
-                        increaseSubitemCounter(pixelfarbe_last, Farbende);
+                        
                     }
                     pixelfarbe_last = pixelfarbe_current;
                 }
@@ -808,8 +808,51 @@ namespace Crochet2Ebook
             increaseSubitemCounter(pixelfarbe_last, Farbende);
 
             //Farbliste nach Maschenzahlen absteigend sortieren
-            //TODO:
+            sortListviewPalette();
 
+            
+
+        }
+
+        private void sortListviewPalette()
+        {
+
+            //Lauflaengen_Werte aus den Textboxen holen
+            float Lauflaenge_Masche = 0;
+            float Lauflaenge_Wechsel = 0;
+            float.TryParse(textBox_Lauflaenge_Masche.Text, out Lauflaenge_Masche);
+            float.TryParse(textBox_Lauflaenge_Wechsel.Text, out Lauflaenge_Wechsel);
+            foreach (ListViewItem item in listView_Palette.Items)
+            {
+                int Maschenzahl_DieseFarbe = 0;
+                int Wechsel_DieseFarbe = 0;
+                Int32.TryParse(item.SubItems[2].Text, out Maschenzahl_DieseFarbe);
+                Int32.TryParse(item.SubItems[3].Text, out Wechsel_DieseFarbe);
+                item.SubItems[4].Text = ((Lauflaenge_Masche * Maschenzahl_DieseFarbe) + (Lauflaenge_Wechsel * Wechsel_DieseFarbe)).ToString();
+            }
+
+
+            float toplauflaenge = 0;
+            int topindex = 0;
+            ListViewItem tmpitem = null;
+
+            for (int i = 0; i < listView_Palette.Items.Count; i++)
+            {
+                toplauflaenge = 0;
+                for (int k = 0; k < listView_Palette.Items.Count - i; k++)
+                {
+                    float thislauflaenge = 0;
+                    float.TryParse(listView_Palette.Items[k].SubItems[4].Text, out thislauflaenge);
+                    if (thislauflaenge > toplauflaenge)
+                    {
+                        toplauflaenge = thislauflaenge;
+                        topindex = k;
+                    }
+                }
+                tmpitem = listView_Palette.Items[topindex];
+                listView_Palette.Items.RemoveAt(topindex);
+                listView_Palette.Items.Add(tmpitem);
+            }
         }
 
         private void increaseSubitemCounter(Color Farbe, int Index)
@@ -992,12 +1035,12 @@ namespace Crochet2Ebook
 
                 inhalt_texfile_wollmengen =
                     inhalt_texfile_wollmengen +
-                    "\\begin{minipage}[c][25mm]{0.33\\linewidth}\r\n" +
-                    "  \\begin{minipage}[c][22mm]{0.3\\linewidth}\r\n" +
+                    "\\begin{minipage}[c][17mm]{0.33\\linewidth}\r\n" +
+                    "  \\begin{minipage}[c][16mm]{0.35\\linewidth}\r\n" +
                     "    \\centering\r\n" +
                     "    \\includegraphics[width=12mm]{../Palette/" + entferneUmlautefuerDateinamen(Farbname_DieseFarbe) + ".png}\r\n" +
                     "  \\end{minipage}\r\n" +
-                    "  \\begin{minipage}[c][22mm]{0.68\\linewidth}\r\n" +
+                    "  \\begin{minipage}[c][16mm]{0.63\\linewidth}\r\n" +
                     "    " + entferneUmlautefuerLaTex(Farbname_DieseFarbe) + "\\\\" + Lauflaenge_DieseFarbe_mitEinheit + " (" + Gewicht_DieseFarbe_mitEinheit + ")\r\n" +
                     "  \\end{minipage}\r\n" +
                     "\\end{minipage}\r\n";
