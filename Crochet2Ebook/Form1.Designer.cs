@@ -91,6 +91,8 @@
             this.checkBox_pdfvorlage = new System.Windows.Forms.CheckBox();
             this.textBox_Titel = new System.Windows.Forms.TextBox();
             this.pictureBox_Display = new System.Windows.Forms.PictureBox();
+            this.Button_ToggleLanguage = new System.Windows.Forms.Button();
+            this.label1_Sprache = new System.Windows.Forms.Label();
             this.contextMenu_Palette.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -208,6 +210,8 @@
             this.splitContainer1.Panel2.AutoScroll = true;
             this.splitContainer1.Panel2.Controls.Add(this.pictureBox_Display);
             this.splitContainer1.Panel2.Controls.Add(this.progressBar1);
+            this.splitContainer1.Panel2.Controls.Add(this.radioButton_englisch);
+            this.splitContainer1.Panel2.Controls.Add(this.radioButton_deutsch);
             this.splitContainer1.Size = new System.Drawing.Size(1430, 915);
             this.splitContainer1.SplitterDistance = 156;
             this.splitContainer1.TabIndex = 17;
@@ -310,10 +314,10 @@
             // 
             // splitContainer4.Panel2
             // 
+            this.splitContainer4.Panel2.Controls.Add(this.label1_Sprache);
+            this.splitContainer4.Panel2.Controls.Add(this.Button_ToggleLanguage);
             this.splitContainer4.Panel2.Controls.Add(this.groupBox1);
-            this.splitContainer4.Panel2.Controls.Add(this.radioButton_englisch);
             this.splitContainer4.Panel2.Controls.Add(this.groupBox3);
-            this.splitContainer4.Panel2.Controls.Add(this.radioButton_deutsch);
             this.splitContainer4.Panel2.Controls.Add(this.label_Palette);
             this.splitContainer4.Panel2.Controls.Add(this.button_create_stuff);
             this.splitContainer4.Panel2.Controls.Add(this.label_Titel);
@@ -440,7 +444,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 60);
+            this.label3.Location = new System.Drawing.Point(8, 61);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(65, 13);
             this.label3.TabIndex = 19;
@@ -448,7 +452,7 @@
             // 
             // textBox_Rasterbild_Linienfarbe1
             // 
-            this.textBox_Rasterbild_Linienfarbe1.Location = new System.Drawing.Point(73, 57);
+            this.textBox_Rasterbild_Linienfarbe1.Location = new System.Drawing.Point(73, 58);
             this.textBox_Rasterbild_Linienfarbe1.Name = "textBox_Rasterbild_Linienfarbe1";
             this.textBox_Rasterbild_Linienfarbe1.Size = new System.Drawing.Size(53, 20);
             this.textBox_Rasterbild_Linienfarbe1.TabIndex = 20;
@@ -517,13 +521,14 @@
             // radioButton_englisch
             // 
             this.radioButton_englisch.AutoSize = true;
-            this.radioButton_englisch.Location = new System.Drawing.Point(81, 397);
+            this.radioButton_englisch.Enabled = false;
+            this.radioButton_englisch.Location = new System.Drawing.Point(3, 567);
             this.radioButton_englisch.Name = "radioButton_englisch";
-            this.radioButton_englisch.Size = new System.Drawing.Size(64, 17);
+            this.radioButton_englisch.Size = new System.Drawing.Size(48, 17);
             this.radioButton_englisch.TabIndex = 21;
-            this.radioButton_englisch.Text = "englisch";
+            this.radioButton_englisch.Text = "ENG";
             this.radioButton_englisch.UseVisualStyleBackColor = true;
-            this.radioButton_englisch.CheckedChanged += new System.EventHandler(this.radioButton_englisch_CheckedChanged);
+            this.radioButton_englisch.Visible = false;
             // 
             // groupBox3
             // 
@@ -706,14 +711,15 @@
             // 
             this.radioButton_deutsch.AutoSize = true;
             this.radioButton_deutsch.Checked = true;
-            this.radioButton_deutsch.Location = new System.Drawing.Point(12, 397);
+            this.radioButton_deutsch.Enabled = false;
+            this.radioButton_deutsch.Location = new System.Drawing.Point(3, 590);
             this.radioButton_deutsch.Name = "radioButton_deutsch";
-            this.radioButton_deutsch.Size = new System.Drawing.Size(63, 17);
+            this.radioButton_deutsch.Size = new System.Drawing.Size(48, 17);
             this.radioButton_deutsch.TabIndex = 21;
             this.radioButton_deutsch.TabStop = true;
-            this.radioButton_deutsch.Text = "deutsch";
+            this.radioButton_deutsch.Text = "DEU";
             this.radioButton_deutsch.UseVisualStyleBackColor = true;
-            this.radioButton_deutsch.CheckedChanged += new System.EventHandler(this.radioButton_deutsch_CheckedChanged);
+            this.radioButton_deutsch.Visible = false;
             // 
             // label_Palette
             // 
@@ -792,6 +798,27 @@
             this.pictureBox_Display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_Display_MouseClick);
             this.pictureBox_Display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_Display_MouseClick);
             // 
+            // Button_ToggleLanguage
+            // 
+            this.Button_ToggleLanguage.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Button_ToggleLanguage.Location = new System.Drawing.Point(10, 396);
+            this.Button_ToggleLanguage.Name = "Button_ToggleLanguage";
+            this.Button_ToggleLanguage.Size = new System.Drawing.Size(67, 23);
+            this.Button_ToggleLanguage.TabIndex = 14;
+            this.Button_ToggleLanguage.Text = "Sprache:";
+            this.Button_ToggleLanguage.UseVisualStyleBackColor = true;
+            this.Button_ToggleLanguage.Click += new System.EventHandler(this.Button_ToggleLanguage_Click);
+            // 
+            // label1_Sprache
+            // 
+            this.label1_Sprache.AutoSize = true;
+            this.label1_Sprache.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1_Sprache.Location = new System.Drawing.Point(82, 401);
+            this.label1_Sprache.Name = "label1_Sprache";
+            this.label1_Sprache.Size = new System.Drawing.Size(66, 13);
+            this.label1_Sprache.TabIndex = 25;
+            this.label1_Sprache.Text = "DEUTSCH";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -811,6 +838,7 @@
             this.contextMenu_Palette.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
@@ -904,6 +932,8 @@
         private System.Windows.Forms.RadioButton radioButton_englisch;
         private System.Windows.Forms.RadioButton radioButton_deutsch;
         private System.Windows.Forms.CheckBox checkBox_pdfanleitung;
+        private System.Windows.Forms.Button Button_ToggleLanguage;
+        private System.Windows.Forms.Label label1_Sprache;
     }
 }
 

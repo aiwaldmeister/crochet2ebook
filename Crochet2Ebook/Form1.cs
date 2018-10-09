@@ -52,7 +52,7 @@ namespace Crochet2Ebook
             return ColorTranslator.ToHtml(Col);
         }
 
-        public static Color HextoColor(String colorCode)
+        public static Color HextoColor(string colorCode)
         {
             return System.Drawing.ColorTranslator.FromHtml(colorCode);
         }
@@ -592,6 +592,10 @@ namespace Crochet2Ebook
                 MessageBox.Show("Bitte in der Config den Pfad zu den allgemeinen LaTex-Files unter dem Key 'latexfiles' nachtragen...");
             }
 
+            //Rasterfarbe aus der ini holen
+            textBox_Rasterbild_Linienfarbe1.Text = GetSetting("Rasterfarbe");
+
+
             int iniLineint = 1;
             int.TryParse(iniLine, out iniLineint);
             
@@ -599,6 +603,7 @@ namespace Crochet2Ebook
 
             //Imagelist leeren
             imageList_Palette.Images.Clear();
+
 
 
 
@@ -624,7 +629,7 @@ namespace Crochet2Ebook
                 iniColorNameList_EN = "";
             }
 
-            string[] iniFarbstrings_EN = iniColorNameList_DE.Split(';');
+            string[] iniFarbstrings_EN = iniColorNameList_EN.Split(';');
             foreach (String Farbstring in iniFarbstrings_EN)
             {
                 if (!Farbstring.Equals(""))
@@ -672,45 +677,6 @@ namespace Crochet2Ebook
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-
-            addColornamesfromPalettetoDictionary();
-
-            //Aus der Dictionary die ColorNameList für die Config bilden
-            String_ColorNameList_DE = "";
-
-            foreach (KeyValuePair<string, string> entry in DictColorNames_DE)
-            {
-                //Farbcode und Namen zur ColorNameList hinzufuegen
-                String_ColorNameList_DE = String_ColorNameList_DE + entry.Key + "," + entry.Value + ";";
-            }
-
-            //letztes Semikolon entfernen
-            if(String_ColorNameList_DE.EndsWith(";"))
-            {
-                String_ColorNameList_DE = String_ColorNameList_DE.Remove(String_ColorNameList_DE.Length - 1);
-            }
-
-
-            //Aus der Dictionary die ColorNameList für die Config bilden
-            String_ColorNameList_EN = "";
-
-            foreach (KeyValuePair<string, string> entry in DictColorNames_EN)
-            {
-                //Farbcode und Namen zur ColorNameList hinzufuegen
-                String_ColorNameList_EN = String_ColorNameList_EN + entry.Key + "," + entry.Value + ";";
-            }
-
-            //letztes Semikolon entfernen
-            if (String_ColorNameList_EN.EndsWith(";"))
-            {
-                String_ColorNameList_EN = String_ColorNameList_EN.Remove(String_ColorNameList_EN.Length - 1);
-            }
-
-
-
-
-
-
             //Status, Settings und Farbnamen in die Config schreiben
             SetSetting("Image", Dateiname);
             SetSetting("Title", Bildtitel);
@@ -721,12 +687,13 @@ namespace Crochet2Ebook
             }else{
                 SetSetting("DisplayRatioCorrection", "0");
             }
-            SetSetting("ColorNameList_DE", String_ColorNameList_DE);
-            SetSetting("ColorNameList_EN", String_ColorNameList_EN);
+            savecolornamestoConfig();
+
+            SetSetting("Rasterfarbe", textBox_Rasterbild_Linienfarbe1.Text);
 
         }
 
-        private void addColornamesfromPalettetoDictionary()
+        private void savecolornamestoConfig()
         {
             bool deu = radioButton_deutsch.Checked;
             bool eng = radioButton_englisch.Checked;
@@ -764,6 +731,40 @@ namespace Crochet2Ebook
                     }
                 }
             }
+
+            //Aus der Dictionary die ColorNameList für die Config bilden
+            String_ColorNameList_DE = "";
+
+            foreach (KeyValuePair<string, string> entry in DictColorNames_DE)
+            {
+                //Farbcode und Namen zur ColorNameList hinzufuegen
+                String_ColorNameList_DE = String_ColorNameList_DE + entry.Key + "," + entry.Value + ";";
+            }
+
+            //letztes Semikolon entfernen
+            if (String_ColorNameList_DE.EndsWith(";"))
+            {
+                String_ColorNameList_DE = String_ColorNameList_DE.Remove(String_ColorNameList_DE.Length - 1);
+            }
+
+
+            //Aus der Dictionary die ColorNameList für die Config bilden
+            String_ColorNameList_EN = "";
+
+            foreach (KeyValuePair<string, string> entry in DictColorNames_EN)
+            {
+                //Farbcode und Namen zur ColorNameList hinzufuegen
+                String_ColorNameList_EN = String_ColorNameList_EN + entry.Key + "," + entry.Value + ";";
+            }
+
+            //letztes Semikolon entfernen
+            if (String_ColorNameList_EN.EndsWith(";"))
+            {
+                String_ColorNameList_EN = String_ColorNameList_EN.Remove(String_ColorNameList_EN.Length - 1);
+            }
+
+            SetSetting("ColorNameList_DE", String_ColorNameList_DE);
+            SetSetting("ColorNameList_EN", String_ColorNameList_EN);
         }
 
         private void button_createStuff_Click(object sender, EventArgs e)
@@ -949,8 +950,6 @@ namespace Crochet2Ebook
 
         private void createTextfiles()
         {
-            float Lauflaenge_Masche = 0;
-            float Lauflaenge_Wechsel = 0;
             float Breite_Masche = 0;
             float Hoehe_Masche = 0;
             string inhalt_Infofile = "";
@@ -1887,13 +1886,23 @@ namespace Crochet2Ebook
 
         }
 
-        private void radioButton_deutsch_CheckedChanged(object sender, EventArgs e)
+        private void Button_ToggleLanguage_Click(object sender, EventArgs e)
         {
-            generatePalettefromImage();
-        }
-
-        private void radioButton_englisch_CheckedChanged(object sender, EventArgs e)
-        {
+            //vor dem sprachwechsel die Farbnamen sichern
+            savecolornamestoConfig();
+            if (radioButton_deutsch.Checked)
+            {
+                radioButton_deutsch.Checked = false;
+                radioButton_englisch.Checked = true;
+                label1_Sprache.Text = "ENGLISCH";
+            }
+            else
+            {
+                radioButton_englisch.Checked = false;
+                radioButton_deutsch.Checked = true;
+                label1_Sprache.Text = "DEUTSCH";
+            }
+            //die Palette mit der neuen Sprache neu aufbauen
             generatePalettefromImage();
         }
     }
