@@ -36,8 +36,10 @@ namespace Crochet2Ebook
         private bool imageisloaded = false;
         private int selectedLine = 1;
         private PdfDocument myPDF;
-        private Dictionary<string, string> DictColorNames = new Dictionary<string, string>();
-        private string String_ColorNameList = "";
+        private Dictionary<string, string> DictColorNames_DE = new Dictionary<string, string>();
+        private Dictionary<string, string> DictColorNames_EN = new Dictionary<string, string>();
+        private string String_ColorNameList_DE = "";
+        private string String_ColorNameList_EN = "";
 
 
         private void button_Palette_generatefromImage_Click(object sender, EventArgs e)
@@ -71,13 +73,26 @@ namespace Crochet2Ebook
 
         private void addNewColor(String colorCode)
         {
+            bool deu = radioButton_deutsch.Checked;
+            bool eng = radioButton_englisch.Checked;
             
             String colorName = colorCode;
 
-            //Namen für die Farbe finden
-            if (DictColorNames.Keys.Contains(colorCode))
+            if (deu)
             {
-                colorName = DictColorNames[colorCode];
+                //Namen für die Farbe finden
+                if (DictColorNames_DE.Keys.Contains(colorCode))
+                {
+                    colorName = DictColorNames_DE[colorCode];
+                }
+            }
+            if (eng)
+            {
+                //Namen für die Farbe finden
+                if (DictColorNames_EN.Keys.Contains(colorCode))
+                {
+                    colorName = DictColorNames_EN[colorCode];
+                }
             }
             
 
@@ -565,7 +580,10 @@ namespace Crochet2Ebook
             string iniLine = GetSetting("Line");
             string iniTitle = GetSetting("Title");
             string iniDisplayRatioCorrection = GetSetting("DisplayRatioCorrection");
-            string iniColorNameList = GetSetting("ColorNameList");
+            string iniColorNameList_DE = GetSetting("ColorNameList_DE");
+            string iniColorNameList_EN = GetSetting("ColorNameList_EN");
+            bool deu = radioButton_deutsch.Checked;
+            bool eng = radioButton_englisch.Checked;
 
             //den Pfad der allgemein gehaltenen LaTex-Files aus der Config holen...
             latexfiles_path = GetSetting("latexfiles");
@@ -582,20 +600,39 @@ namespace Crochet2Ebook
             //Imagelist leeren
             imageList_Palette.Images.Clear();
 
-            //initialisiere die Dictionary mit den Farbnamen aus dem String iniColorNameList
-            if (iniColorNameList == null)
+
+
+            //initialisiere die Dictionary mit den Farbnamen aus dem String iniColorNameList_DE
+            if (iniColorNameList_DE == null)
             {
-                iniColorNameList = "";
+                iniColorNameList_DE = "";
             }
 
-            string[] iniFarbstrings = iniColorNameList.Split(';');
-            foreach (String Farbstring in iniFarbstrings)
+            string[] iniFarbstrings_DE = iniColorNameList_DE.Split(';');
+            foreach (String Farbstring in iniFarbstrings_DE)
             {
                 if (!Farbstring.Equals(""))
                 {
-                    DictColorNames.Add(Farbstring.Substring(0,7),Farbstring.Substring(8));
+                    DictColorNames_DE.Add(Farbstring.Substring(0,7),Farbstring.Substring(8));
                 }
             }
+
+
+            //initialisiere die Dictionary mit den Farbnamen aus dem String iniColorNameList_DE
+            if (iniColorNameList_EN == null)
+            {
+                iniColorNameList_EN = "";
+            }
+
+            string[] iniFarbstrings_EN = iniColorNameList_DE.Split(';');
+            foreach (String Farbstring in iniFarbstrings_EN)
+            {
+                if (!Farbstring.Equals(""))
+                {
+                    DictColorNames_EN.Add(Farbstring.Substring(0, 7), Farbstring.Substring(8));
+                }
+            }
+
 
 
             if (System.IO.File.Exists(iniDateiname))
@@ -636,40 +673,42 @@ namespace Crochet2Ebook
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
 
-            //Die Farbnamen aus der Palette zur Dictionary hinzufügen
-            foreach (ListViewItem p in listView_Palette.Items)
-            {
-                String Farbcode = p.SubItems[1].Text;
-                String Farbname = p.Text;
-
-                if (DictColorNames.ContainsKey(Farbcode))
-                {
-                    //falls bereits vorhanden wird mit dem neuen Namen ueberschrieben
-                    DictColorNames[Farbcode] = Farbname;
-                }
-                else
-                {
-                    //falls noch nicht vorhanden wird das keyvaluepaar angelegt
-                    DictColorNames.Add(Farbcode, Farbname);
-                }
-
-            }
+            addColornamesfromPalettetoDictionary();
 
             //Aus der Dictionary die ColorNameList für die Config bilden
-            String_ColorNameList = "";
+            String_ColorNameList_DE = "";
 
-            foreach (KeyValuePair<string, string> entry in DictColorNames)
+            foreach (KeyValuePair<string, string> entry in DictColorNames_DE)
             {
                 //Farbcode und Namen zur ColorNameList hinzufuegen
-                String_ColorNameList = String_ColorNameList + entry.Key + "," + entry.Value + ";";
+                String_ColorNameList_DE = String_ColorNameList_DE + entry.Key + "," + entry.Value + ";";
             }
 
             //letztes Semikolon entfernen
-            if(String_ColorNameList.EndsWith(";"))
+            if(String_ColorNameList_DE.EndsWith(";"))
             {
-                String_ColorNameList = String_ColorNameList.Remove(String_ColorNameList.Length - 1);
+                String_ColorNameList_DE = String_ColorNameList_DE.Remove(String_ColorNameList_DE.Length - 1);
             }
-            
+
+
+            //Aus der Dictionary die ColorNameList für die Config bilden
+            String_ColorNameList_EN = "";
+
+            foreach (KeyValuePair<string, string> entry in DictColorNames_EN)
+            {
+                //Farbcode und Namen zur ColorNameList hinzufuegen
+                String_ColorNameList_EN = String_ColorNameList_EN + entry.Key + "," + entry.Value + ";";
+            }
+
+            //letztes Semikolon entfernen
+            if (String_ColorNameList_EN.EndsWith(";"))
+            {
+                String_ColorNameList_EN = String_ColorNameList_EN.Remove(String_ColorNameList_EN.Length - 1);
+            }
+
+
+
+
 
 
             //Status, Settings und Farbnamen in die Config schreiben
@@ -682,7 +721,49 @@ namespace Crochet2Ebook
             }else{
                 SetSetting("DisplayRatioCorrection", "0");
             }
-            SetSetting("ColorNameList", String_ColorNameList);
+            SetSetting("ColorNameList_DE", String_ColorNameList_DE);
+            SetSetting("ColorNameList_EN", String_ColorNameList_EN);
+
+        }
+
+        private void addColornamesfromPalettetoDictionary()
+        {
+            bool deu = radioButton_deutsch.Checked;
+            bool eng = radioButton_englisch.Checked;
+
+            //Die Farbnamen aus der Palette zur Dictionary hinzufügen
+            foreach (ListViewItem p in listView_Palette.Items)
+            {
+                String Farbcode = p.SubItems[1].Text;
+                String Farbname = p.Text;
+
+                if (deu)
+                {
+                    if (DictColorNames_DE.ContainsKey(Farbcode))
+                    {
+                        //falls bereits vorhanden wird mit dem neuen Namen ueberschrieben
+                        DictColorNames_DE[Farbcode] = Farbname;
+                    }
+                    else
+                    {
+                        //falls noch nicht vorhanden wird das keyvaluepaar angelegt
+                        DictColorNames_DE.Add(Farbcode, Farbname);
+                    }
+                }
+                if (eng)
+                {
+                    if (DictColorNames_EN.ContainsKey(Farbcode))
+                    {
+                        //falls bereits vorhanden wird mit dem neuen Namen ueberschrieben
+                        DictColorNames_EN[Farbcode] = Farbname;
+                    }
+                    else
+                    {
+                        //falls noch nicht vorhanden wird das keyvaluepaar angelegt
+                        DictColorNames_EN.Add(Farbcode, Farbname);
+                    }
+                }
+            }
         }
 
         private void button_createStuff_Click(object sender, EventArgs e)
@@ -1804,6 +1885,16 @@ namespace Crochet2Ebook
 
             }
 
+        }
+
+        private void radioButton_deutsch_CheckedChanged(object sender, EventArgs e)
+        {
+            generatePalettefromImage();
+        }
+
+        private void radioButton_englisch_CheckedChanged(object sender, EventArgs e)
+        {
+            generatePalettefromImage();
         }
     }
 }
