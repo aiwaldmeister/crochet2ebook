@@ -716,26 +716,21 @@ namespace Crochet2Ebook
             System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien");
 
             //PDF generieren
-            if (checkBox_pdf.Checked)
+            if (checkBox_pdfvorlage.Checked)
             {
                 createPDF();
             }
 
             //Rasterbild generieren
-            if (checkBox_Rasterbild.Checked)
-            {
-                createImagefiles();
-            }
-
+            createImagefiles();
+            
 
             //Maschen und Farbwechsel ermitteln
             countMaschenUndFarbwechsel(Originalbild);
 
             //Infodatei generieren
-            if (checkBox_InfoDatei.Checked)
-            {
-                createTextfiles();
-            }
+            createTextfiles();
+
 
             //Verzeichnis fuer die Palettenbilder erstellen
             System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien/Palette");
@@ -808,15 +803,15 @@ namespace Crochet2Ebook
             increaseSubitemCounter(pixelfarbe_last, Farbende);
 
             //Farbliste nach Maschenzahlen absteigend sortieren
-            sortListviewPalette();
+            berechneLauflaengen();
+            sortierePalettenachLauflaengen();
 
             
 
         }
 
-        private void sortListviewPalette()
+        private void berechneLauflaengen()
         {
-
             //Lauflaengen_Werte aus den Textboxen holen
             float Lauflaenge_Masche = 0;
             float Lauflaenge_Wechsel = 0;
@@ -830,8 +825,10 @@ namespace Crochet2Ebook
                 Int32.TryParse(item.SubItems[3].Text, out Wechsel_DieseFarbe);
                 item.SubItems[4].Text = ((Lauflaenge_Masche * Maschenzahl_DieseFarbe) + (Lauflaenge_Wechsel * Wechsel_DieseFarbe)).ToString();
             }
+        }
 
-
+        private void sortierePalettenachLauflaengen()
+        {
             float toplauflaenge = 0;
             int topindex = 0;
             ListViewItem tmpitem = null;
@@ -980,12 +977,6 @@ namespace Crochet2Ebook
 
 
 
-
-
-            //Lauflaengen_Werte aus den Textboxen holen
-            float.TryParse(textBox_Lauflaenge_Masche.Text, out Lauflaenge_Masche);
-            float.TryParse(textBox_Lauflaenge_Wechsel.Text, out Lauflaenge_Wechsel);
-
             if (deu)
             {
                 inhalt_texfile_wollmengen = 
@@ -1006,13 +997,8 @@ namespace Crochet2Ebook
 
                 const double grammprometer = 0.4;
                 float Lauflaenge_DieseFarbe = 0;
-                int Maschenzahl_DieseFarbe = 0;
-                int Wechsel_DieseFarbe = 0;
-
-                Int32.TryParse(item.SubItems[2].Text, out Maschenzahl_DieseFarbe);
-                Int32.TryParse(item.SubItems[3].Text, out Wechsel_DieseFarbe);
-
-                Lauflaenge_DieseFarbe = (Lauflaenge_Masche * Maschenzahl_DieseFarbe) + (Lauflaenge_Wechsel * Wechsel_DieseFarbe);
+                float.TryParse(item.SubItems[4].Text, out Lauflaenge_DieseFarbe);
+                
                 string Lauflaenge_DieseFarbe_mitEinheit = "";
                 string Gewicht_DieseFarbe_mitEinheit = "";
                 string Farbname_DieseFarbe = "";
@@ -1253,8 +1239,6 @@ namespace Crochet2Ebook
             //pdf-generierung anstossen
             //System.Diagnostics.Process.Start("CMD.exe", "/C pdflatex.exe --output-directory=../ " + name_texfile_Main); //funktioniert so nicht...
 
-
-
         }
 
         private string entferneUmlautefuerLaTex(string sourceText)
@@ -1310,13 +1294,11 @@ namespace Crochet2Ebook
             newWidth = newWidth + (Linie_10 * 2);                                           //+Platz für eine Bildumrandung in Dicke der 10er Linien
 
             int newHeight = Originalbild.Height * Pixelgroesse;                             //Hoehe ohne Trennlinien
-            if (checkBox_Rasterbild_horizontal_auch.Checked)
-            {
-                newHeight = newHeight + ((Originalbild.Height - 1) * Linie_1);                     //+ Breite der 1-er Linien
-                newHeight = newHeight + ((Originalbild.Height - 1) / 5) * (Linie_5 - Linie_1);     //+ Breite der 5-er Linien  minus breite der wegfallenden 1er linien
-                newHeight = newHeight + ((Originalbild.Height - 1) / 10) * (Linie_10 - Linie_5);   //+ Breite der 10-er Linien  minus breite der wegfallenden 5er linien
-                newHeight = newHeight + (Linie_10 * 2);                                            //+Platz für Bildumrandung in Dicke der 10er Linien
-            }
+            newHeight = newHeight + ((Originalbild.Height - 1) * Linie_1);                     //+ Breite der 1-er Linien
+            newHeight = newHeight + ((Originalbild.Height - 1) / 5) * (Linie_5 - Linie_1);     //+ Breite der 5-er Linien  minus breite der wegfallenden 1er linien
+            newHeight = newHeight + ((Originalbild.Height - 1) / 10) * (Linie_10 - Linie_5);   //+ Breite der 10-er Linien  minus breite der wegfallenden 5er linien
+            newHeight = newHeight + (Linie_10 * 2);                                            //+Platz für Bildumrandung in Dicke der 10er Linien
+
 
 
             //Image anlegen
@@ -1367,9 +1349,10 @@ namespace Crochet2Ebook
                 }
                 cursorY = cursorY - Pixelgroesse;
 
+                //IF AUSKOMMENTIERT, AUSWAHL-CHECKBOX ENTFERNT... IST JETZT STANDARD
                 //Falls horizontales Raster eingestellt ist, die entsprechende Linie freilassen...
-                if (checkBox_Rasterbild_horizontal_auch.Checked)
-                {
+                //if (checkBox_Rasterbild_horizontal_auch.Checked)
+                //{
                     if (yy % 10 == 0)
                     {//10te Zeile
                         cursorY = cursorY - Linie_10;
@@ -1382,7 +1365,7 @@ namespace Crochet2Ebook
                     {//1te Zeile
                         cursorY = cursorY - Linie_1;
                     }
-                }
+                //}
             }
 
             //Originalbild als bmp ablegen
@@ -1427,17 +1410,16 @@ namespace Crochet2Ebook
             if (deu)
             {
                 myPDF.Info.Title = "Vorlage - " + Bildtitel;
-                myPDF.Info.Author = "Denise die Wollmaus";
                 myPDF.Info.Subject = "Vorlage";
-                myPDF.Info.Keywords = "XGraphics";
             }
             if (eng)
             {
                 myPDF.Info.Title = "Pattern - " + Bildtitel;
-                myPDF.Info.Author = "Denise die Wollmaus";
                 myPDF.Info.Subject = "Pattern";
-                myPDF.Info.Keywords = "XGraphics";
             }
+                myPDF.Info.Keywords = "XGraphics";
+                myPDF.Info.Author = "Denise die Wollmaus";
+
 
             ////////// Titelseite erstellen ////////////
             PdfPage page = myPDF.AddPage();
