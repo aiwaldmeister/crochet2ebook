@@ -30,10 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "42       ",
             "#FFFFFF"}, 0);
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("x 23", 0);
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("x 23", 0);
             this.listView_Palette = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -47,7 +47,7 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.button_Zoom = new System.Windows.Forms.Button();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDown_Zeile = new System.Windows.Forms.NumericUpDown();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.splitContainer5 = new System.Windows.Forms.SplitContainer();
@@ -55,6 +55,8 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button_ToggleOptions = new System.Windows.Forms.Button();
+            this.label1_Sprache = new System.Windows.Forms.Label();
+            this.Button_ToggleLanguage = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label_Rasterbild_Pixelgroesse = new System.Windows.Forms.Label();
             this.numericUpDown_Rasterbild_Pixelgroesse = new System.Windows.Forms.NumericUpDown();
@@ -64,7 +66,6 @@
             this.label_Rasterbild_Liniendichen = new System.Windows.Forms.Label();
             this.numericUpDown_Rasterbild_Liniendicke_5 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown_Rasterbild_Liniendicke_1 = new System.Windows.Forms.NumericUpDown();
-            this.radioButton_englisch = new System.Windows.Forms.RadioButton();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
             this.checkBox_Ratiocorrection = new System.Windows.Forms.CheckBox();
@@ -83,7 +84,6 @@
             this.label10 = new System.Windows.Forms.Label();
             this.textBox_Lauflaenge_Masche = new System.Windows.Forms.TextBox();
             this.textBox_Maschenbreite = new System.Windows.Forms.TextBox();
-            this.radioButton_deutsch = new System.Windows.Forms.RadioButton();
             this.label_Palette = new System.Windows.Forms.Label();
             this.button_create_stuff = new System.Windows.Forms.Button();
             this.label_Titel = new System.Windows.Forms.Label();
@@ -91,8 +91,8 @@
             this.checkBox_pdfvorlage = new System.Windows.Forms.CheckBox();
             this.textBox_Titel = new System.Windows.Forms.TextBox();
             this.pictureBox_Display = new System.Windows.Forms.PictureBox();
-            this.Button_ToggleLanguage = new System.Windows.Forms.Button();
-            this.label1_Sprache = new System.Windows.Forms.Label();
+            this.radioButton_englisch = new System.Windows.Forms.RadioButton();
+            this.radioButton_deutsch = new System.Windows.Forms.RadioButton();
             this.contextMenu_Palette.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -106,7 +106,7 @@
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Zeile)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
             this.splitContainer4.Panel1.SuspendLayout();
             this.splitContainer4.Panel2.SuspendLayout();
@@ -138,6 +138,7 @@
             this.listView_Palette.TabIndex = 1;
             this.listView_Palette.UseCompatibleStateImageBehavior = false;
             this.listView_Palette.View = System.Windows.Forms.View.SmallIcon;
+            this.listView_Palette.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.listView_Palette_KeyPress);
             this.listView_Palette.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listView_Palette_MouseDown);
             // 
             // columnHeader1
@@ -250,7 +251,7 @@
             // 
             // splitContainer3.Panel2
             // 
-            this.splitContainer3.Panel2.Controls.Add(this.numericUpDown1);
+            this.splitContainer3.Panel2.Controls.Add(this.numericUpDown_Zeile);
             this.splitContainer3.Panel2.Controls.Add(this.textBox1);
             this.splitContainer3.Size = new System.Drawing.Size(156, 80);
             this.splitContainer3.SplitterDistance = 36;
@@ -268,28 +269,28 @@
             this.button_Zoom.UseVisualStyleBackColor = true;
             this.button_Zoom.Click += new System.EventHandler(this.button_Zoom_Click);
             // 
-            // numericUpDown1
+            // numericUpDown_Zeile
             // 
-            this.numericUpDown1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numericUpDown1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.numericUpDown1.Enabled = false;
-            this.numericUpDown1.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numericUpDown1.Location = new System.Drawing.Point(0, 0);
-            this.numericUpDown1.Minimum = new decimal(new int[] {
+            this.numericUpDown_Zeile.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.numericUpDown_Zeile.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.numericUpDown_Zeile.Enabled = false;
+            this.numericUpDown_Zeile.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.numericUpDown_Zeile.Location = new System.Drawing.Point(0, 0);
+            this.numericUpDown_Zeile.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(156, 40);
-            this.numericUpDown1.TabIndex = 16;
-            this.numericUpDown1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDown1.Value = new decimal(new int[] {
+            this.numericUpDown_Zeile.Name = "numericUpDown_Zeile";
+            this.numericUpDown_Zeile.Size = new System.Drawing.Size(156, 40);
+            this.numericUpDown_Zeile.TabIndex = 16;
+            this.numericUpDown_Zeile.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numericUpDown_Zeile.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
+            this.numericUpDown_Zeile.ValueChanged += new System.EventHandler(this.numericUpDown_Zeile_ValueChanged);
             // 
             // textBox1
             // 
@@ -357,11 +358,11 @@
             this.listView_LineDescription.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView_LineDescription.Enabled = false;
             this.listView_LineDescription.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            listViewItem3.StateImageIndex = 0;
-            listViewItem3.UseItemStyleForSubItems = false;
+            listViewItem1.StateImageIndex = 0;
+            listViewItem1.UseItemStyleForSubItems = false;
             this.listView_LineDescription.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem3,
-            listViewItem4});
+            listViewItem1,
+            listViewItem2});
             this.listView_LineDescription.LabelEdit = true;
             this.listView_LineDescription.LargeImageList = this.imageList_Palette;
             this.listView_LineDescription.Location = new System.Drawing.Point(0, 0);
@@ -392,6 +393,27 @@
             this.button_ToggleOptions.Text = "mehr Optionen";
             this.button_ToggleOptions.UseVisualStyleBackColor = true;
             this.button_ToggleOptions.Click += new System.EventHandler(this.button_ToggleOptions_Click);
+            // 
+            // label1_Sprache
+            // 
+            this.label1_Sprache.AutoSize = true;
+            this.label1_Sprache.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1_Sprache.Location = new System.Drawing.Point(82, 401);
+            this.label1_Sprache.Name = "label1_Sprache";
+            this.label1_Sprache.Size = new System.Drawing.Size(66, 13);
+            this.label1_Sprache.TabIndex = 25;
+            this.label1_Sprache.Text = "DEUTSCH";
+            // 
+            // Button_ToggleLanguage
+            // 
+            this.Button_ToggleLanguage.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Button_ToggleLanguage.Location = new System.Drawing.Point(10, 396);
+            this.Button_ToggleLanguage.Name = "Button_ToggleLanguage";
+            this.Button_ToggleLanguage.Size = new System.Drawing.Size(67, 23);
+            this.Button_ToggleLanguage.TabIndex = 14;
+            this.Button_ToggleLanguage.Text = "Sprache:";
+            this.Button_ToggleLanguage.UseVisualStyleBackColor = true;
+            this.Button_ToggleLanguage.Click += new System.EventHandler(this.Button_ToggleLanguage_Click);
             // 
             // groupBox1
             // 
@@ -517,18 +539,6 @@
             0,
             0,
             0});
-            // 
-            // radioButton_englisch
-            // 
-            this.radioButton_englisch.AutoSize = true;
-            this.radioButton_englisch.Enabled = false;
-            this.radioButton_englisch.Location = new System.Drawing.Point(3, 567);
-            this.radioButton_englisch.Name = "radioButton_englisch";
-            this.radioButton_englisch.Size = new System.Drawing.Size(48, 17);
-            this.radioButton_englisch.TabIndex = 21;
-            this.radioButton_englisch.Text = "ENG";
-            this.radioButton_englisch.UseVisualStyleBackColor = true;
-            this.radioButton_englisch.Visible = false;
             // 
             // groupBox3
             // 
@@ -707,20 +717,6 @@
             this.textBox_Maschenbreite.TabIndex = 20;
             this.textBox_Maschenbreite.Text = "0,55";
             // 
-            // radioButton_deutsch
-            // 
-            this.radioButton_deutsch.AutoSize = true;
-            this.radioButton_deutsch.Checked = true;
-            this.radioButton_deutsch.Enabled = false;
-            this.radioButton_deutsch.Location = new System.Drawing.Point(3, 590);
-            this.radioButton_deutsch.Name = "radioButton_deutsch";
-            this.radioButton_deutsch.Size = new System.Drawing.Size(48, 17);
-            this.radioButton_deutsch.TabIndex = 21;
-            this.radioButton_deutsch.TabStop = true;
-            this.radioButton_deutsch.Text = "DEU";
-            this.radioButton_deutsch.UseVisualStyleBackColor = true;
-            this.radioButton_deutsch.Visible = false;
-            // 
             // label_Palette
             // 
             this.label_Palette.AutoSize = true;
@@ -798,26 +794,31 @@
             this.pictureBox_Display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_Display_MouseClick);
             this.pictureBox_Display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_Display_MouseClick);
             // 
-            // Button_ToggleLanguage
+            // radioButton_englisch
             // 
-            this.Button_ToggleLanguage.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Button_ToggleLanguage.Location = new System.Drawing.Point(10, 396);
-            this.Button_ToggleLanguage.Name = "Button_ToggleLanguage";
-            this.Button_ToggleLanguage.Size = new System.Drawing.Size(67, 23);
-            this.Button_ToggleLanguage.TabIndex = 14;
-            this.Button_ToggleLanguage.Text = "Sprache:";
-            this.Button_ToggleLanguage.UseVisualStyleBackColor = true;
-            this.Button_ToggleLanguage.Click += new System.EventHandler(this.Button_ToggleLanguage_Click);
+            this.radioButton_englisch.AutoSize = true;
+            this.radioButton_englisch.Enabled = false;
+            this.radioButton_englisch.Location = new System.Drawing.Point(3, 567);
+            this.radioButton_englisch.Name = "radioButton_englisch";
+            this.radioButton_englisch.Size = new System.Drawing.Size(48, 17);
+            this.radioButton_englisch.TabIndex = 21;
+            this.radioButton_englisch.Text = "ENG";
+            this.radioButton_englisch.UseVisualStyleBackColor = true;
+            this.radioButton_englisch.Visible = false;
             // 
-            // label1_Sprache
+            // radioButton_deutsch
             // 
-            this.label1_Sprache.AutoSize = true;
-            this.label1_Sprache.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1_Sprache.Location = new System.Drawing.Point(82, 401);
-            this.label1_Sprache.Name = "label1_Sprache";
-            this.label1_Sprache.Size = new System.Drawing.Size(66, 13);
-            this.label1_Sprache.TabIndex = 25;
-            this.label1_Sprache.Text = "DEUTSCH";
+            this.radioButton_deutsch.AutoSize = true;
+            this.radioButton_deutsch.Checked = true;
+            this.radioButton_deutsch.Enabled = false;
+            this.radioButton_deutsch.Location = new System.Drawing.Point(3, 590);
+            this.radioButton_deutsch.Name = "radioButton_deutsch";
+            this.radioButton_deutsch.Size = new System.Drawing.Size(48, 17);
+            this.radioButton_deutsch.TabIndex = 21;
+            this.radioButton_deutsch.TabStop = true;
+            this.radioButton_deutsch.Text = "DEU";
+            this.radioButton_deutsch.UseVisualStyleBackColor = true;
+            this.radioButton_deutsch.Visible = false;
             // 
             // Form1
             // 
@@ -850,7 +851,7 @@
             this.splitContainer3.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Zeile)).EndInit();
             this.splitContainer4.Panel1.ResumeLayout(false);
             this.splitContainer4.Panel2.ResumeLayout(false);
             this.splitContainer4.Panel2.PerformLayout();
@@ -891,7 +892,7 @@
         private System.Windows.Forms.ListView listView_LineDescription;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown numericUpDown_Zeile;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.Button button_create_stuff;

@@ -42,83 +42,122 @@ namespace Crochet2Ebook
         private string String_ColorNameList_EN = "";
 
 
+
+        //Klicks auf Buttons
+        private void button_ToggleOptions_Click(object sender, EventArgs e)
+        {
+            if (splitContainer4.Panel2Collapsed)
+            {
+                splitContainer4.Panel2Collapsed = false;
+                button_ToggleOptions.Text = "Optionen verbergen";
+            }
+            else
+            {
+                splitContainer4.Panel2Collapsed = true;
+                button_ToggleOptions.Text = "Optionen anzeigen";
+            }
+        }
+
+        private void Button_ToggleLanguage_Click(object sender, EventArgs e)
+        {
+            //vor dem sprachwechsel die Farbnamen sichern
+            savecolornamestoConfig();
+            if (radioButton_deutsch.Checked)
+            {
+                radioButton_deutsch.Checked = false;
+                radioButton_englisch.Checked = true;
+                label1_Sprache.Text = "ENGLISCH";
+            }
+            else
+            {
+                radioButton_englisch.Checked = false;
+                radioButton_deutsch.Checked = true;
+                label1_Sprache.Text = "DEUTSCH";
+            }
+            //die Palette mit der neuen Sprache neu aufbauen
+            generatePalettefromImage();
+        }
+
+        private void button_createStuff_Click(object sender, EventArgs e)
+        {
+
+            if (Bildtitel.Equals(""))
+            {
+                MessageBox.Show("Bitte einen Bildtitel eingeben","Fehler!",MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int unnamedcolors_count = 0;
+            foreach (ListViewItem p in listView_Palette.Items)
+            {
+                if (p.Text.Contains("#"))
+                {
+                    unnamedcolors_count++;
+                }
+            }
+            if (unnamedcolors_count > 0)
+            {
+                DialogResult result = MessageBox.Show(unnamedcolors_count + " Farben der Farbpalette haben noch keinen sprechenden Namen.\n\nWirklich fortfahren?", "Achtung!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
+            }
+
+
+
+            System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien");
+
+            //PDF generieren
+            if (checkBox_pdfvorlage.Checked)
+            {
+                createPDF();
+            }
+
+            //Rasterbild generieren
+            createImagefiles();
+            
+
+            //Maschen und Farbwechsel ermitteln
+            countMaschenUndFarbwechsel(Originalbild);
+
+            //Infodatei generieren
+            createTextfiles();
+
+
+            //Verzeichnis fuer die Palettenbilder erstellen
+            System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien/Palette");
+            //Farbbilder abspeichern
+            foreach (ListViewItem item in listView_Palette.Items)
+            {
+                String farbname = item.SubItems[0].Text;
+                String Farbbildkey = item.SubItems[1].Text;
+                String filename = Bildtitel + "_Dateien/Palette/" + entferneUmlautefuerDateinamen(farbname) + ".png";
+                imageList_Palette.Images[Farbbildkey].Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+            }
+
+
+            //Verzeichnis mit Ergebnissen öffnen
+            Process.Start("explorer.exe", Bildtitel + "_Dateien");
+            
+            //alle Generierungen beendet... alles zurück auf Anfang...
+            progressBar1.Visible = false;
+
+            numericUpDown_Zeile.Value = 1;
+            selectedLine = Originalbild.Height - (int)numericUpDown_Zeile.Value;
+            Zeile_Auswerten(selectedLine);
+
+        }
+        
         private void button_Palette_generatefromImage_Click(object sender, EventArgs e)
         {
             generatePalettefromImage();
         }
 
-        public static String ColortoHex(Color Col)
+        private void button1_Click(object sender, EventArgs e)
         {
-            return ColorTranslator.ToHtml(Col);
-        }
-
-        public static Color HextoColor(string colorCode)
-        {
-            return System.Drawing.ColorTranslator.FromHtml(colorCode);
-        }
-
-        private void generatePalettefromImage()
-        {
-            List<Color> Farbliste;
-            Farbliste = scanImageforColors(Originalbild);
-
-            String colorCode = "";
-            listView_Palette.Items.Clear(); //Palette leeren...
-            foreach (Color Col in Farbliste)  //...und neu befuellen
-            {
-                colorCode = ColortoHex(Col);
-                addNewColor(colorCode);
-            }
-        }
-
-        private void addNewColor(String colorCode)
-        {
-            bool deu = radioButton_deutsch.Checked;
-            bool eng = radioButton_englisch.Checked;
-            
-            String colorName = colorCode;
-
-            if (deu)
-            {
-                //Namen für die Farbe finden
-                if (DictColorNames_DE.Keys.Contains(colorCode))
-                {
-                    colorName = DictColorNames_DE[colorCode];
-                }
-            }
-            if (eng)
-            {
-                //Namen für die Farbe finden
-                if (DictColorNames_EN.Keys.Contains(colorCode))
-                {
-                    colorName = DictColorNames_EN[colorCode];
-                }
-            }
-            
-
-            ListViewItem item = listView_Palette.Items.Add(colorName);
-            item.SubItems.Add(colorCode);
-            item.SubItems.Add(0.ToString());   //für die Maschenzahl dieser Farbe
-            item.SubItems.Add(0.ToString());   //für die Anzahl Farbanfaenge mit dieser Farbe
-            item.SubItems.Add(0.ToString());   //für die Anzahl Farbenden mit dieser Farbe
-
-
-            //neues Bild für die Farbvorschau in die Imagelist aufnehmen...
-            imageList_Palette.Images.Add(colorCode, generateColorPreviewImage(HextoColor(colorCode)));
-            item.ImageKey = colorCode;  //...und ans item haengen
-            listView_Palette.ShowItemToolTips = true;
-            item.ToolTipText = colorCode;
-        }
-
-        private Image generateColorPreviewImage(Color Farbe)
-        {
-            Bitmap bmp = new Bitmap(64, 64);
-            Pen pen = new Pen(Color.Black, 4);
-            Graphics G = Graphics.FromImage(bmp);
-            SolidBrush brush = new SolidBrush(Farbe);
-            G.FillRectangle(brush, 0, 0, 64, 64);
-            G.DrawRectangle(pen, 0, 0, 64, 64);
-            return bmp;
+           textBox1.Text =  Zeile_Auswerten(Originalbild.Height -1);
+            Zeilemarkieren(Originalbild.Height - 1);
         }
 
         private void button_LoadImage_Click(object sender, EventArgs e)
@@ -133,324 +172,109 @@ namespace Crochet2Ebook
                 Bildtitel = textBox_Titel.Text;
                 this.Text = Bildtitel + " - Pixelcounter 2.0";
 
-                numericUpDown1.Value = 1;
-                selectedLine = Originalbild.Height - (int)numericUpDown1.Value;
+                numericUpDown_Zeile.Value = 1;
+                selectedLine = Originalbild.Height - (int)numericUpDown_Zeile.Value;
                 Zeile_Auswerten(selectedLine);
                 
             }
         }
 
-        private void ladeBild()
+        private void button_Zoom_Click(object sender, EventArgs e)
         {
-                Originalbild = new Bitmap(Dateiname);
+            toggleZoom();
+        }        
+
+
+        //Durch sonstige interaktion mit Oberfläche ausgelöste Events
+        private void checkBox_Ratiocorrection_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_Ratiocorrection.Checked)
+            {
+                DisplayRatioCorrection = true;
+            }
+            else
+            {
+                DisplayRatioCorrection = false;
+            }
+
+            if (imageisloaded)
+            {
                 generateZoomedImage();
                 Displaybild = Zoombild;
-                generatePalettefromImage();
-                refreshDisplay();
-                imageisloaded = true;
-                pictureBox_Display.Visible = true;
                 fitImagetoFrame();
                 
-                listView_LineDescription.Enabled = true;
-                numericUpDown1.Enabled = true;
-                button_Zoom.Enabled = true;
-                button_create_stuff.Enabled = true;
-                
-                numericUpDown1.Maximum = Originalbild.Height;
-                
-            
-        }
-
-        private void selectLine(int v)
-        {
-            selectedLine = v;
-        }
-
-        private void generateZoomedImage()
-        {
-            if (DisplayRatioCorrection)
-            {
-                active_RatioCorrFactor = RatioCorrFactor_option;
-            }
-            else
-            {
-                active_RatioCorrFactor = 1;
-            }
-            int newWidth, newHeight;
-
-            int maxWidth = splitContainer1.Panel2.Width-2;
-            int maxHeight = splitContainer1.Panel2.Height-2;
-
-            if (((double)Originalbild.Width * active_RatioCorrFactor) / ((double)Originalbild.Height) > (double)maxWidth / (double)maxHeight)
-            {//Bild ist (mit korrekturfaktor) breiter als hoch... breite auf breite der Picturebox setzen, höhe verhältnis
-                newWidth = maxWidth;
-                newHeight = (int)((((double)maxWidth / (double)Originalbild.Width) * (double)Originalbild.Height) / active_RatioCorrFactor);
-            }
-            else
-            {//Bild ist (mit korrekturfaktor) hoeher als breit... hoehe auf hoehe der Picturebox setzen, breite im verhältnis
-                newHeight = (int)((double)maxHeight);
-                newWidth = (int)((((double)maxHeight / (double)Originalbild.Height) * (double)Originalbild.Width) * active_RatioCorrFactor);
-            }
-
-            //newHeight = newHeight * additionalZoomfactor;
-            //newWidth = newWidth * additionalZoomfactor;
-            try
-            {
-                Zoombild = new Bitmap(newWidth, newHeight);
-
-            }
-            catch (Exception)
-            {
-                
-            }
-            using (Graphics gr = Graphics.FromImage(Zoombild))
-            {
-                gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-                gr.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-                gr.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-                gr.DrawImage(Originalbild, new Rectangle(0, 0, newWidth, newHeight));
+                Zeilemarkieren(selectedLine);
+                refreshDisplay();
             }
         }
 
-        private void refreshDisplay()
+        private void textBox_Titel_TextChanged(object sender, EventArgs e)
         {
-              
-              pictureBox_Display.Image = Displaybild;
-//            pictureBox_Display.Refresh();
-//            pictureBox_Display.Update();
+            Bildtitel = textBox_Titel.Text;
+            this.Text = Bildtitel + " - Pixelcounter 2.0";
         }
 
-        private List<Color> scanImageforColors(Bitmap Bild)
-        {
-            List<Color> genPalette = new List<Color>();
-
-            bool farbebereitsvorhanden = false;
-            Color pixelfarbe;
-
-            progressBar1.Maximum = Bild.Width;
-            progressBar1.Minimum = 0;
-            progressBar1.Value = 0;
-            progressBar1.Visible = true;
-
-            try
+        private void pictureBox_Display_MouseClick(object sender, MouseEventArgs e)
+        {   if(e.Button == MouseButtons.Left)
             {
-                for (int x = 0; x < Bild.Size.Width; x++)
+                numericUpDown_Zeile.Value = Originalbild.Height - (int)((double)e.Y / getZoomFactorY());
+                textBox_Beispielreihe1.Text = numericUpDown_Zeile.Value.ToString();
+                textBox_Beispielreihe2.Text = (numericUpDown_Zeile.Value +1 ).ToString();
+                selectedLine = Originalbild.Height - (int)numericUpDown_Zeile.Value;
+                Zeile_Auswerten(selectedLine);
+            }
+        }
+
+        private void splitContainer4_Panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void textBox_Ratokorrfaktor_TextChanged(object sender, EventArgs e)
+        {
+            double faktor = RatioCorrFactor_option;
+            if (double.TryParse(textBox_Ratokorrfaktor.Text, out faktor))
+            {
+                if(faktor>0)
                 {
-                    progressBar1.Value = x;
-                    for (int y = 0; y < Bild.Size.Height; y++)
+                    RatioCorrFactor_option = faktor;
+                    if (imageisloaded)
                     {
-                        //Falls bereits 100 Farben gefunden wurden, Benutzer warnen und ggf. abbrechen.
-                        if(genPalette.Count >= 1000)
-                        {
-                            DialogResult res = MessageBox.Show("Es wurden schon 1000 verschiedene Farben gefunden!\nWirklich weitermachen?","Sehr viele Farben!",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
-                            if (res == DialogResult.No)
-                            {
-                            return genPalette;
-                            }
-                        }
+                        generateZoomedImage();
+                        Displaybild = Zoombild;
+                        fitImagetoFrame();
 
-                        pixelfarbe = Bild.GetPixel(x, y);
-                        farbebereitsvorhanden = false;
-                        foreach (Color listfarbe in genPalette)
-                        {
-                            if (listfarbe == pixelfarbe)
-                            {
-                                farbebereitsvorhanden = true;
-                            }
-                        }
-                        if (!farbebereitsvorhanden)
-                        {
-                            genPalette.Add(pixelfarbe);
-                        }
+                        Zeilemarkieren(selectedLine);
+                        refreshDisplay();
                     }
                 }
+
             }
-            catch (Exception e)
-            {
-                System.Console.WriteLine("Exception: " + e);
-            }
-            progressBar1.Visible = false;
-            return genPalette;
 
         }
 
-        private string Zeile_Auswerten(int Zeile)
+        private void Form1_SizeChanged(object sender, EventArgs e)
         {
-            string LineDescription = "";
-            listView_LineDescription.Clear();
-           
-            Zeilemarkieren(Zeile);
-            Color laufendeFarbe = Originalbild.GetPixel(Originalbild.Width - 1, Zeile);
-            Color pixelfarbe = laufendeFarbe;
-            int pixelcounter = 0;
-            int startpixel = 0;
-            int endpixel = Originalbild.Width;
-
-
- 
-            for (int i = Originalbild.Width; i >= 1; i--)
+            //additionalZoomfactor = 1;
+            if (imageisloaded)
             {
-                startpixel = i+1; //noch für die laufende Farbe
-                pixelfarbe = Originalbild.GetPixel(i - 1, Zeile);
-                if (pixelfarbe == laufendeFarbe)
-                {
-                    //pixelzähler erhöhen
-                    pixelcounter++;
-                }
-                else
-                {   
-                    
-                    //Ausgeben der beendeten Farbe
-                    LineDescription = LineDescription + getLaufendeFarbe(pixelcounter, laufendeFarbe) + " ";
-                    AddItemtoLineDescription(pixelcounter, startpixel, endpixel, laufendeFarbe);
-                    laufendeFarbe = pixelfarbe;
-                    
-                    //nächste Farbe anfangen
-                    pixelcounter = 1;
-                    endpixel = i; //schon für die neue Farbe
-                }
+                generateZoomedImage();
+                fitImagetoFrame();
+                Zeilemarkieren(selectedLine);
             }
-            //Ausgeben der letzten Farbe
-            startpixel--;
-            LineDescription = LineDescription + getLaufendeFarbe(pixelcounter, laufendeFarbe);
-            AddItemtoLineDescription(pixelcounter, startpixel, endpixel, laufendeFarbe);
-
-            textBox1.Text = LineDescription;
-            return LineDescription;
-        }
-
-        private void AddItemtoLineDescription(int pixelanzahl, int startpixel, int endpixel, Color laufendeFarbe)
-        {
-            foreach (ListViewItem PaletteItem in listView_Palette.Items)
-            {
-                if (HextoColor(PaletteItem.SubItems[1].Text) == laufendeFarbe)
-                {
-                    var myNewItem = listView_LineDescription.Items.Add((ListViewItem)PaletteItem.Clone());
-                    myNewItem.ImageIndex = PaletteItem.ImageIndex;
-                    myNewItem.ImageKey = PaletteItem.ImageKey;
-                    string Farbname = myNewItem.Text;
-
-                    myNewItem.Text = " " + pixelanzahl.ToString(); // + " " + myNewItem.Text;
-
-                    myNewItem.SubItems.Add(startpixel.ToString());
-                    myNewItem.SubItems.Add(pixelanzahl.ToString());
-                    myNewItem.SubItems.Add(Farbname);
-
-
-                    myNewItem.Font = listView_LineDescription.Font;
-
-                    break;
-                }
-
-            }
-        }
-
-        private string getLaufendeFarbe(int pixelcounter, Color laufendeFarbe)
-        {
-            string Farbname = "";
-            //Farbname aus der Palette ermitteln
-            foreach (ListViewItem item in listView_Palette.Items)
-            {
-                if (HextoColor(item.SubItems[1].Text) == laufendeFarbe)
-                {
-                    Farbname = item.Text;
-                    
-                    break;
-                }
-                
-            }
-
-            return pixelcounter + "_" + Farbname;
-        }
-
-        private void Zeilemarkieren(int zumarkierendeZeile)
-        {
-
-            Displaybild = Zoombild;
             
-            float ZoomFactorY = getZoomFactorY();
-
-            Rectangle markierung = new Rectangle(0, (int)(Math.Round(zumarkierendeZeile*ZoomFactorY)), Displaybild.Width-1, (int)(Math.Round(ZoomFactorY)));
-            Color markierungsfarbe1 = Color.Black;
-            Color markierungsfarbe2 = Color.White;
-            
-            int Stiftdicke = 1;
-            if (ZoomFactorY > 8) { Stiftdicke = 2; }
-            if (ZoomFactorY > 12) { Stiftdicke = 3; }
-            
-            Pen mypen1 = new Pen(markierungsfarbe1, Stiftdicke);
-            Pen mypen2 = new Pen(markierungsfarbe2, Stiftdicke);
-            mypen2.DashPattern = new float[] { 2, 2 };
-
-            using (Graphics grD = Graphics.FromImage(Displaybild))
-            {
-                grD.DrawRectangle(mypen1, markierung);
-                grD.DrawRectangle(mypen2, markierung);
-
-                grD.Dispose();
-            } 
-
-            //workaround damit die alte Markierung weggeht ohne ein neues image zu erzeugen;
-            generateZoomedImage();
-            refreshDisplay();
-            
-
-            Farbbereichmarkieren(zumarkierendeZeile);
+        }
+        
+        private void numericUpDown_Zeile_ValueChanged(object sender, EventArgs e)
+        {
+            selectedLine = Originalbild.Height - (int)numericUpDown_Zeile.Value;
+            Zeile_Auswerten(selectedLine);
         }
 
-        private void Farbbereichmarkieren(int zumarkierendeZeile)
+        private void listView_LineDescription_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
+            Zeilemarkieren(selectedLine);
 
-            foreach (ListViewItem selection in listView_LineDescription.SelectedItems)
-            {
-               
-                Displaybild = Zoombild;
-
-
-                int startpixel = 0;
-                int pixelanzahl = 0;
-
-                int.TryParse(selection.SubItems[5].Text, out startpixel);
-                int.TryParse(selection.SubItems[6].Text, out pixelanzahl);
-
-                float ZoomFactorX = getZoomFactorX();
-                float ZoomFactorY = getZoomFactorY();
-
-                Rectangle markierung = new Rectangle((int)Math.Round(((startpixel -1) * ZoomFactorX)), (int)Math.Round((zumarkierendeZeile * ZoomFactorY)), (int)Math.Round((pixelanzahl * ZoomFactorX)), (int)Math.Round((ZoomFactorY)));
-                Color markierungsfarbe1 = Color.Black;
-                Color markierungsfarbe2 = Color.White;
-
-                int Stiftdicke = 1;
-                if (ZoomFactorY > 8) { Stiftdicke = 2; }
-                if (ZoomFactorY > 12) { Stiftdicke = 3; }
-
-                Pen mypen1 = new Pen(markierungsfarbe1, Stiftdicke);
-                Pen mypen2 = new Pen(markierungsfarbe2, Stiftdicke);
-                mypen2.DashPattern = new float[] { 2, 2 };
-
-                using (Graphics grD = Graphics.FromImage(Displaybild))
-                {
-                    grD.DrawRectangle(mypen1, markierung);
-                    grD.DrawRectangle(mypen2, markierung);
-
-                    grD.Dispose();
-                }
-                
-            }
-
-            //workaround damit die alte Markierung weggeht ohne ein neues image zu erzeugen;
-            generateZoomedImage();
-            refreshDisplay();
-        }
-
-        private float getZoomFactorX()
-        {
-            return (float)Zoombild.Width / (float)Originalbild.Width;
-        }
-
-        private float getZoomFactorY()
-        {
-            return (float)Zoombild.Height / (float)Originalbild.Height;
         }
 
         private void listView_Palette_MouseDown(object sender, MouseEventArgs e)
@@ -470,108 +294,21 @@ namespace Crochet2Ebook
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-           textBox1.Text =  Zeile_Auswerten(Originalbild.Height -1);
-            Zeilemarkieren(Originalbild.Height - 1);
-        }
-
         private void dieseFarbeUmbenennenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             listView_Palette.FocusedItem.BeginEdit();
         }
 
-        private static string GetSetting(string key)
+        private void listView_Palette_KeyPress(object sender, KeyPressEventArgs e)
         {
-            return ConfigurationManager.AppSettings[key];
-        }
-
-        private static void SetSetting(string key, string value)
-        {
-            Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            if (configuration.AppSettings.Settings[key] == null)
+            if (e.KeyChar == (char)Keys.Enter || e.KeyChar == (char)Keys.F2)
             {
-                configuration.AppSettings.Settings.Add(key, value);
-            }
-            else
-            {
-                configuration.AppSettings.Settings[key].Value = value;
-            }
-         
-            configuration.Save(ConfigurationSaveMode.Full, true);
-            ConfigurationManager.RefreshSection("AppSettings");
-        }
-
-        private void fitImagetoFrame()
-        {
-            if (imageisloaded)
-            {
-                //generateZoomedImage();
-
-                //Picturebox auf Größe des Bildes bringen
-                pictureBox_Display.Size = Displaybild.Size;
-
-                //Zoomfaktor auf die Picturebox anwenden
-                pictureBox_Display.Height = pictureBox_Display.Height * additionalZoomfactor;
-                pictureBox_Display.Width = pictureBox_Display.Width * additionalZoomfactor;
-
-                //PictureBox mittig im Panel platzieren
-                int PosX = 0;
-                int PosY = 0;
-                if(pictureBox_Display.Width < splitContainer1.Panel2.Width)
-                {
-                    PosX = (int)(0.5 * (splitContainer1.Panel2.Width - pictureBox_Display.Width));
-                }
-
-                if (pictureBox_Display.Height < splitContainer1.Panel2.Height)
-                {
-                    PosY = (int)(0.5 * (splitContainer1.Panel2.Height - pictureBox_Display.Height));
-                }
-    
-
-                Displaybild = Zoombild;
-                refreshDisplay();
-
-                Point myLocation = new Point(PosX,PosY);
-                pictureBox_Display.Location = myLocation;
+                listView_Palette.FocusedItem.BeginEdit();
             }
         }
+
         
-        private void button_Zoom_Click(object sender, EventArgs e)
-        {
-            toggleZoom();
-        }
-
-        private void toggleZoom()
-        {
-            if(additionalZoomfactor < 8)
-            {
-                additionalZoomfactor = additionalZoomfactor * 2;
-            }
-            else
-            {
-                additionalZoomfactor = 1;
-            }
-            
-            generateZoomedImage();
-            fitImagetoFrame();
-            Displaybild = Zoombild;
-            Zeilemarkieren(selectedLine);
-            refreshDisplay();
-        }
-        
-        private void listView_LineDescription_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-        {
-            Zeilemarkieren(selectedLine);
-
-        }
-
-        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
-        {
-            selectedLine = Originalbild.Height - (int)numericUpDown1.Value;
-            Zeile_Auswerten(selectedLine);
-        }
-
+        //Start und Ende des Programms
         private void Form1_Load(object sender, EventArgs e)
         {
             listView_LineDescription.Clear();
@@ -657,22 +394,10 @@ namespace Crochet2Ebook
                 }
 
                 ladeBild();
-                numericUpDown1.Value = iniLineint;
-                selectedLine = Originalbild.Height - (int)numericUpDown1.Value;
+                numericUpDown_Zeile.Value = iniLineint;
+                selectedLine = Originalbild.Height - (int)numericUpDown_Zeile.Value;
                 Zeile_Auswerten(selectedLine);
             }
-        }
-
-        private void Form1_SizeChanged(object sender, EventArgs e)
-        {
-            //additionalZoomfactor = 1;
-            if (imageisloaded)
-            {
-                generateZoomedImage();
-                fitImagetoFrame();
-                Zeilemarkieren(selectedLine);
-            }
-            
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -680,7 +405,7 @@ namespace Crochet2Ebook
             //Status, Settings und Farbnamen in die Config schreiben
             SetSetting("Image", Dateiname);
             SetSetting("Title", Bildtitel);
-            SetSetting("Line",numericUpDown1.Value.ToString());
+            SetSetting("Line",numericUpDown_Zeile.Value.ToString());
             if (DisplayRatioCorrection)
             {
                 SetSetting("DisplayRatioCorrection", "1");
@@ -693,149 +418,446 @@ namespace Crochet2Ebook
 
         }
 
-        private void savecolornamestoConfig()
+
+        //Farbpalette
+        private void generatePalettefromImage()
+        {
+            List<Color> Farbliste;
+            Farbliste = scanImageforColors(Originalbild);
+
+            String colorCode = "";
+            listView_Palette.Items.Clear(); //Palette leeren...
+            foreach (Color Col in Farbliste)  //...und neu befuellen
+            {
+                colorCode = ColortoHex(Col);
+                addNewColor(colorCode);
+            }
+        }
+
+        private List<Color> scanImageforColors(Bitmap Bild)
+        {
+            List<Color> genPalette = new List<Color>();
+
+            bool farbebereitsvorhanden = false;
+            Color pixelfarbe;
+
+            progressBar1.Maximum = Bild.Width;
+            progressBar1.Minimum = 0;
+            progressBar1.Value = 0;
+            progressBar1.Visible = true;
+
+            try
+            {
+                for (int x = 0; x < Bild.Size.Width; x++)
+                {
+                    progressBar1.Value = x;
+                    for (int y = 0; y < Bild.Size.Height; y++)
+                    {
+                        //Falls bereits 100 Farben gefunden wurden, Benutzer warnen und ggf. abbrechen.
+                        if(genPalette.Count >= 1000)
+                        {
+                            DialogResult res = MessageBox.Show("Es wurden schon 1000 verschiedene Farben gefunden!\nWirklich weitermachen?","Sehr viele Farben!",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+                            if (res == DialogResult.No)
+                            {
+                            return genPalette;
+                            }
+                        }
+
+                        pixelfarbe = Bild.GetPixel(x, y);
+                        farbebereitsvorhanden = false;
+                        foreach (Color listfarbe in genPalette)
+                        {
+                            if (listfarbe == pixelfarbe)
+                            {
+                                farbebereitsvorhanden = true;
+                            }
+                        }
+                        if (!farbebereitsvorhanden)
+                        {
+                            genPalette.Add(pixelfarbe);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine("Exception: " + e);
+            }
+            progressBar1.Visible = false;
+            return genPalette;
+
+        }
+
+        private void addNewColor(String colorCode)
         {
             bool deu = radioButton_deutsch.Checked;
             bool eng = radioButton_englisch.Checked;
+            
+            String colorName = colorCode;
 
-            //Die Farbnamen aus der Palette zur Dictionary hinzufügen
-            foreach (ListViewItem p in listView_Palette.Items)
+            if (deu)
             {
-                String Farbcode = p.SubItems[1].Text;
-                String Farbname = p.Text;
-
-                if (deu)
+                //Namen für die Farbe finden
+                if (DictColorNames_DE.Keys.Contains(colorCode))
                 {
-                    if (DictColorNames_DE.ContainsKey(Farbcode))
-                    {
-                        //falls bereits vorhanden wird mit dem neuen Namen ueberschrieben
-                        DictColorNames_DE[Farbcode] = Farbname;
-                    }
-                    else
-                    {
-                        //falls noch nicht vorhanden wird das keyvaluepaar angelegt
-                        DictColorNames_DE.Add(Farbcode, Farbname);
-                    }
-                }
-                if (eng)
-                {
-                    if (DictColorNames_EN.ContainsKey(Farbcode))
-                    {
-                        //falls bereits vorhanden wird mit dem neuen Namen ueberschrieben
-                        DictColorNames_EN[Farbcode] = Farbname;
-                    }
-                    else
-                    {
-                        //falls noch nicht vorhanden wird das keyvaluepaar angelegt
-                        DictColorNames_EN.Add(Farbcode, Farbname);
-                    }
+                    colorName = DictColorNames_DE[colorCode];
                 }
             }
-
-            //Aus der Dictionary die ColorNameList für die Config bilden
-            String_ColorNameList_DE = "";
-
-            foreach (KeyValuePair<string, string> entry in DictColorNames_DE)
+            if (eng)
             {
-                //Farbcode und Namen zur ColorNameList hinzufuegen
-                String_ColorNameList_DE = String_ColorNameList_DE + entry.Key + "," + entry.Value + ";";
+                //Namen für die Farbe finden
+                if (DictColorNames_EN.Keys.Contains(colorCode))
+                {
+                    colorName = DictColorNames_EN[colorCode];
+                }
             }
+            
 
-            //letztes Semikolon entfernen
-            if (String_ColorNameList_DE.EndsWith(";"))
-            {
-                String_ColorNameList_DE = String_ColorNameList_DE.Remove(String_ColorNameList_DE.Length - 1);
-            }
+            ListViewItem item = listView_Palette.Items.Add(colorName);
+            item.SubItems.Add(colorCode);
+            item.SubItems.Add(0.ToString());   //für die Maschenzahl dieser Farbe
+            item.SubItems.Add(0.ToString());   //für die Anzahl Farbanfaenge mit dieser Farbe
+            item.SubItems.Add(0.ToString());   //für die Anzahl Farbenden mit dieser Farbe
 
 
-            //Aus der Dictionary die ColorNameList für die Config bilden
-            String_ColorNameList_EN = "";
-
-            foreach (KeyValuePair<string, string> entry in DictColorNames_EN)
-            {
-                //Farbcode und Namen zur ColorNameList hinzufuegen
-                String_ColorNameList_EN = String_ColorNameList_EN + entry.Key + "," + entry.Value + ";";
-            }
-
-            //letztes Semikolon entfernen
-            if (String_ColorNameList_EN.EndsWith(";"))
-            {
-                String_ColorNameList_EN = String_ColorNameList_EN.Remove(String_ColorNameList_EN.Length - 1);
-            }
-
-            SetSetting("ColorNameList_DE", String_ColorNameList_DE);
-            SetSetting("ColorNameList_EN", String_ColorNameList_EN);
+            //neues Bild für die Farbvorschau in die Imagelist aufnehmen...
+            imageList_Palette.Images.Add(colorCode, generateColorPreviewImage(HextoColor(colorCode)));
+            item.ImageKey = colorCode;  //...und ans item haengen
+            listView_Palette.ShowItemToolTips = true;
+            item.ToolTipText = colorCode;
         }
 
-        private void button_createStuff_Click(object sender, EventArgs e)
+        private Image generateColorPreviewImage(Color Farbe)
+        {
+            Bitmap bmp = new Bitmap(64, 64);
+            Pen pen = new Pen(Color.Black, 4);
+            Graphics G = Graphics.FromImage(bmp);
+            SolidBrush brush = new SolidBrush(Farbe);
+            G.FillRectangle(brush, 0, 0, 64, 64);
+            G.DrawRectangle(pen, 0, 0, 64, 64);
+            return bmp;
+        }
+
+        private void sortierePalettenachLauflaengen()
+        {
+            float toplauflaenge = 0;
+            int topindex = 0;
+            ListViewItem tmpitem = null;
+
+            for (int i = 0; i < listView_Palette.Items.Count; i++)
+            {
+                toplauflaenge = 0;
+                for (int k = 0; k < listView_Palette.Items.Count - i; k++)
+                {
+                    float thislauflaenge = 0;
+                    float.TryParse(listView_Palette.Items[k].SubItems[4].Text, out thislauflaenge);
+                    if (thislauflaenge > toplauflaenge)
+                    {
+                        toplauflaenge = thislauflaenge;
+                        topindex = k;
+                    }
+                }
+                tmpitem = listView_Palette.Items[topindex];
+                listView_Palette.Items.RemoveAt(topindex);
+                listView_Palette.Items.Add(tmpitem);
+            }
+        }
+
+        
+        //Anzeige
+        private void refreshDisplay()
+        {
+              
+              pictureBox_Display.Image = Displaybild;
+//            pictureBox_Display.Refresh();
+//            pictureBox_Display.Update();
+        }
+
+        private void fitImagetoFrame()
+        {
+            if (imageisloaded)
+            {
+                //generateZoomedImage();
+
+                //Picturebox auf Größe des Bildes bringen
+                pictureBox_Display.Size = Displaybild.Size;
+
+                //Zoomfaktor auf die Picturebox anwenden
+                pictureBox_Display.Height = pictureBox_Display.Height * additionalZoomfactor;
+                pictureBox_Display.Width = pictureBox_Display.Width * additionalZoomfactor;
+
+                //PictureBox mittig im Panel platzieren
+                int PosX = 0;
+                int PosY = 0;
+                if(pictureBox_Display.Width < splitContainer1.Panel2.Width)
+                {
+                    PosX = (int)(0.5 * (splitContainer1.Panel2.Width - pictureBox_Display.Width));
+                }
+
+                if (pictureBox_Display.Height < splitContainer1.Panel2.Height)
+                {
+                    PosY = (int)(0.5 * (splitContainer1.Panel2.Height - pictureBox_Display.Height));
+                }
+    
+
+                Displaybild = Zoombild;
+                refreshDisplay();
+
+                Point myLocation = new Point(PosX,PosY);
+                pictureBox_Display.Location = myLocation;
+            }
+        }
+
+        private void toggleZoom()
+        {
+            if(additionalZoomfactor < 8)
+            {
+                additionalZoomfactor = additionalZoomfactor * 2;
+            }
+            else
+            {
+                additionalZoomfactor = 1;
+            }
+            
+            generateZoomedImage();
+            fitImagetoFrame();
+            Displaybild = Zoombild;
+            Zeilemarkieren(selectedLine);
+            refreshDisplay();
+        }
+
+        private void generateZoomedImage()
+        {
+            if (DisplayRatioCorrection)
+            {
+                active_RatioCorrFactor = RatioCorrFactor_option;
+            }
+            else
+            {
+                active_RatioCorrFactor = 1;
+            }
+            int newWidth, newHeight;
+
+            int maxWidth = splitContainer1.Panel2.Width-2;
+            int maxHeight = splitContainer1.Panel2.Height-2;
+
+            if (((double)Originalbild.Width * active_RatioCorrFactor) / ((double)Originalbild.Height) > (double)maxWidth / (double)maxHeight)
+            {//Bild ist (mit korrekturfaktor) breiter als hoch... breite auf breite der Picturebox setzen, höhe verhältnis
+                newWidth = maxWidth;
+                newHeight = (int)((((double)maxWidth / (double)Originalbild.Width) * (double)Originalbild.Height) / active_RatioCorrFactor);
+            }
+            else
+            {//Bild ist (mit korrekturfaktor) hoeher als breit... hoehe auf hoehe der Picturebox setzen, breite im verhältnis
+                newHeight = (int)((double)maxHeight);
+                newWidth = (int)((((double)maxHeight / (double)Originalbild.Height) * (double)Originalbild.Width) * active_RatioCorrFactor);
+            }
+
+            //newHeight = newHeight * additionalZoomfactor;
+            //newWidth = newWidth * additionalZoomfactor;
+            try
+            {
+                Zoombild = new Bitmap(newWidth, newHeight);
+
+            }
+            catch (Exception)
+            {
+                
+            }
+            using (Graphics gr = Graphics.FromImage(Zoombild))
+            {
+                gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+                gr.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                gr.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+                gr.DrawImage(Originalbild, new Rectangle(0, 0, newWidth, newHeight));
+            }
+        }
+
+        private void Zeilemarkieren(int zumarkierendeZeile)
         {
 
-            if (Bildtitel.Equals(""))
+            Displaybild = Zoombild;
+            
+            float ZoomFactorY = getZoomFactorY();
+
+            Rectangle markierung = new Rectangle(0, (int)(Math.Round(zumarkierendeZeile*ZoomFactorY)), Displaybild.Width-1, (int)(Math.Round(ZoomFactorY)));
+            Color markierungsfarbe1 = Color.Black;
+            Color markierungsfarbe2 = Color.White;
+            
+            int Stiftdicke = 1;
+            if (ZoomFactorY > 8) { Stiftdicke = 2; }
+            if (ZoomFactorY > 12) { Stiftdicke = 3; }
+            
+            Pen mypen1 = new Pen(markierungsfarbe1, Stiftdicke);
+            Pen mypen2 = new Pen(markierungsfarbe2, Stiftdicke);
+            mypen2.DashPattern = new float[] { 2, 2 };
+
+            using (Graphics grD = Graphics.FromImage(Displaybild))
             {
-                MessageBox.Show("Bitte einen Bildtitel eingeben","Fehler!",MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+                grD.DrawRectangle(mypen1, markierung);
+                grD.DrawRectangle(mypen2, markierung);
 
-            int unnamedcolors_count = 0;
-            foreach (ListViewItem p in listView_Palette.Items)
-            {
-                if (p.Text.Contains("#"))
-                {
-                    unnamedcolors_count++;
-                }
-            }
-            if (unnamedcolors_count > 0)
-            {
-                DialogResult result = MessageBox.Show(unnamedcolors_count + " Farben der Farbpalette haben noch keinen sprechenden Namen.\n\nWirklich fortfahren?", "Achtung!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.No)
-                {
-                    return;
-                }
-            }
+                grD.Dispose();
+            } 
 
-
-
-            System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien");
-
-            //PDF generieren
-            if (checkBox_pdfvorlage.Checked)
-            {
-                createPDF();
-            }
-
-            //Rasterbild generieren
-            createImagefiles();
+            //workaround damit die alte Markierung weggeht ohne ein neues image zu erzeugen;
+            generateZoomedImage();
+            refreshDisplay();
             
 
-            //Maschen und Farbwechsel ermitteln
-            countMaschenUndFarbwechsel(Originalbild);
+            Farbbereichmarkieren(zumarkierendeZeile);
+        }
 
-            //Infodatei generieren
-            createTextfiles();
+        private void Farbbereichmarkieren(int zumarkierendeZeile)
+        {
 
-
-            //Verzeichnis fuer die Palettenbilder erstellen
-            System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien/Palette");
-            //Farbbilder abspeichern
-            foreach (ListViewItem item in listView_Palette.Items)
+            foreach (ListViewItem selection in listView_LineDescription.SelectedItems)
             {
-                String farbname = item.SubItems[0].Text;
-                String Farbbildkey = item.SubItems[1].Text;
-                String filename = Bildtitel + "_Dateien/Palette/" + entferneUmlautefuerDateinamen(farbname) + ".png";
-                imageList_Palette.Images[Farbbildkey].Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+               
+                Displaybild = Zoombild;
+
+
+                int startpixel = 0;
+                int pixelanzahl = 0;
+
+                int.TryParse(selection.SubItems[5].Text, out startpixel);
+                int.TryParse(selection.SubItems[6].Text, out pixelanzahl);
+
+                float ZoomFactorX = getZoomFactorX();
+                float ZoomFactorY = getZoomFactorY();
+
+                Rectangle markierung = new Rectangle((int)Math.Round(((startpixel -1) * ZoomFactorX)), (int)Math.Round((zumarkierendeZeile * ZoomFactorY)), (int)Math.Round((pixelanzahl * ZoomFactorX)), (int)Math.Round((ZoomFactorY)));
+                Color markierungsfarbe1 = Color.Black;
+                Color markierungsfarbe2 = Color.White;
+
+                int Stiftdicke = 1;
+                if (ZoomFactorY > 8) { Stiftdicke = 2; }
+                if (ZoomFactorY > 12) { Stiftdicke = 3; }
+
+                Pen mypen1 = new Pen(markierungsfarbe1, Stiftdicke);
+                Pen mypen2 = new Pen(markierungsfarbe2, Stiftdicke);
+                mypen2.DashPattern = new float[] { 2, 2 };
+
+                using (Graphics grD = Graphics.FromImage(Displaybild))
+                {
+                    grD.DrawRectangle(mypen1, markierung);
+                    grD.DrawRectangle(mypen2, markierung);
+
+                    grD.Dispose();
+                }
+                
             }
 
+            //workaround damit die alte Markierung weggeht ohne ein neues image zu erzeugen;
+            generateZoomedImage();
+            refreshDisplay();
+        }
 
-            //Verzeichnis mit Ergebnissen öffnen
-            Process.Start("explorer.exe", Bildtitel + "_Dateien");
-            
-            //alle Generierungen beendet... alles zurück auf Anfang...
-            progressBar1.Visible = false;
 
-            numericUpDown1.Value = 1;
-            selectedLine = Originalbild.Height - (int)numericUpDown1.Value;
-            Zeile_Auswerten(selectedLine);
+        //Hilfsfunktionen
+        private void ladeBild()
+        {
+                Originalbild = new Bitmap(Dateiname);
+                generateZoomedImage();
+                Displaybild = Zoombild;
+                generatePalettefromImage();
+                refreshDisplay();
+                imageisloaded = true;
+                pictureBox_Display.Visible = true;
+                fitImagetoFrame();
+                
+                listView_LineDescription.Enabled = true;
+                numericUpDown_Zeile.Enabled = true;
+                button_Zoom.Enabled = true;
+                button_create_stuff.Enabled = true;
+                
+                numericUpDown_Zeile.Maximum = Originalbild.Height;
+                
+        }
 
+        private string Zeile_Auswerten(int Zeile)
+        {
+            string LineDescription = "";
+            listView_LineDescription.Clear();
+           
+            Zeilemarkieren(Zeile);
+            Color laufendeFarbe = Originalbild.GetPixel(Originalbild.Width - 1, Zeile);
+            Color pixelfarbe = laufendeFarbe;
+            int pixelcounter = 0;
+            int startpixel = 0;
+            int endpixel = Originalbild.Width;
+
+
+ 
+            for (int i = Originalbild.Width; i >= 1; i--)
+            {
+                startpixel = i+1; //noch für die laufende Farbe
+                pixelfarbe = Originalbild.GetPixel(i - 1, Zeile);
+                if (pixelfarbe == laufendeFarbe)
+                {
+                    //pixelzähler erhöhen
+                    pixelcounter++;
+                }
+                else
+                {   
+                    
+                    //Ausgeben der beendeten Farbe
+                    LineDescription = LineDescription + getLaufendeFarbe(pixelcounter, laufendeFarbe) + " ";
+                    AddItemtoLineDescription(pixelcounter, startpixel, endpixel, laufendeFarbe);
+                    laufendeFarbe = pixelfarbe;
+                    
+                    //nächste Farbe anfangen
+                    pixelcounter = 1;
+                    endpixel = i; //schon für die neue Farbe
+                }
+            }
+            //Ausgeben der letzten Farbe
+            startpixel--;
+            LineDescription = LineDescription + getLaufendeFarbe(pixelcounter, laufendeFarbe);
+            AddItemtoLineDescription(pixelcounter, startpixel, endpixel, laufendeFarbe);
+
+            textBox1.Text = LineDescription;
+            return LineDescription;
+        }
+
+        private void AddItemtoLineDescription(int pixelanzahl, int startpixel, int endpixel, Color laufendeFarbe)
+        {
+            foreach (ListViewItem PaletteItem in listView_Palette.Items)
+            {
+                if (HextoColor(PaletteItem.SubItems[1].Text) == laufendeFarbe)
+                {
+                    var myNewItem = listView_LineDescription.Items.Add((ListViewItem)PaletteItem.Clone());
+                    myNewItem.ImageIndex = PaletteItem.ImageIndex;
+                    myNewItem.ImageKey = PaletteItem.ImageKey;
+                    string Farbname = myNewItem.Text;
+
+                    myNewItem.Text = " " + pixelanzahl.ToString(); // + " " + myNewItem.Text;
+
+                    myNewItem.SubItems.Add(startpixel.ToString());
+                    myNewItem.SubItems.Add(pixelanzahl.ToString());
+                    myNewItem.SubItems.Add(Farbname);
+
+
+                    myNewItem.Font = listView_LineDescription.Font;
+
+                    break;
+                }
+
+            }
+        }
+
+        private void selectLine(int v)
+        {
+            selectedLine = v;
+        }
+
+        private float getZoomFactorX()
+        {
+            return (float)Zoombild.Width / (float)Originalbild.Width;
+        }
+
+        private float getZoomFactorY()
+        {
+            return (float)Zoombild.Height / (float)Originalbild.Height;
         }
 
         private void countMaschenUndFarbwechsel(Bitmap Bild)
@@ -909,29 +931,65 @@ namespace Crochet2Ebook
             }
         }
 
-        private void sortierePalettenachLauflaengen()
+        private string getLaufendeFarbe(int pixelcounter, Color laufendeFarbe)
         {
-            float toplauflaenge = 0;
-            int topindex = 0;
-            ListViewItem tmpitem = null;
-
-            for (int i = 0; i < listView_Palette.Items.Count; i++)
+            string Farbname = "";
+            //Farbname aus der Palette ermitteln
+            foreach (ListViewItem item in listView_Palette.Items)
             {
-                toplauflaenge = 0;
-                for (int k = 0; k < listView_Palette.Items.Count - i; k++)
+                if (HextoColor(item.SubItems[1].Text) == laufendeFarbe)
                 {
-                    float thislauflaenge = 0;
-                    float.TryParse(listView_Palette.Items[k].SubItems[4].Text, out thislauflaenge);
-                    if (thislauflaenge > toplauflaenge)
-                    {
-                        toplauflaenge = thislauflaenge;
-                        topindex = k;
-                    }
+                    Farbname = item.Text;
+                    
+                    break;
                 }
-                tmpitem = listView_Palette.Items[topindex];
-                listView_Palette.Items.RemoveAt(topindex);
-                listView_Palette.Items.Add(tmpitem);
+                
             }
+
+            return pixelcounter + "_" + Farbname;
+        }
+
+        private string entferneUmlautefuerLaTex(string sourceText)
+        {
+            string targetText = sourceText;
+
+            targetText = targetText.Replace("ß", "\"s");
+            targetText = targetText.Replace("Ä", "\"A");
+            targetText = targetText.Replace("ä", "\"a");
+            targetText = targetText.Replace("Ö", "\"O");
+            targetText = targetText.Replace("ö", "\"o");
+            targetText = targetText.Replace("Ü", "\"U");
+            targetText = targetText.Replace("ü", "\"u");
+            targetText = targetText.Replace("#", "\\#");
+
+            return targetText;
+        }
+
+        private string entferneUmlautefuerDateinamen(string sourceText)
+        {
+            string targetText = sourceText;
+
+            targetText = targetText.Replace("ß", "ss");
+            targetText = targetText.Replace("Ä", "Ae");
+            targetText = targetText.Replace("ä", "ae");
+            targetText = targetText.Replace("Ö", "Oe");
+            targetText = targetText.Replace("ö", "oe");
+            targetText = targetText.Replace("Ü", "Ue");
+            targetText = targetText.Replace("ü", "ue");
+            targetText = targetText.Replace(" ", "_");
+            targetText = targetText.Replace("#", "");
+
+            return targetText;
+        }
+
+        public static String ColortoHex(Color Col)
+        {
+            return ColorTranslator.ToHtml(Col);
+        }
+
+        public static Color HextoColor(string colorCode)
+        {
+            return System.Drawing.ColorTranslator.FromHtml(colorCode);
         }
 
         private void increaseSubitemCounter(Color Farbe, int Index)
@@ -948,6 +1006,8 @@ namespace Crochet2Ebook
             }
         }
 
+        
+        //Dateien erzeugen
         private void createTextfiles()
         {
             float Breite_Masche = 0;
@@ -972,89 +1032,54 @@ namespace Crochet2Ebook
             string name_texfile_beispielreihen = Bildtitel + "_Dateien/Latex_Dateien/" + "beispielreihen" + file_langsuffix + ".tex";
             string name_texfile_Main = "";
             string name_projektfile = "";
+            string ProjektTitleString = "";
+
             if (deu)
             {
-                name_texfile_Main = Bildtitel + "_Dateien/Latex_Dateien/" + "Anleitung_Kinderdecke_-_" + Bildtitel + ".tex";
-                name_projektfile = Bildtitel + "_Dateien/" + "Anleitung_Kinderdecke_-_" + Bildtitel + ".tcp";
+                ProjektTitleString = "Anleitung_Kinderdecke_-_";
             }
             if (eng)
             {
-                name_texfile_Main = Bildtitel + "_Dateien/Latex_Dateien/" + "Tutorial_Childrens_Blanket_-_" + Bildtitel + ".tex";
-                name_projektfile = Bildtitel + "_Dateien/" + "Tutorial_Childrens_Blanket_-_" + Bildtitel + file_langsuffix + ".tcp";
+                ProjektTitleString = "Tutorial_Childrens_Blanket_-_";
             }
-            
+
+
+            name_texfile_Main = Bildtitel + "_Dateien/Latex_Dateien/" + ProjektTitleString + Bildtitel + ".tex";
+            name_projektfile = Bildtitel + "_Dateien/" + ProjektTitleString + Bildtitel + ".tcp";
+                        
             string LauflaengenString = "Lauflängen ca.:\r\n----------------\r\n";
             string MaschenzahlenString = "Maschenanzahl:\r\n--------------\r\n";
             string GroessenString = "(" + Originalbild.Width + " x " + Originalbild.Height + " Maschen / ca. ";
             string IntroString = "Häkeldecke '" + Bildtitel + "'\r\n";
 
-
-
             //Verzeichnis fuer die LaTex Dateien erstellen
             System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien/Latex_Dateien");
             //die allgemeinen texfiles vom latexfile-path in den Ordner dieses Projekts kopieren...
-            if (deu)
-            {
-                System.IO.File.Copy(latexfiles_path + "anleitung_decke_annaehen_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_decke_annaehen_allgemein.tex", true);
-                System.IO.File.Copy(latexfiles_path + "anleitung_motiv_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_motiv_allgemein.tex", true);
-                System.IO.File.Copy(latexfiles_path + "disclaimer_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "disclaimer_allgemein.tex", true);
-                System.IO.File.Copy(latexfiles_path + "schlusstext_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "schlusstext_allgemein.tex", true);
-                System.IO.File.Copy(latexfiles_path + "werkzeug_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "werkzeug_allgemein.tex", true);
-                System.IO.File.Copy(latexfiles_path + "struktur_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "struktur_allgemein.tex", true);
-                System.IO.File.Copy(latexfiles_path + "rasterbild_allgemein.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "rasterbild_allgemein.tex", true);
-            }
+            System.IO.File.Copy(latexfiles_path + "anleitung_decke_annaehen_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_decke_annaehen_allgemein" + file_langsuffix + ".tex", true);
+            System.IO.File.Copy(latexfiles_path + "anleitung_motiv_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_motiv_allgemein" + file_langsuffix + ".tex", true);
+            System.IO.File.Copy(latexfiles_path + "disclaimer_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "disclaimer_allgemein" + file_langsuffix + ".tex", true);
+            System.IO.File.Copy(latexfiles_path + "schlusstext_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "schlusstext_allgemein" + file_langsuffix + ".tex", true);
+            System.IO.File.Copy(latexfiles_path + "werkzeug_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "werkzeug_allgemein" + file_langsuffix + ".tex", true);
+            System.IO.File.Copy(latexfiles_path + "struktur_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "struktur_allgemein" + file_langsuffix + ".tex", true);
+            System.IO.File.Copy(latexfiles_path + "rasterbild_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "rasterbild_allgemein" + file_langsuffix + ".tex", true);
 
-            if (eng)
-            {
-                System.IO.File.Copy(latexfiles_path + "anleitung_decke_annaehen_allgemein_eng.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_decke_annaehen_allgemein_eng.tex", true);
-                System.IO.File.Copy(latexfiles_path + "anleitung_motiv_allgemein_eng.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_motiv_allgemein_eng.tex", true);
-                System.IO.File.Copy(latexfiles_path + "disclaimer_allgemein_eng.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "disclaimer_allgemein_eng.tex", true);
-                System.IO.File.Copy(latexfiles_path + "schlusstext_allgemein_eng.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "schlusstext_allgemein_eng.tex", true);
-                System.IO.File.Copy(latexfiles_path + "werkzeug_allgemein_eng.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "werkzeug_allgemein_eng.tex", true);
-                System.IO.File.Copy(latexfiles_path + "struktur_allgemein_eng.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "struktur_allgemein_eng.tex", true);
-                System.IO.File.Copy(latexfiles_path + "rasterbild_allgemein_eng.tex", Bildtitel + "_Dateien/Latex_Dateien/" + "rasterbild_allgemein_eng.tex", true);
-            }
-
-
-
-            if (deu)
-            {
-                inhalt_projektfile = 
-                    "[FormatInfo]\r\n"+
-                    "Type=TeXnicCenterProjectInformation\r\n"+
-                    "Version=4\r\n"+
-                    "\r\n"+
-                    "[ProjectInfo]\r\n"+
-                    "MainFile=Latex_Dateien/Anleitung_Kinderdecke_-_" + Bildtitel + ".tex\r\n"+
-                    "UseBibTeX=0\r\n"+
-                    "UseMakeIndex=0\r\n"+
-                    "ActiveProfile=LaTeX ⇨ PDF\r\n"+
-                    "ProjectLanguage=de\r\n"+
-                    "ProjectDialect=DE\r\n"+
-                    "\r\n";
-            }
-            if (eng)
-            {
-                inhalt_projektfile =
-                    "[FormatInfo]\r\n" +
-                    "Type=TeXnicCenterProjectInformation\r\n" +
-                    "Version=4\r\n" +
-                    "\r\n" +
-                    "[ProjectInfo]\r\n" +
-                    "MainFile=Latex_Dateien/Tutorial_Childrens_Blanket_-_" + Bildtitel + ".tex\r\n" +
-                    "UseBibTeX=0\r\n" +
-                    "UseMakeIndex=0\r\n" +
-                    "ActiveProfile=LaTeX ⇨ PDF\r\n" +
-                    "ProjectLanguage=en\r\n" +
-                    "ProjectDialect=US\r\n" +
-                    "\r\n";
-            }
-
+            inhalt_projektfile = 
+                "[FormatInfo]\r\n"+
+                "Type=TeXnicCenterProjectInformation\r\n"+
+                "Version=4\r\n"+
+                "\r\n"+
+                "[ProjectInfo]\r\n"+
+                "MainFile=Latex_Dateien/" + ProjektTitleString + Bildtitel + ".tex\r\n"+
+                "UseBibTeX=0\r\n"+
+                "UseMakeIndex=0\r\n"+
+                "ActiveProfile=LaTeX ⇨ PDF\r\n"+
+                "ProjectLanguage=de\r\n"+
+                "ProjectDialect=DE\r\n"+
+                "\r\n";
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_projektfile))
             {
                 sw.Write(inhalt_projektfile);
             }
-
 
 
             if (deu)
@@ -1109,10 +1134,8 @@ namespace Crochet2Ebook
                     "  \\begin{minipage}[c][16mm]{0.63\\linewidth}\r\n" +
                     "    " + entferneUmlautefuerLaTex(Farbname_DieseFarbe) + "\\\\" + Lauflaenge_DieseFarbe_mitEinheit + " (" + Gewicht_DieseFarbe_mitEinheit + ")\r\n" +
                     "  \\end{minipage}\r\n" +
-                    "\\end{minipage}\r\n";
-                
+                    "\\end{minipage}\r\n";       
             }
-
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_wollmengen))
             {
                 sw.Write(inhalt_texfile_wollmengen);
@@ -1123,60 +1146,38 @@ namespace Crochet2Ebook
             float.TryParse(textBox_Maschenhoehe.Text, out Hoehe_Masche);
 
             GroessenString = GroessenString + Math.Round(Breite_Masche * Originalbild.Width).ToString() + " x " + Math.Round(Hoehe_Masche * Originalbild.Height).ToString() + " cm)\r\n";
+
+            string tex_Titlestring = "";
             if (deu)
             {
-                inhalt_texfile_Main = 
-                    "\\author{Denise die Wollmaus}\r\n"+
-                    "\\newcommand{\\motivbreite}{" + Originalbild.Width + "}\r\n" +
-                    "\\newcommand{\\deckenbreite}{" + Math.Round(Breite_Masche * Originalbild.Width + 10).ToString() + "}\r\n" +
-                    "\\newcommand{\\deckenhoehe}{" + Math.Round(Hoehe_Masche * Originalbild.Height + 10 ).ToString() + "}\r\n" +
-                    "\\newcommand{\\motivtitel}{" + Bildtitel + "}\r\n" +
-                    "\\newcommand{\\motivtitelohnesonderzeichen}{" + entferneUmlautefuerDateinamen(Bildtitel) + "}\r\n" +
-                    "\\title{H\"akelanleitung - Kinderdecke (\\motivtitel)}\r\n" +
-                    "\\input{struktur_allgemein.tex}\r\n";
+                tex_Titlestring = "H\"akelanleitung - Kinderdecke";
             }
             if (eng)
             {
-                inhalt_texfile_Main =
-                    "\\author{Denise die Wollmaus}\r\n" +
-                    "\\newcommand{\\motivbreite}{" + Originalbild.Width + "}\r\n" +
-                    "\\newcommand{\\deckenbreite}{" + Math.Round(Breite_Masche * Originalbild.Width + 10).ToString() + "}\r\n" +
-                    "\\newcommand{\\deckenhoehe}{" + Math.Round(Hoehe_Masche * Originalbild.Height + 10).ToString() + "}\r\n" +
-                    "\\newcommand{\\motivtitel}{" + Bildtitel + "}\r\n" +
-                    "\\newcommand{\\motivtitelohnesonderzeichen}{" + entferneUmlautefuerDateinamen(Bildtitel) + "}\r\n" +
-                    "\\title{Tutorial - Childrens Blanket (\\motivtitel)}\r\n" +
-                    "\\input{struktur_allgemein_eng.tex}\r\n";
+                tex_Titlestring = "Crocheting Tutorial - Childrens Blanket";
             }
-
+            inhalt_texfile_Main =
+                "\\author{Denise die Wollmaus}\r\n" +
+                "\\newcommand{\\motivbreite}{" + Originalbild.Width + "}\r\n" +
+                "\\newcommand{\\deckenbreite}{" + Math.Round(Breite_Masche * Originalbild.Width + 10).ToString() + "}\r\n" +
+                "\\newcommand{\\deckenhoehe}{" + Math.Round(Hoehe_Masche * Originalbild.Height + 10).ToString() + "}\r\n" +
+                "\\newcommand{\\motivtitel}{" + Bildtitel + "}\r\n" +
+                "\\newcommand{\\motivtitelohnesonderzeichen}{" + entferneUmlautefuerDateinamen(Bildtitel) + "}\r\n" +
+                "\\title{" + tex_Titlestring + " (\\motivtitel)}\r\n" +
+                "\\input{struktur_allgemein" + file_langsuffix + ".tex}\r\n";
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_Main))
             {
                 sw.Write(inhalt_texfile_Main);
             }
-
-            if (deu)
-            {
-                inhalt_texfile_titelseite =
-                    "\\begin{center}\r\n" +
-                    "\\section *{H\"akelanleitung - Kinderdecke \\\\"+
-                    "\\Huge\\motivtitel}\r\n" +
-                    "\\label{ sec: KinderdeckeBildTitel}\r\n" +
-                    "\\end{center}\r\n" +
-                    "\\begin{center}\r\n" +
-                    "\\fbox{\\includegraphics[height = 1.00\\textwidth]{../\\motivtitelohnesonderzeichen_Titelbild}}\r\n" +
-                    "\\end{center}\r\n";
-            }
-            if (eng)
-            {
-                inhalt_texfile_titelseite =
-                    "\\begin{center}\r\n" +
-                    "\\section *{Crocheting Tutorial - Childrens Blanket \\\\" +
-                    "\\Huge\\motivtitel}\r\n" +
-                    "\\label{ sec: BlanketBildTitel}\r\n" +
-                    "\\end{center}\r\n" +
-                    "\\begin{center}\r\n" +
-                    "\\fbox{\\includegraphics[height = 1.00\\textwidth]{../\\motivtitelohnesonderzeichen_Titelbild}}\r\n" +
-                    "\\end{center}\r\n";
-            }
+            inhalt_texfile_titelseite =
+                "\\begin{center}\r\n" +
+                "\\section *{" + tex_Titlestring + " \\\\"+
+                "\\Huge\\motivtitel}\r\n" +
+                "\\label{ sec: Title}\r\n" +
+                "\\end{center}\r\n" +
+                "\\begin{center}\r\n" +
+                "\\fbox{\\includegraphics[height = 1.00\\textwidth]{../\\motivtitelohnesonderzeichen_Titelbild}}\r\n" +
+                "\\end{center}\r\n";
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_titelseite))
             {
                 sw.Write(inhalt_texfile_titelseite);
@@ -1184,14 +1185,11 @@ namespace Crochet2Ebook
 
 
             //Beispielzeilen_Anleitung
-
             int beispielzeilennummer1 = 0;
             int beispielzeilennummer2 = 0;
             int farbenindieserZeile = 0;
             Int32.TryParse(textBox_Beispielreihe1.Text, out beispielzeilennummer1);
             Int32.TryParse(textBox_Beispielreihe2.Text, out beispielzeilennummer2);
-
-
 
             Zeile_Auswerten(Originalbild.Height - beispielzeilennummer1);
             farbenindieserZeile = (listView_LineDescription.Items.Count - 1);
@@ -1298,16 +1296,12 @@ namespace Crochet2Ebook
             }
 
             inhalt_texfile_beispielreihen = entferneUmlautefuerLaTex(Beispielzeile1) + "\r\n\r\n" + entferneUmlautefuerLaTex(Beispielzeile2);
-
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_beispielreihen))
             {
                 sw.Write(inhalt_texfile_beispielreihen);
             }
 
-
-
             inhalt_Infofile = IntroString + GroessenString + "\r\n" + MaschenzahlenString + "\r\n" + LauflaengenString + "\r\n" + Beispielzeile1 + "\r\n\r\n" + Beispielzeile2;
-
 
             //Infodatei erzeugen
             string filename = String.Format(Bildtitel + "_Dateien/" + Bildtitel + "_Info.txt");
@@ -1319,39 +1313,6 @@ namespace Crochet2Ebook
             //pdf-generierung anstossen
             //System.Diagnostics.Process.Start("CMD.exe", "/C pdflatex.exe --output-directory=../ " + name_texfile_Main); //funktioniert so nicht...
 
-        }
-
-        private string entferneUmlautefuerLaTex(string sourceText)
-        {
-            string targetText = sourceText;
-
-            targetText = targetText.Replace("ß", "\"s");
-            targetText = targetText.Replace("Ä", "\"A");
-            targetText = targetText.Replace("ä", "\"a");
-            targetText = targetText.Replace("Ö", "\"O");
-            targetText = targetText.Replace("ö", "\"o");
-            targetText = targetText.Replace("Ü", "\"U");
-            targetText = targetText.Replace("ü", "\"u");
-            targetText = targetText.Replace("#", "\\#");
-
-            return targetText;
-        }
-
-        private string entferneUmlautefuerDateinamen(string sourceText)
-        {
-            string targetText = sourceText;
-
-            targetText = targetText.Replace("ß", "ss");
-            targetText = targetText.Replace("Ä", "Ae");
-            targetText = targetText.Replace("ä", "ae");
-            targetText = targetText.Replace("Ö", "Oe");
-            targetText = targetText.Replace("ö", "oe");
-            targetText = targetText.Replace("Ü", "Ue");
-            targetText = targetText.Replace("ü", "ue");
-            targetText = targetText.Replace(" ", "_");
-            targetText = targetText.Replace("#", "");
-
-            return targetText;
         }
 
         private void createImagefiles()
@@ -1636,8 +1597,8 @@ namespace Crochet2Ebook
             {
                 Application.DoEvents(); //damit während der heftigen schleife die Progressbar vom thread aktualisiert werden kann
                 progressBar1.Value = i;
-                numericUpDown1.Value = i;
-                selectedLine = Originalbild.Height - (int)numericUpDown1.Value;
+                numericUpDown_Zeile.Value = i;
+                selectedLine = Originalbild.Height - (int)numericUpDown_Zeile.Value;
                 Zeile_Auswerten(selectedLine);
 
                 //neue Seite anlegen
@@ -1805,105 +1766,102 @@ namespace Crochet2Ebook
             gfx.DrawImage(image, X, Y, Width, Height);
         }
 
-        private void button_ToggleOptions_Click(object sender, EventArgs e)
+
+        //Config-Funktionen
+        private void savecolornamestoConfig()
         {
-            if (splitContainer4.Panel2Collapsed)
-            {
-                splitContainer4.Panel2Collapsed = false;
-                button_ToggleOptions.Text = "Optionen verbergen";
-            }
-            else
-            {
-                splitContainer4.Panel2Collapsed = true;
-                button_ToggleOptions.Text = "Optionen anzeigen";
-            }
-        }
+            bool deu = radioButton_deutsch.Checked;
+            bool eng = radioButton_englisch.Checked;
 
-        private void checkBox_Ratiocorrection_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBox_Ratiocorrection.Checked)
+            //Die Farbnamen aus der Palette zur Dictionary hinzufügen
+            foreach (ListViewItem p in listView_Palette.Items)
             {
-                DisplayRatioCorrection = true;
-            }
-            else
-            {
-                DisplayRatioCorrection = false;
-            }
+                String Farbcode = p.SubItems[1].Text;
+                String Farbname = p.Text;
 
-            if (imageisloaded)
-            {
-                generateZoomedImage();
-                Displaybild = Zoombild;
-                fitImagetoFrame();
-                
-                Zeilemarkieren(selectedLine);
-                refreshDisplay();
-            }
-        }
-
-        private void textBox_Titel_TextChanged(object sender, EventArgs e)
-        {
-            Bildtitel = textBox_Titel.Text;
-            this.Text = Bildtitel + " - Pixelcounter 2.0";
-        }
-
-        private void pictureBox_Display_MouseClick(object sender, MouseEventArgs e)
-        {   if(e.Button == MouseButtons.Left)
-            {
-                numericUpDown1.Value = Originalbild.Height - (int)((double)e.Y / getZoomFactorY());
-                textBox_Beispielreihe1.Text = numericUpDown1.Value.ToString();
-                textBox_Beispielreihe2.Text = (numericUpDown1.Value +1 ).ToString();
-                selectedLine = Originalbild.Height - (int)numericUpDown1.Value;
-                Zeile_Auswerten(selectedLine);
-            }
-        }
-
-        private void splitContainer4_Panel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void textBox_Ratokorrfaktor_TextChanged(object sender, EventArgs e)
-        {
-            double faktor = RatioCorrFactor_option;
-            if (double.TryParse(textBox_Ratokorrfaktor.Text, out faktor))
-            {
-                if(faktor>0)
+                if (deu)
                 {
-                    RatioCorrFactor_option = faktor;
-                    if (imageisloaded)
+                    if (DictColorNames_DE.ContainsKey(Farbcode))
                     {
-                        generateZoomedImage();
-                        Displaybild = Zoombild;
-                        fitImagetoFrame();
-
-                        Zeilemarkieren(selectedLine);
-                        refreshDisplay();
+                        //falls bereits vorhanden wird mit dem neuen Namen ueberschrieben
+                        DictColorNames_DE[Farbcode] = Farbname;
+                    }
+                    else
+                    {
+                        //falls noch nicht vorhanden wird das keyvaluepaar angelegt
+                        DictColorNames_DE.Add(Farbcode, Farbname);
                     }
                 }
-
+                if (eng)
+                {
+                    if (DictColorNames_EN.ContainsKey(Farbcode))
+                    {
+                        //falls bereits vorhanden wird mit dem neuen Namen ueberschrieben
+                        DictColorNames_EN[Farbcode] = Farbname;
+                    }
+                    else
+                    {
+                        //falls noch nicht vorhanden wird das keyvaluepaar angelegt
+                        DictColorNames_EN.Add(Farbcode, Farbname);
+                    }
+                }
             }
 
+            //Aus der Dictionary die ColorNameList für die Config bilden
+            String_ColorNameList_DE = "";
+
+            foreach (KeyValuePair<string, string> entry in DictColorNames_DE)
+            {
+                //Farbcode und Namen zur ColorNameList hinzufuegen
+                String_ColorNameList_DE = String_ColorNameList_DE + entry.Key + "," + entry.Value + ";";
+            }
+
+            //letztes Semikolon entfernen
+            if (String_ColorNameList_DE.EndsWith(";"))
+            {
+                String_ColorNameList_DE = String_ColorNameList_DE.Remove(String_ColorNameList_DE.Length - 1);
+            }
+
+
+            //Aus der Dictionary die ColorNameList für die Config bilden
+            String_ColorNameList_EN = "";
+
+            foreach (KeyValuePair<string, string> entry in DictColorNames_EN)
+            {
+                //Farbcode und Namen zur ColorNameList hinzufuegen
+                String_ColorNameList_EN = String_ColorNameList_EN + entry.Key + "," + entry.Value + ";";
+            }
+
+            //letztes Semikolon entfernen
+            if (String_ColorNameList_EN.EndsWith(";"))
+            {
+                String_ColorNameList_EN = String_ColorNameList_EN.Remove(String_ColorNameList_EN.Length - 1);
+            }
+
+            SetSetting("ColorNameList_DE", String_ColorNameList_DE);
+            SetSetting("ColorNameList_EN", String_ColorNameList_EN);
         }
 
-        private void Button_ToggleLanguage_Click(object sender, EventArgs e)
+        private static string GetSetting(string key)
         {
-            //vor dem sprachwechsel die Farbnamen sichern
-            savecolornamestoConfig();
-            if (radioButton_deutsch.Checked)
+            return ConfigurationManager.AppSettings[key];
+        }
+
+        private static void SetSetting(string key, string value)
+        {
+            Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            if (configuration.AppSettings.Settings[key] == null)
             {
-                radioButton_deutsch.Checked = false;
-                radioButton_englisch.Checked = true;
-                label1_Sprache.Text = "ENGLISCH";
+                configuration.AppSettings.Settings.Add(key, value);
             }
             else
             {
-                radioButton_englisch.Checked = false;
-                radioButton_deutsch.Checked = true;
-                label1_Sprache.Text = "DEUTSCH";
+                configuration.AppSettings.Settings[key].Value = value;
             }
-            //die Palette mit der neuen Sprache neu aufbauen
-            generatePalettefromImage();
+         
+            configuration.Save(ConfigurationSaveMode.Full, true);
+            ConfigurationManager.RefreshSection("AppSettings");
         }
+
     }
 }
