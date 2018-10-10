@@ -30,10 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
             "42       ",
             "#FFFFFF"}, 0);
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("x 23", 0);
+            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("x 23", 0);
             this.listView_Palette = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -61,8 +61,9 @@
             this.label_Rasterbild_Pixelgroesse = new System.Windows.Forms.Label();
             this.numericUpDown_Rasterbild_Pixelgroesse = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox_Rasterbild_Linienfarbe1 = new System.Windows.Forms.TextBox();
+            this.textBox_Rasterbild_Linienfarbe = new System.Windows.Forms.TextBox();
             this.numericUpDown_Rasterbild_Liniendicke_10 = new System.Windows.Forms.NumericUpDown();
+            this.checkBox_AutoRasterfarbe = new System.Windows.Forms.CheckBox();
             this.label_Rasterbild_Liniendichen = new System.Windows.Forms.Label();
             this.numericUpDown_Rasterbild_Liniendicke_5 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown_Rasterbild_Liniendicke_1 = new System.Windows.Forms.NumericUpDown();
@@ -358,11 +359,11 @@
             this.listView_LineDescription.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView_LineDescription.Enabled = false;
             this.listView_LineDescription.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            listViewItem1.StateImageIndex = 0;
-            listViewItem1.UseItemStyleForSubItems = false;
+            listViewItem3.StateImageIndex = 0;
+            listViewItem3.UseItemStyleForSubItems = false;
             this.listView_LineDescription.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2});
+            listViewItem3,
+            listViewItem4});
             this.listView_LineDescription.LabelEdit = true;
             this.listView_LineDescription.LargeImageList = this.imageList_Palette;
             this.listView_LineDescription.Location = new System.Drawing.Point(0, 0);
@@ -413,15 +414,16 @@
             this.Button_ToggleLanguage.TabIndex = 14;
             this.Button_ToggleLanguage.Text = "Sprache:";
             this.Button_ToggleLanguage.UseVisualStyleBackColor = true;
-            this.Button_ToggleLanguage.Click += new System.EventHandler(this.Button_ToggleLanguage_Click);
+            this.Button_ToggleLanguage.Click += new System.EventHandler(this.button_ToggleLanguage_Click);
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label_Rasterbild_Pixelgroesse);
             this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Pixelgroesse);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.textBox_Rasterbild_Linienfarbe1);
+            this.groupBox1.Controls.Add(this.textBox_Rasterbild_Linienfarbe);
             this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Liniendicke_10);
+            this.groupBox1.Controls.Add(this.checkBox_AutoRasterfarbe);
             this.groupBox1.Controls.Add(this.label_Rasterbild_Liniendichen);
             this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Liniendicke_5);
             this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Liniendicke_1);
@@ -466,19 +468,21 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 61);
+            this.label3.Location = new System.Drawing.Point(3, 61);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(65, 13);
+            this.label3.Size = new System.Drawing.Size(37, 13);
             this.label3.TabIndex = 19;
-            this.label3.Text = "LinienFarbe:";
+            this.label3.Text = "Farbe:";
             // 
-            // textBox_Rasterbild_Linienfarbe1
+            // textBox_Rasterbild_Linienfarbe
             // 
-            this.textBox_Rasterbild_Linienfarbe1.Location = new System.Drawing.Point(73, 58);
-            this.textBox_Rasterbild_Linienfarbe1.Name = "textBox_Rasterbild_Linienfarbe1";
-            this.textBox_Rasterbild_Linienfarbe1.Size = new System.Drawing.Size(53, 20);
-            this.textBox_Rasterbild_Linienfarbe1.TabIndex = 20;
-            this.textBox_Rasterbild_Linienfarbe1.Text = "#555555";
+            this.textBox_Rasterbild_Linienfarbe.Enabled = false;
+            this.textBox_Rasterbild_Linienfarbe.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_Rasterbild_Linienfarbe.Location = new System.Drawing.Point(41, 59);
+            this.textBox_Rasterbild_Linienfarbe.Name = "textBox_Rasterbild_Linienfarbe";
+            this.textBox_Rasterbild_Linienfarbe.Size = new System.Drawing.Size(56, 18);
+            this.textBox_Rasterbild_Linienfarbe.TabIndex = 20;
+            this.textBox_Rasterbild_Linienfarbe.Text = "#555555";
             // 
             // numericUpDown_Rasterbild_Liniendicke_10
             // 
@@ -496,6 +500,19 @@
             0,
             0,
             0});
+            // 
+            // checkBox_AutoRasterfarbe
+            // 
+            this.checkBox_AutoRasterfarbe.AutoSize = true;
+            this.checkBox_AutoRasterfarbe.Checked = true;
+            this.checkBox_AutoRasterfarbe.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_AutoRasterfarbe.Location = new System.Drawing.Point(99, 60);
+            this.checkBox_AutoRasterfarbe.Name = "checkBox_AutoRasterfarbe";
+            this.checkBox_AutoRasterfarbe.Size = new System.Drawing.Size(48, 17);
+            this.checkBox_AutoRasterfarbe.TabIndex = 14;
+            this.checkBox_AutoRasterfarbe.Text = "Auto";
+            this.checkBox_AutoRasterfarbe.UseVisualStyleBackColor = true;
+            this.checkBox_AutoRasterfarbe.CheckedChanged += new System.EventHandler(this.checkBox_AutoRasterfarbe_CheckedChanged);
             // 
             // label_Rasterbild_Liniendichen
             // 
@@ -909,7 +926,7 @@
         private System.Windows.Forms.NumericUpDown numericUpDown_Rasterbild_Liniendicke_1;
         private System.Windows.Forms.Label label_Rasterbild_Pixelgroesse;
         private System.Windows.Forms.NumericUpDown numericUpDown_Rasterbild_Pixelgroesse;
-        private System.Windows.Forms.TextBox textBox_Rasterbild_Linienfarbe1;
+        private System.Windows.Forms.TextBox textBox_Rasterbild_Linienfarbe;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox checkBox_pdfvorlage;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -935,6 +952,7 @@
         private System.Windows.Forms.CheckBox checkBox_pdfanleitung;
         private System.Windows.Forms.Button Button_ToggleLanguage;
         private System.Windows.Forms.Label label1_Sprache;
+        private System.Windows.Forms.CheckBox checkBox_AutoRasterfarbe;
     }
 }
 

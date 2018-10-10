@@ -58,7 +58,7 @@ namespace Crochet2Ebook
             }
         }
 
-        private void Button_ToggleLanguage_Click(object sender, EventArgs e)
+        private void button_ToggleLanguage_Click(object sender, EventArgs e)
         {
             //vor dem sprachwechsel die Farbnamen sichern
             savecolornamestoConfig();
@@ -87,6 +87,7 @@ namespace Crochet2Ebook
                 return;
             }
 
+            
             int unnamedcolors_count = 0;
             foreach (ListViewItem p in listView_Palette.Items)
             {
@@ -98,6 +99,16 @@ namespace Crochet2Ebook
             if (unnamedcolors_count > 0)
             {
                 DialogResult result = MessageBox.Show(unnamedcolors_count + " Farben der Farbpalette haben noch keinen sprechenden Namen.\n\nWirklich fortfahren?", "Achtung!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
+            }
+            
+            //Warnen falls Titel noch Ziffern enthaelt
+            if (Bildtitel.Any(char.IsDigit))
+            {
+                DialogResult result = MessageBox.Show("Der Titel '" +  + "' enthält Ziffern.\n\nWirklich mit diesem Titel fortfahren?", "Achtung!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.No)
                 {
                     return;
@@ -184,7 +195,7 @@ namespace Crochet2Ebook
             toggleZoom();
         }        
 
-
+        
         //Durch sonstige interaktion mit Oberfläche ausgelöste Events
         private void checkBox_Ratiocorrection_CheckedChanged(object sender, EventArgs e)
         {
@@ -307,6 +318,19 @@ namespace Crochet2Ebook
             }
         }
 
+        private void checkBox_AutoRasterfarbe_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_AutoRasterfarbe.Checked)
+            {
+                textBox_Rasterbild_Linienfarbe.Enabled = false;
+            }
+            else
+            {
+                textBox_Rasterbild_Linienfarbe.Enabled = true;
+            }
+
+        }
+
         
         //Start und Ende des Programms
         private void Form1_Load(object sender, EventArgs e)
@@ -330,7 +354,7 @@ namespace Crochet2Ebook
             }
 
             //Rasterfarbe aus der ini holen
-            textBox_Rasterbild_Linienfarbe1.Text = GetSetting("Rasterfarbe");
+            textBox_Rasterbild_Linienfarbe.Text = GetSetting("Rasterfarbe");
 
 
             int iniLineint = 1;
@@ -414,7 +438,7 @@ namespace Crochet2Ebook
             }
             savecolornamestoConfig();
 
-            SetSetting("Rasterfarbe", textBox_Rasterbild_Linienfarbe1.Text);
+            SetSetting("Rasterfarbe", textBox_Rasterbild_Linienfarbe.Text);
 
         }
 
@@ -931,6 +955,20 @@ namespace Crochet2Ebook
             }
         }
 
+        private void increaseSubitemCounter(Color Farbe, int Index)
+        {
+            foreach (ListViewItem item in listView_Palette.Items)
+            {
+                if (item.ToolTipText == ColortoHex(Farbe))
+                {
+                    int count = 0;
+                    Int32.TryParse(item.SubItems[Index].Text, out count);
+                    count++;
+                    item.SubItems[Index].Text = count.ToString();
+                }
+            }
+        }
+
         private string getLaufendeFarbe(int pixelcounter, Color laufendeFarbe)
         {
             string Farbname = "";
@@ -992,18 +1030,62 @@ namespace Crochet2Ebook
             return System.Drawing.ColorTranslator.FromHtml(colorCode);
         }
 
-        private void increaseSubitemCounter(Color Farbe, int Index)
+        private void FindeIdealeRasterfarbe()
         {
-            foreach (ListViewItem item in listView_Palette.Items)
+            float Minimaler_Farbabstand_ThisTry = float.MaxValue;
+            float Minimaler_Farbabstand_BestTry = 0;
+            String ColorCode_IdealeRasterfarbe = "";
+            String ColorCode_Thistry = "";
+
+            //Es werden alle 256 moeglichen Graustufen-Werte als potentielle Rasterfarbe durchgetestet
+            for (int i = 0; i < 256; i++)
             {
-                if (item.ToolTipText == ColortoHex(Farbe))
+                //Farbcode fuer die zu testende Farbe bilden...
+                ColorCode_Thistry = "#" + i.ToString("X2") + i.ToString("X2") + i.ToString("X2");
+
+                //Referenzwert wieder zurueck nach ganz oben setzen...
+                Minimaler_Farbabstand_ThisTry = float.MaxValue;
+
+                //fuer jeden Versuch wird mit allen Palettenfarben verglichen
+                foreach (ListViewItem item in listView_Palette.Items)
                 {
-                    int count = 0;
-                    Int32.TryParse(item.SubItems[Index].Text, out count);
-                    count++;
-                    item.SubItems[Index].Text = count.ToString();
+                    //Farbe des Palettenitems holen...
+                    String Colorcode_ThisPaletteItem = item.SubItems[1].Text;
+
+                    //Die beiden Farben vergleichen und abstand abschätzen
+                    float Dieser_Farbabstand = Math.Abs(getBrightness(Colorcode_ThisPaletteItem) - getBrightness(ColorCode_Thistry));
+
+                    if (Dieser_Farbabstand < Minimaler_Farbabstand_ThisTry)
+                    {
+                        //neuer niedrigster Farbabstand fuer diesen Versuch
+                        Minimaler_Farbabstand_ThisTry = Dieser_Farbabstand;
+                    }
                 }
+
+                if (Minimaler_Farbabstand_ThisTry > Minimaler_Farbabstand_BestTry)
+                {
+                    //Diese Farbe hat einen hoeheren geringsten Farbabstand -> Besser -> also bisher bester Try
+                    Minimaler_Farbabstand_BestTry = Minimaler_Farbabstand_ThisTry;
+                    ColorCode_IdealeRasterfarbe = ColorCode_Thistry;
+                }
+                
             }
+
+            //die hoffentlich Ideale Farbe ist gefunden... -> in die Textbox eintragen
+            textBox_Rasterbild_Linienfarbe.Text = ColorCode_IdealeRasterfarbe;
+
+        }
+
+        public static float getBrightness(string colorCode)
+        {
+            Color c = HextoColor(colorCode);
+
+            //Formel die die Helligkeit für RGB-Farben abschaetzt.
+            //Die RGB -Anteile werden dazu verschieden gewichtet
+            return (float)Math.Sqrt(
+                c.R * c.R * .241 +
+                c.G * c.G * .691 +
+                c.B * c.B * .068);
         }
 
         
@@ -1317,8 +1399,13 @@ namespace Crochet2Ebook
 
         private void createImagefiles()
         {
-            Color Linecolor1 = HextoColor(textBox_Rasterbild_Linienfarbe1.Text);
-            Brush Rasterbrush1 = new SolidBrush(Linecolor1);
+            if (checkBox_AutoRasterfarbe.Checked)
+            {
+                FindeIdealeRasterfarbe();
+            }
+
+            Color Rasterfarbe = HextoColor(textBox_Rasterbild_Linienfarbe.Text);
+            Brush Rasterbrush1 = new SolidBrush(Rasterfarbe);
             progressBar1.Minimum = 1;
             progressBar1.Value = 1;
             progressBar1.Maximum = Originalbild.Height;
