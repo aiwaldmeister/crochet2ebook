@@ -354,7 +354,7 @@ namespace Crochet2Ebook
             }
 
             //Rasterfarbe aus der ini holen
-            textBox_Rasterbild_Linienfarbe.Text = GetSetting("Rasterfarbe");
+            //textBox_Rasterbild_Linienfarbe.Text = GetSetting("Rasterfarbe");
 
 
             int iniLineint = 1;
@@ -438,7 +438,8 @@ namespace Crochet2Ebook
             }
             savecolornamestoConfig();
 
-            SetSetting("Rasterfarbe", textBox_Rasterbild_Linienfarbe.Text);
+            //Rasterfarbe in der ini speichern
+            //SetSetting("Rasterfarbe", textBox_Rasterbild_Linienfarbe.Text);
 
         }
 
