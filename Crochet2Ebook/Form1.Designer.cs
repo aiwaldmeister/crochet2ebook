@@ -30,10 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "42       ",
             "#FFFFFF"}, 0);
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("x 23", 0);
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("x 23", 0);
             this.listView_Palette = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -73,6 +73,7 @@
             this.textBox_Ratokorrfaktor = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.checkBox_AutoBeispielreihen = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
             this.textBox_Lauflaenge_Wechsel = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -359,11 +360,11 @@
             this.listView_LineDescription.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView_LineDescription.Enabled = false;
             this.listView_LineDescription.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            listViewItem3.StateImageIndex = 0;
-            listViewItem3.UseItemStyleForSubItems = false;
+            listViewItem1.StateImageIndex = 0;
+            listViewItem1.UseItemStyleForSubItems = false;
             this.listView_LineDescription.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem3,
-            listViewItem4});
+            listViewItem1,
+            listViewItem2});
             this.listView_LineDescription.LabelEdit = true;
             this.listView_LineDescription.LargeImageList = this.imageList_Palette;
             this.listView_LineDescription.Location = new System.Drawing.Point(0, 0);
@@ -427,9 +428,9 @@
             this.groupBox1.Controls.Add(this.label_Rasterbild_Liniendichen);
             this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Liniendicke_5);
             this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Liniendicke_1);
-            this.groupBox1.Location = new System.Drawing.Point(4, 577);
+            this.groupBox1.Location = new System.Drawing.Point(4, 597);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(149, 125);
+            this.groupBox1.Size = new System.Drawing.Size(149, 105);
             this.groupBox1.TabIndex = 22;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Rasterbild";
@@ -564,6 +565,7 @@
             this.groupBox3.Controls.Add(this.textBox_Ratokorrfaktor);
             this.groupBox3.Controls.Add(this.label2);
             this.groupBox3.Controls.Add(this.label4);
+            this.groupBox3.Controls.Add(this.checkBox_AutoBeispielreihen);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.textBox_Lauflaenge_Wechsel);
             this.groupBox3.Controls.Add(this.label9);
@@ -578,7 +580,7 @@
             this.groupBox3.Controls.Add(this.textBox_Maschenbreite);
             this.groupBox3.Location = new System.Drawing.Point(4, 421);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(149, 150);
+            this.groupBox3.Size = new System.Drawing.Size(149, 170);
             this.groupBox3.TabIndex = 24;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Infos";
@@ -632,6 +634,19 @@
             this.label4.TabIndex = 19;
             this.label4.Text = "Masche =";
             // 
+            // checkBox_AutoBeispielreihen
+            // 
+            this.checkBox_AutoBeispielreihen.AutoSize = true;
+            this.checkBox_AutoBeispielreihen.Checked = true;
+            this.checkBox_AutoBeispielreihen.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_AutoBeispielreihen.Location = new System.Drawing.Point(89, 147);
+            this.checkBox_AutoBeispielreihen.Name = "checkBox_AutoBeispielreihen";
+            this.checkBox_AutoBeispielreihen.Size = new System.Drawing.Size(48, 17);
+            this.checkBox_AutoBeispielreihen.TabIndex = 14;
+            this.checkBox_AutoBeispielreihen.Text = "Auto";
+            this.checkBox_AutoBeispielreihen.UseVisualStyleBackColor = true;
+            this.checkBox_AutoBeispielreihen.CheckedChanged += new System.EventHandler(this.checkBox_AutoBeispielreihen_CheckedChanged);
+            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -669,6 +684,7 @@
             // 
             // textBox_Beispielreihe2
             // 
+            this.textBox_Beispielreihe2.Enabled = false;
             this.textBox_Beispielreihe2.Location = new System.Drawing.Point(120, 123);
             this.textBox_Beispielreihe2.Name = "textBox_Beispielreihe2";
             this.textBox_Beispielreihe2.Size = new System.Drawing.Size(25, 20);
@@ -695,6 +711,7 @@
             // 
             // textBox_Beispielreihe1
             // 
+            this.textBox_Beispielreihe1.Enabled = false;
             this.textBox_Beispielreihe1.Location = new System.Drawing.Point(81, 123);
             this.textBox_Beispielreihe1.Name = "textBox_Beispielreihe1";
             this.textBox_Beispielreihe1.Size = new System.Drawing.Size(25, 20);
@@ -953,6 +970,7 @@
         private System.Windows.Forms.Button Button_ToggleLanguage;
         private System.Windows.Forms.Label label1_Sprache;
         private System.Windows.Forms.CheckBox checkBox_AutoRasterfarbe;
+        private System.Windows.Forms.CheckBox checkBox_AutoBeispielreihen;
     }
 }
 

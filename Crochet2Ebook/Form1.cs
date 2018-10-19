@@ -108,7 +108,7 @@ namespace Crochet2Ebook
             //Warnen falls Titel noch Ziffern enthaelt
             if (Bildtitel.Any(char.IsDigit))
             {
-                DialogResult result = MessageBox.Show("Der Titel '" +  + "' enthält Ziffern.\n\nWirklich mit diesem Titel fortfahren?", "Achtung!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult result = MessageBox.Show("Der Titel '" + Bildtitel + "' enthält Ziffern.\n\nWirklich mit diesem Titel fortfahren?", "Achtung!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.No)
                 {
                     return;
@@ -167,8 +167,7 @@ namespace Crochet2Ebook
 
         private void button1_Click(object sender, EventArgs e)
         {
-           textBox1.Text =  Zeile_Auswerten(Originalbild.Height -1);
-            Zeilemarkieren(Originalbild.Height - 1);
+
         }
 
         private void button_LoadImage_Click(object sender, EventArgs e)
@@ -331,7 +330,21 @@ namespace Crochet2Ebook
 
         }
 
+        private void checkBox_AutoBeispielreihen_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_AutoBeispielreihen.Checked)
+            {
+                textBox_Beispielreihe1.Enabled = false;
+                textBox_Beispielreihe2.Enabled = false;
+            }
+            else
+            {
+                textBox_Beispielreihe1.Enabled = true;
+                textBox_Beispielreihe2.Enabled = true;
+            }
+        }
         
+
         //Start und Ende des Programms
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -992,7 +1005,7 @@ namespace Crochet2Ebook
         {
             string targetText = sourceText;
 
-            targetText = targetText.Replace("ß", "\"s");
+            targetText = targetText.Replace("ß", "{\\ss}");
             targetText = targetText.Replace("Ä", "\"A");
             targetText = targetText.Replace("ä", "\"a");
             targetText = targetText.Replace("Ö", "\"O");
@@ -1117,6 +1130,22 @@ namespace Crochet2Ebook
             string name_projektfile = "";
             string ProjektTitleString = "";
 
+            //Beispielzeilen ermitteln
+            if (checkBox_AutoBeispielreihen.Checked)
+            {
+                for (int i = Originalbild.Height-1; i >= 0; i--)
+                {
+                    Zeile_Auswerten(i);
+                    if (listView_LineDescription.Items.Count>1)
+                    {
+                        textBox_Beispielreihe1.Text = (Originalbild.Height - i).ToString();
+                        textBox_Beispielreihe2.Text = (Originalbild.Height - i + 1).ToString();
+                        break;
+                    }
+                }
+            }
+
+
             if (deu)
             {
                 ProjektTitleString = "Anleitung_Kinderdecke_-_";
@@ -1146,6 +1175,22 @@ namespace Crochet2Ebook
             System.IO.File.Copy(latexfiles_path + "struktur_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "struktur_allgemein" + file_langsuffix + ".tex", true);
             System.IO.File.Copy(latexfiles_path + "rasterbild_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "rasterbild_allgemein" + file_langsuffix + ".tex", true);
 
+            //Verzeichnis fuer die Anleitungsfotos Dateien erstellen
+            System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien/Fotos");
+            //die Anleitungsfotos vom latexfile-path in den Ordner dieses Projekts kopieren...
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_01.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_01.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_02.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_02.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_03.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_03.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_04.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_04.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_05.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_05.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_07.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_07.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_hinrunde_01.png", Bildtitel + "_Dateien/Fotos/tunesisch_hinrunde_01.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_hinrunde_02.png", Bildtitel + "_Dateien/Fotos/tunesisch_hinrunde_02.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_rueckrunde_01.png", Bildtitel + "_Dateien/Fotos/tunesisch_rueckrunde_01.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_rueckrunde_02.png", Bildtitel + "_Dateien/Fotos/tunesisch_rueckrunde_02.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_rueckrunde_03.png", Bildtitel + "_Dateien/Fotos/tunesisch_rueckrunde_03.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_rueckrunde_04.png", Bildtitel + "_Dateien/Fotos/tunesisch_rueckrunde_04.png", true);
+
             inhalt_projektfile = 
                 "[FormatInfo]\r\n"+
                 "Type=TeXnicCenterProjectInformation\r\n"+
@@ -1168,14 +1213,14 @@ namespace Crochet2Ebook
             if (deu)
             {
                 inhalt_texfile_wollmengen = 
-                    "Wieviel Wolle du von jeder Farbe genau brauchst h\"angt davon ab, wie locker bzw.fest du h\"akelst und wieviel Faden du bei den Farbwechseln stehen l\"asst. " + 
-                    "Die folgenden Mengenangaben sind meine Erfahrungswerte und dienen nur zur groben Absch\"atzung.:\\\\\r\n";
+                    "\\\\\\\\Wieviel Wolle du von jeder Farbe genau brauchst h\"angt davon ab, wie locker bzw.fest du h\"akelst und wieviel Faden du bei den Farbwechseln stehen l\"asst. " + 
+                    "Die folgenden Mengenangaben sind meine Erfahrungswerte und dienen nur zur groben Absch\"atzung.:\\\\\\\\\r\n";
             }
             if (eng)
             {
                 inhalt_texfile_wollmengen =
-                    "How much wool of each colour you really need depends on how tight or loose you crochet and how much slack you leave when colours change. " +
-                    "The following numbers are estimates based on my experience to use as a rough guidance.:\\\\\r\n";
+                    "\\\\\\\\How much wool of each colour you really need depends on how tight or loose you crochet and how much slack you leave when colours change. " +
+                    "The following numbers are estimates based on my experience to use as a rough guidance.:\\\\\\\\\r\n";
             }
 
 
@@ -1230,6 +1275,10 @@ namespace Crochet2Ebook
 
             GroessenString = GroessenString + Math.Round(Breite_Masche * Originalbild.Width).ToString() + " x " + Math.Round(Hoehe_Masche * Originalbild.Height).ToString() + " cm)\r\n";
 
+            //Farbnamen des allerersten Pixels ermitteln fuer die Variable in der Texfile
+            Zeile_Auswerten(Originalbild.Height-1);
+            String Farbnameerstespixel = listView_LineDescription.Items[0].SubItems[7].Text;
+
             string tex_Titlestring = "";
             if (deu)
             {
@@ -1242,6 +1291,7 @@ namespace Crochet2Ebook
             inhalt_texfile_Main =
                 "\\author{Denise die Wollmaus}\r\n" +
                 "\\newcommand{\\motivbreite}{" + Originalbild.Width + "}\r\n" +
+                "\\newcommand{\\erstefarbe}{" + entferneUmlautefuerLaTex(Farbnameerstespixel) + "}\r\n" +
                 "\\newcommand{\\deckenbreite}{" + Math.Round(Breite_Masche * Originalbild.Width + 10).ToString() + "}\r\n" +
                 "\\newcommand{\\deckenhoehe}{" + Math.Round(Hoehe_Masche * Originalbild.Height + 10).ToString() + "}\r\n" +
                 "\\newcommand{\\motivtitel}{" + Bildtitel + "}\r\n" +
@@ -1259,7 +1309,7 @@ namespace Crochet2Ebook
                 "\\label{ sec: Title}\r\n" +
                 "\\end{center}\r\n" +
                 "\\begin{center}\r\n" +
-                "\\fbox{\\includegraphics[height = 1.00\\textwidth]{../\\motivtitelohnesonderzeichen_Titelbild}}\r\n" +
+                "\\fbox{\\includegraphics[height = 1.00\\textwidth, width = 1.00\\textwidth, keepaspectratio]{../\\motivtitelohnesonderzeichen_Titelbild}}\r\n" +
                 "\\end{center}\r\n";
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_titelseite))
             {
@@ -1279,11 +1329,11 @@ namespace Crochet2Ebook
             String Beispielzeile1 = "";
             if (deu)
             {
-                Beispielzeile1 = "\\textbf{Beispiele: }Zur Verdeutlichung wie gez\"ahlt wird, hier eine ausf\"uhrliche Beschreibung für Zeile " + beispielzeilennummer1 + " (von unten). Wir fangen auf der rechten Seite des Motivs an zu z\"ahlen. ";
+                Beispielzeile1 = "\\textbf{Beispiele: }Zur Verdeutlichung wie gez\"ahlt wird, hier eine ausf\"uhrliche Beschreibung für Zeile " + beispielzeilennummer1 + " von unten (erste Zeile mit Farbwechseln). Wir fangen auf der rechten Seite des Motivs an zu z\"ahlen. ";
             }
             if (eng)
             {
-                Beispielzeile1 = "\\textbf{Examples: }For clarification on how to count, this is a detailed description of line " + beispielzeilennummer1 + " (from the bottom). We start counting from the right side of the pattern. ";
+                Beispielzeile1 = "\\textbf{Examples: }For clarification on how to count, this is a detailed description of line " + beispielzeilennummer1 + " from the bottom (first line with color changes). We start counting from the right side of the pattern. ";
             }
 
             foreach (ListViewItem Item in listView_LineDescription.Items)
