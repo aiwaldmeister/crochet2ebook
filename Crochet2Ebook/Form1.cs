@@ -132,7 +132,7 @@ namespace Crochet2Ebook
             //Maschen und Farbwechsel ermitteln
             countMaschenUndFarbwechsel(Originalbild);
 
-            //Infodatei generieren
+            //Textdateien generieren (infofile und LaTeX-dateien)
             createTextfiles();
 
 
@@ -1275,6 +1275,15 @@ namespace Crochet2Ebook
 
             GroessenString = GroessenString + Math.Round(Breite_Masche * Originalbild.Width).ToString() + " x " + Math.Round(Hoehe_Masche * Originalbild.Height).ToString() + " cm)\r\n";
 
+
+            //ermitteln ob das Seitenverhältnis des Motivs sehr breit ist, um in LaTeX zu entscheiden das Rasterbild zu drehen
+            string Breitbild = "0";
+            if (Rasterbild.Width > Rasterbild.Height)
+            {
+                Breitbild = "1";
+            }
+
+
             //Farbnamen des allerersten Pixels ermitteln fuer die Variable in der Texfile
             Zeile_Auswerten(Originalbild.Height-1);
             String Farbnameerstespixel = listView_LineDescription.Items[0].SubItems[7].Text;
@@ -1291,6 +1300,7 @@ namespace Crochet2Ebook
             inhalt_texfile_Main =
                 "\\author{Denise die Wollmaus}\r\n" +
                 "\\newcommand{\\motivbreite}{" + Originalbild.Width + "}\r\n" +
+                "\\newcommand{\\breitbild}{" + Breitbild + "}\r\n" +
                 "\\newcommand{\\erstefarbe}{" + entferneUmlautefuerLaTex(Farbnameerstespixel) + "}\r\n" +
                 "\\newcommand{\\deckenbreite}{" + Math.Round(Breite_Masche * Originalbild.Width + 10).ToString() + "}\r\n" +
                 "\\newcommand{\\deckenhoehe}{" + Math.Round(Hoehe_Masche * Originalbild.Height + 10).ToString() + "}\r\n" +
