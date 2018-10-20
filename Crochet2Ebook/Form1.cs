@@ -1295,7 +1295,7 @@ namespace Crochet2Ebook
             }
             if (eng)
             {
-                tex_Titlestring = "Crocheting Tutorial - Childrens Blanket";
+                tex_Titlestring = "Crochet Tutorial - Childrens Blanket";
             }
             inhalt_texfile_Main =
                 "\\author{Denise die Wollmaus}\r\n" +
