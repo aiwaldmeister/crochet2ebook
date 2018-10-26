@@ -1190,6 +1190,12 @@ namespace Crochet2Ebook
             System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_rueckrunde_02.png", Bildtitel + "_Dateien/Fotos/tunesisch_rueckrunde_02.png", true);
             System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_rueckrunde_03.png", Bildtitel + "_Dateien/Fotos/tunesisch_rueckrunde_03.png", true);
             System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_rueckrunde_04.png", Bildtitel + "_Dateien/Fotos/tunesisch_rueckrunde_04.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/decke_annaehen_01.png", Bildtitel + "_Dateien/Fotos/decke_annaehen_01.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/decke_annaehen_02.png", Bildtitel + "_Dateien/Fotos/decke_annaehen_02.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/decke_annaehen_03.png", Bildtitel + "_Dateien/Fotos/decke_annaehen_03.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/decke_annaehen_04.png", Bildtitel + "_Dateien/Fotos/decke_annaehen_04.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/logo_wollmaus_01.png", Bildtitel + "_Dateien/Fotos/logo_wollmaus_01.png", true);
+
 
             inhalt_projektfile = 
                 "[FormatInfo]\r\n"+
