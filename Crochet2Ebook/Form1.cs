@@ -1006,12 +1006,12 @@ namespace Crochet2Ebook
             string targetText = sourceText;
 
             targetText = targetText.Replace("ß", "{\\ss}");
-            targetText = targetText.Replace("Ä", "\"A");
-            targetText = targetText.Replace("ä", "\"a");
-            targetText = targetText.Replace("Ö", "\"O");
-            targetText = targetText.Replace("ö", "\"o");
-            targetText = targetText.Replace("Ü", "\"U");
-            targetText = targetText.Replace("ü", "\"u");
+            targetText = targetText.Replace("Ä", "{\\\"A}");
+            targetText = targetText.Replace("ä", "{\\\"a}");
+            targetText = targetText.Replace("Ö", "{\\\"O}");
+            targetText = targetText.Replace("ö", "{\\\"o}");
+            targetText = targetText.Replace("Ü", "{\\\"U}");
+            targetText = targetText.Replace("ü", "{\\\"u}");
             targetText = targetText.Replace("#", "\\#");
 
             return targetText;
@@ -1310,7 +1310,7 @@ namespace Crochet2Ebook
                 "\\newcommand{\\erstefarbe}{" + entferneUmlautefuerLaTex(Farbnameerstespixel) + "}\r\n" +
                 "\\newcommand{\\deckenbreite}{" + Math.Round(Breite_Masche * Originalbild.Width + 10).ToString() + "}\r\n" +
                 "\\newcommand{\\deckenhoehe}{" + Math.Round(Hoehe_Masche * Originalbild.Height + 10).ToString() + "}\r\n" +
-                "\\newcommand{\\motivtitel}{" + Bildtitel + "}\r\n" +
+                "\\newcommand{\\motivtitel}{" + entferneUmlautefuerLaTex(Bildtitel) + "}\r\n" +
                 "\\newcommand{\\motivtitelohnesonderzeichen}{" + entferneUmlautefuerDateinamen(Bildtitel) + "}\r\n" +
                 "\\title{" + tex_Titlestring + " (\\motivtitel)}\r\n" +
                 "\\input{struktur_allgemein" + file_langsuffix + ".tex}\r\n";
@@ -1568,8 +1568,8 @@ namespace Crochet2Ebook
             Originalbild.Save(filename, System.Drawing.Imaging.ImageFormat.Bmp);
 
             //Originalbild ein zweites mal als vorlaufiges Titelbild png abspeichern
-            filename = Bildtitel + "_Dateien/" + entferneUmlautefuerDateinamen(Bildtitel) + "_Titelbild.png";
-            Originalbild.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+            //filename = Bildtitel + "_Dateien/" + entferneUmlautefuerDateinamen(Bildtitel) + "_Titelbild.png";
+            //Originalbild.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
 
             //generiertes Rasterbild speichern
 
