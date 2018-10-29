@@ -1219,7 +1219,7 @@ namespace Crochet2Ebook
             if (deu)
             {
                 inhalt_texfile_wollmengen = 
-                    "\\\\\\\\Wieviel Wolle du von jeder Farbe genau brauchst h\"angt davon ab, wie locker bzw.fest du h\"akelst und wieviel Faden du bei den Farbwechseln stehen l\"asst. " + 
+                    "\\\\\\\\Wieviel Wolle du von jeder Farbe genau brauchst h\"angt davon ab, wie locker oder fest du h\"akelst und wieviel Faden du bei den Farbwechseln stehen l\"asst. " + 
                     "Die folgenden Mengenangaben sind meine Erfahrungswerte und dienen nur zur groben Absch\"atzung.:\\\\\\\\\r\n";
             }
             if (eng)
