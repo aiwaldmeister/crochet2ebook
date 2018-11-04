@@ -93,8 +93,11 @@
             this.checkBox_pdfvorlage = new System.Windows.Forms.CheckBox();
             this.textBox_Titel = new System.Windows.Forms.TextBox();
             this.pictureBox_Display = new System.Windows.Forms.PictureBox();
-            this.radioButton_englisch = new System.Windows.Forms.RadioButton();
+            this.radioButton_Kinderdecke = new System.Windows.Forms.RadioButton();
+            this.radioButton_Kissenbezug = new System.Windows.Forms.RadioButton();
             this.radioButton_deutsch = new System.Windows.Forms.RadioButton();
+            this.radioButton_englisch = new System.Windows.Forms.RadioButton();
+            this.radioButton_Topflappen = new System.Windows.Forms.RadioButton();
             this.contextMenu_Palette.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -317,6 +320,9 @@
             // 
             // splitContainer4.Panel2
             // 
+            this.splitContainer4.Panel2.Controls.Add(this.radioButton_Topflappen);
+            this.splitContainer4.Panel2.Controls.Add(this.radioButton_Kissenbezug);
+            this.splitContainer4.Panel2.Controls.Add(this.radioButton_Kinderdecke);
             this.splitContainer4.Panel2.Controls.Add(this.label1_Sprache);
             this.splitContainer4.Panel2.Controls.Add(this.Button_ToggleLanguage);
             this.splitContainer4.Panel2.Controls.Add(this.groupBox1);
@@ -400,7 +406,7 @@
             // 
             this.label1_Sprache.AutoSize = true;
             this.label1_Sprache.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1_Sprache.Location = new System.Drawing.Point(82, 401);
+            this.label1_Sprache.Location = new System.Drawing.Point(75, 375);
             this.label1_Sprache.Name = "label1_Sprache";
             this.label1_Sprache.Size = new System.Drawing.Size(66, 13);
             this.label1_Sprache.TabIndex = 25;
@@ -409,9 +415,9 @@
             // Button_ToggleLanguage
             // 
             this.Button_ToggleLanguage.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Button_ToggleLanguage.Location = new System.Drawing.Point(10, 396);
+            this.Button_ToggleLanguage.Location = new System.Drawing.Point(13, 371);
             this.Button_ToggleLanguage.Name = "Button_ToggleLanguage";
-            this.Button_ToggleLanguage.Size = new System.Drawing.Size(67, 23);
+            this.Button_ToggleLanguage.Size = new System.Drawing.Size(57, 20);
             this.Button_ToggleLanguage.TabIndex = 14;
             this.Button_ToggleLanguage.Text = "Sprache:";
             this.Button_ToggleLanguage.UseVisualStyleBackColor = true;
@@ -428,9 +434,9 @@
             this.groupBox1.Controls.Add(this.label_Rasterbild_Liniendichen);
             this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Liniendicke_5);
             this.groupBox1.Controls.Add(this.numericUpDown_Rasterbild_Liniendicke_1);
-            this.groupBox1.Location = new System.Drawing.Point(4, 597);
+            this.groupBox1.Location = new System.Drawing.Point(4, 623);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(149, 105);
+            this.groupBox1.Size = new System.Drawing.Size(149, 83);
             this.groupBox1.TabIndex = 22;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Rasterbild";
@@ -578,7 +584,7 @@
             this.groupBox3.Controls.Add(this.label10);
             this.groupBox3.Controls.Add(this.textBox_Lauflaenge_Masche);
             this.groupBox3.Controls.Add(this.textBox_Maschenbreite);
-            this.groupBox3.Location = new System.Drawing.Point(4, 421);
+            this.groupBox3.Location = new System.Drawing.Point(4, 460);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(149, 170);
             this.groupBox3.TabIndex = 24;
@@ -786,11 +792,11 @@
             this.checkBox_pdfanleitung.AutoSize = true;
             this.checkBox_pdfanleitung.Checked = true;
             this.checkBox_pdfanleitung.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_pdfanleitung.Location = new System.Drawing.Point(10, 374);
+            this.checkBox_pdfanleitung.Location = new System.Drawing.Point(7, 398);
             this.checkBox_pdfanleitung.Name = "checkBox_pdfanleitung";
-            this.checkBox_pdfanleitung.Size = new System.Drawing.Size(70, 17);
+            this.checkBox_pdfanleitung.Size = new System.Drawing.Size(55, 17);
             this.checkBox_pdfanleitung.TabIndex = 14;
-            this.checkBox_pdfanleitung.Text = "Anleitung";
+            this.checkBox_pdfanleitung.Text = "Anleit.";
             this.checkBox_pdfanleitung.UseVisualStyleBackColor = true;
             // 
             // checkBox_pdfvorlage
@@ -798,7 +804,7 @@
             this.checkBox_pdfvorlage.AutoSize = true;
             this.checkBox_pdfvorlage.Checked = true;
             this.checkBox_pdfvorlage.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_pdfvorlage.Location = new System.Drawing.Point(86, 374);
+            this.checkBox_pdfvorlage.Location = new System.Drawing.Point(79, 398);
             this.checkBox_pdfvorlage.Name = "checkBox_pdfvorlage";
             this.checkBox_pdfvorlage.Size = new System.Drawing.Size(62, 17);
             this.checkBox_pdfvorlage.TabIndex = 14;
@@ -828,24 +834,34 @@
             this.pictureBox_Display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_Display_MouseClick);
             this.pictureBox_Display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_Display_MouseClick);
             // 
-            // radioButton_englisch
+            // radioButton_Kinderdecke
             // 
-            this.radioButton_englisch.AutoSize = true;
-            this.radioButton_englisch.Enabled = false;
-            this.radioButton_englisch.Location = new System.Drawing.Point(3, 567);
-            this.radioButton_englisch.Name = "radioButton_englisch";
-            this.radioButton_englisch.Size = new System.Drawing.Size(48, 17);
-            this.radioButton_englisch.TabIndex = 21;
-            this.radioButton_englisch.Text = "ENG";
-            this.radioButton_englisch.UseVisualStyleBackColor = true;
-            this.radioButton_englisch.Visible = false;
+            this.radioButton_Kinderdecke.AutoSize = true;
+            this.radioButton_Kinderdecke.Checked = true;
+            this.radioButton_Kinderdecke.Location = new System.Drawing.Point(7, 417);
+            this.radioButton_Kinderdecke.Name = "radioButton_Kinderdecke";
+            this.radioButton_Kinderdecke.Size = new System.Drawing.Size(85, 17);
+            this.radioButton_Kinderdecke.TabIndex = 26;
+            this.radioButton_Kinderdecke.TabStop = true;
+            this.radioButton_Kinderdecke.Text = "Kinderdecke";
+            this.radioButton_Kinderdecke.UseVisualStyleBackColor = true;
+            // 
+            // radioButton_Kissenbezug
+            // 
+            this.radioButton_Kissenbezug.AutoSize = true;
+            this.radioButton_Kissenbezug.Location = new System.Drawing.Point(91, 417);
+            this.radioButton_Kissenbezug.Name = "radioButton_Kissenbezug";
+            this.radioButton_Kissenbezug.Size = new System.Drawing.Size(56, 17);
+            this.radioButton_Kissenbezug.TabIndex = 26;
+            this.radioButton_Kissenbezug.Text = "Kissen";
+            this.radioButton_Kissenbezug.UseVisualStyleBackColor = true;
             // 
             // radioButton_deutsch
             // 
             this.radioButton_deutsch.AutoSize = true;
             this.radioButton_deutsch.Checked = true;
             this.radioButton_deutsch.Enabled = false;
-            this.radioButton_deutsch.Location = new System.Drawing.Point(3, 590);
+            this.radioButton_deutsch.Location = new System.Drawing.Point(17, 625);
             this.radioButton_deutsch.Name = "radioButton_deutsch";
             this.radioButton_deutsch.Size = new System.Drawing.Size(48, 17);
             this.radioButton_deutsch.TabIndex = 21;
@@ -853,6 +869,29 @@
             this.radioButton_deutsch.Text = "DEU";
             this.radioButton_deutsch.UseVisualStyleBackColor = true;
             this.radioButton_deutsch.Visible = false;
+            // 
+            // radioButton_englisch
+            // 
+            this.radioButton_englisch.AutoSize = true;
+            this.radioButton_englisch.Enabled = false;
+            this.radioButton_englisch.Location = new System.Drawing.Point(17, 602);
+            this.radioButton_englisch.Name = "radioButton_englisch";
+            this.radioButton_englisch.Size = new System.Drawing.Size(48, 17);
+            this.radioButton_englisch.TabIndex = 21;
+            this.radioButton_englisch.Text = "ENG";
+            this.radioButton_englisch.UseVisualStyleBackColor = true;
+            this.radioButton_englisch.Visible = false;
+            // 
+            // radioButton_Topflappen
+            // 
+            this.radioButton_Topflappen.AutoSize = true;
+            this.radioButton_Topflappen.Enabled = false;
+            this.radioButton_Topflappen.Location = new System.Drawing.Point(7, 434);
+            this.radioButton_Topflappen.Name = "radioButton_Topflappen";
+            this.radioButton_Topflappen.Size = new System.Drawing.Size(79, 17);
+            this.radioButton_Topflappen.TabIndex = 26;
+            this.radioButton_Topflappen.Text = "Topflappen";
+            this.radioButton_Topflappen.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -964,13 +1003,16 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox_Beispielreihe2;
         private System.Windows.Forms.TextBox textBox_Beispielreihe1;
-        private System.Windows.Forms.RadioButton radioButton_englisch;
-        private System.Windows.Forms.RadioButton radioButton_deutsch;
         private System.Windows.Forms.CheckBox checkBox_pdfanleitung;
         private System.Windows.Forms.Button Button_ToggleLanguage;
         private System.Windows.Forms.Label label1_Sprache;
         private System.Windows.Forms.CheckBox checkBox_AutoRasterfarbe;
         private System.Windows.Forms.CheckBox checkBox_AutoBeispielreihen;
+        private System.Windows.Forms.RadioButton radioButton_Kinderdecke;
+        private System.Windows.Forms.RadioButton radioButton_Kissenbezug;
+        private System.Windows.Forms.RadioButton radioButton_englisch;
+        private System.Windows.Forms.RadioButton radioButton_deutsch;
+        private System.Windows.Forms.RadioButton radioButton_Topflappen;
     }
 }
 

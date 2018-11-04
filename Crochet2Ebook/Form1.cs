@@ -1113,6 +1113,10 @@ namespace Crochet2Ebook
 
             bool eng = radioButton_englisch.Checked;
             bool deu = radioButton_deutsch.Checked;
+            bool kinderdecke = radioButton_Kinderdecke.Checked;
+            bool kissenbezug = radioButton_Kissenbezug.Checked;
+            bool Topflappen = radioButton_Topflappen.Checked;
+
             if (eng)
             {
                 file_langsuffix = "_eng";
@@ -1146,55 +1150,106 @@ namespace Crochet2Ebook
             }
 
 
-            if (deu)
+            if (kinderdecke)
             {
-                ProjektTitleString = "Anleitung_Kinderdecke_-_";
+                if (deu)
+                {
+                    ProjektTitleString = "Anleitung_Kinderdecke_-_";
+                }
+                if (eng)
+                {
+                    ProjektTitleString = "Tutorial_Childrens_Blanket_-_";
+                }
             }
-            if (eng)
+            if (kissenbezug)
             {
-                ProjektTitleString = "Tutorial_Childrens_Blanket_-_";
+                if (deu)
+                {
+                    ProjektTitleString = "Anleitung_Kissenbezug_-_";
+                }
+                if (eng)
+                {
+                    ProjektTitleString = "Tutorial_Pillow_Case_-_";
+                }
             }
 
 
-            name_texfile_Main = Bildtitel + "_Dateien/Latex_Dateien/" + ProjektTitleString + Bildtitel + ".tex";
-            name_projektfile = Bildtitel + "_Dateien/" + ProjektTitleString + Bildtitel + ".tcp";
+
+
+
+            name_texfile_Main = Bildtitel + "_Dateien/Latex_Dateien/" + ProjektTitleString + Bildtitel + file_langsuffix + ".tex";
+            name_projektfile = Bildtitel + "_Dateien/" + ProjektTitleString + Bildtitel + file_langsuffix + ".tcp";
                         
             string LauflaengenString = "Lauflängen ca.:\r\n----------------\r\n";
             string MaschenzahlenString = "Maschenanzahl:\r\n--------------\r\n";
             string GroessenString = "(" + Originalbild.Width + " x " + Originalbild.Height + " Maschen / ca. ";
-            string IntroString = "Häkeldecke '" + Bildtitel + "'\r\n";
+            string IntroString = "";
+
+            if (kinderdecke)
+            {
+                IntroString = "Häkeldecke '" + Bildtitel + "'\r\n";
+            }
+            if (kissenbezug)
+            {
+                IntroString = "Kissenbezug '" + Bildtitel + "'\r\n";
+            }
 
             //Verzeichnis fuer die LaTex Dateien erstellen
             System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien/Latex_Dateien");
             //die allgemeinen texfiles vom latexfile-path in den Ordner dieses Projekts kopieren...
-            System.IO.File.Copy(latexfiles_path + "anleitung_decke_annaehen_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_decke_annaehen_allgemein" + file_langsuffix + ".tex", true);
             System.IO.File.Copy(latexfiles_path + "anleitung_motiv_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_motiv_allgemein" + file_langsuffix + ".tex", true);
             System.IO.File.Copy(latexfiles_path + "disclaimer_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "disclaimer_allgemein" + file_langsuffix + ".tex", true);
-            System.IO.File.Copy(latexfiles_path + "schlusstext_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "schlusstext_allgemein" + file_langsuffix + ".tex", true);
-            System.IO.File.Copy(latexfiles_path + "werkzeug_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "werkzeug_allgemein" + file_langsuffix + ".tex", true);
-            System.IO.File.Copy(latexfiles_path + "struktur_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "struktur_allgemein" + file_langsuffix + ".tex", true);
             System.IO.File.Copy(latexfiles_path + "rasterbild_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "rasterbild_allgemein" + file_langsuffix + ".tex", true);
+
+            if (kinderdecke)
+            {
+                System.IO.File.Copy(latexfiles_path + "struktur_kinderdecke_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "struktur_kinderdecke_allgemein" + file_langsuffix + ".tex", true);
+                System.IO.File.Copy(latexfiles_path + "werkzeug_kinderdecke_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "werkzeug_kinderdecke_allgemein" + file_langsuffix + ".tex", true);
+                System.IO.File.Copy(latexfiles_path + "schlusstext_kinderdecke_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "schlusstext_kinderdecke_allgemein" + file_langsuffix + ".tex", true);
+                System.IO.File.Copy(latexfiles_path + "anleitung_decke_annaehen_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_decke_annaehen_allgemein" + file_langsuffix + ".tex", true);
+            }
+            if (kissenbezug)
+            {
+                System.IO.File.Copy(latexfiles_path + "struktur_kissenbezug_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "struktur_kissenbezug_allgemein" + file_langsuffix + ".tex", true);
+                System.IO.File.Copy(latexfiles_path + "werkzeug_kissenbezug_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "werkzeug_kissenbezug_allgemein" + file_langsuffix + ".tex", true);
+                System.IO.File.Copy(latexfiles_path + "schlusstext_kissenbezug_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "schlusstext_kissenbezug_allgemein" + file_langsuffix + ".tex", true);
+                System.IO.File.Copy(latexfiles_path + "anleitung_kissenbezug_annaehen_allgemein" + file_langsuffix + ".tex", Bildtitel + "_Dateien/Latex_Dateien/" + "anleitung_kissenbezug_annaehen_allgemein" + file_langsuffix + ".tex", true);
+            }
+
 
             //Verzeichnis fuer die Anleitungsfotos Dateien erstellen
             System.IO.Directory.CreateDirectory(Bildtitel + "_Dateien/Fotos");
+            
             //die Anleitungsfotos vom latexfile-path in den Ordner dieses Projekts kopieren...
-            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_01.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_01.png", true);
-            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_02.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_02.png", true);
-            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_03.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_03.png", true);
-            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_04.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_04.png", true);
-            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_05.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_05.png", true);
-            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_07.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_07.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/logo_wollmaus_01.png", Bildtitel + "_Dateien/Fotos/logo_wollmaus_01.png", true);
+
             System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_hinrunde_01.png", Bildtitel + "_Dateien/Fotos/tunesisch_hinrunde_01.png", true);
             System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_hinrunde_02.png", Bildtitel + "_Dateien/Fotos/tunesisch_hinrunde_02.png", true);
             System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_rueckrunde_01.png", Bildtitel + "_Dateien/Fotos/tunesisch_rueckrunde_01.png", true);
             System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_rueckrunde_02.png", Bildtitel + "_Dateien/Fotos/tunesisch_rueckrunde_02.png", true);
             System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_rueckrunde_03.png", Bildtitel + "_Dateien/Fotos/tunesisch_rueckrunde_03.png", true);
             System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_rueckrunde_04.png", Bildtitel + "_Dateien/Fotos/tunesisch_rueckrunde_04.png", true);
-            System.IO.File.Copy(latexfiles_path + "Fotos/decke_annaehen_01.png", Bildtitel + "_Dateien/Fotos/decke_annaehen_01.png", true);
-            System.IO.File.Copy(latexfiles_path + "Fotos/decke_annaehen_02.png", Bildtitel + "_Dateien/Fotos/decke_annaehen_02.png", true);
-            System.IO.File.Copy(latexfiles_path + "Fotos/decke_annaehen_03.png", Bildtitel + "_Dateien/Fotos/decke_annaehen_03.png", true);
-            System.IO.File.Copy(latexfiles_path + "Fotos/decke_annaehen_04.png", Bildtitel + "_Dateien/Fotos/decke_annaehen_04.png", true);
-            System.IO.File.Copy(latexfiles_path + "Fotos/logo_wollmaus_01.png", Bildtitel + "_Dateien/Fotos/logo_wollmaus_01.png", true);
+
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_01.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_01.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_02.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_02.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_03.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_03.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_04.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_04.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_05.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_05.png", true);
+            System.IO.File.Copy(latexfiles_path + "Fotos/tunesisch_farbwechsel_07.png", Bildtitel + "_Dateien/Fotos/tunesisch_farbwechsel_07.png", true);
+            if (kinderdecke)
+            {
+                System.IO.File.Copy(latexfiles_path + "Fotos/decke_annaehen_01.png", Bildtitel + "_Dateien/Fotos/decke_annaehen_01.png", true);
+                System.IO.File.Copy(latexfiles_path + "Fotos/decke_annaehen_04.png", Bildtitel + "_Dateien/Fotos/decke_annaehen_04.png", true);
+                System.IO.File.Copy(latexfiles_path + "Fotos/decke_annaehen_02.png", Bildtitel + "_Dateien/Fotos/decke_annaehen_02.png", true);
+                System.IO.File.Copy(latexfiles_path + "Fotos/decke_annaehen_03.png", Bildtitel + "_Dateien/Fotos/decke_annaehen_03.png", true);
+            }
+            if (kissenbezug)
+            {
+                System.IO.File.Copy(latexfiles_path + "Fotos/kissenbezug_annaehen_01.png", Bildtitel + "_Dateien/Fotos/kissenbezug_annaehen_01.png", true);
+                System.IO.File.Copy(latexfiles_path + "Fotos/kissenbezug_annaehen_02.png", Bildtitel + "_Dateien/Fotos/kissenbezug_annaehen_02.png", true);
+                System.IO.File.Copy(latexfiles_path + "Fotos/kissenbezug_annaehen_03.png", Bildtitel + "_Dateien/Fotos/kissenbezug_annaehen_03.png", true);
+                System.IO.File.Copy(latexfiles_path + "Fotos/kissenbezug_annaehen_04.png", Bildtitel + "_Dateien/Fotos/kissenbezug_annaehen_04.png", true);
+            }
 
 
             inhalt_projektfile = 
@@ -1203,7 +1258,7 @@ namespace Crochet2Ebook
                 "Version=4\r\n"+
                 "\r\n"+
                 "[ProjectInfo]\r\n"+
-                "MainFile=Latex_Dateien/" + ProjektTitleString + Bildtitel + ".tex\r\n"+
+                "MainFile=Latex_Dateien/" + ProjektTitleString + Bildtitel + file_langsuffix + ".tex\r\n" +
                 "UseBibTeX=0\r\n"+
                 "UseMakeIndex=0\r\n"+
                 "ActiveProfile=LaTeX ⇨ PDF\r\n"+
@@ -1295,25 +1350,54 @@ namespace Crochet2Ebook
             String Farbnameerstespixel = listView_LineDescription.Items[0].SubItems[7].Text;
 
             string tex_Titlestring = "";
-            if (deu)
+
+            if (kinderdecke)
             {
-                tex_Titlestring = "H\"akelanleitung - Kinderdecke";
+                if (deu)
+                {
+                    tex_Titlestring = "H\"akelanleitung - Kinderdecke";
+                }
+                if (eng)
+                {
+                    tex_Titlestring = "Crochet Tutorial - Childrens Blanket";
+                }
+
+                inhalt_texfile_Main =
+                    "\\author{Denise die Wollmaus}\r\n" +
+                    "\\newcommand{\\motivbreite}{" + Originalbild.Width + "}\r\n" +
+                    "\\newcommand{\\breitbild}{" + Breitbild + "}\r\n" +
+                    "\\newcommand{\\erstefarbe}{" + entferneUmlautefuerLaTex(Farbnameerstespixel) + "}\r\n" +
+                    "\\newcommand{\\deckenbreite}{" + Math.Round(Breite_Masche * Originalbild.Width + 10).ToString() + "}\r\n" +
+                    "\\newcommand{\\deckenhoehe}{" + Math.Round(Hoehe_Masche * Originalbild.Height + 10).ToString() + "}\r\n" +
+                    "\\newcommand{\\motivtitel}{" + entferneUmlautefuerLaTex(Bildtitel) + "}\r\n" +
+                    "\\newcommand{\\motivtitelohnesonderzeichen}{" + entferneUmlautefuerDateinamen(Bildtitel) + "}\r\n" +
+                    "\\title{" + tex_Titlestring + " (\\motivtitel)}\r\n" +
+                    "\\input{struktur_kinderdecke_allgemein" + file_langsuffix + ".tex}\r\n";
             }
-            if (eng)
+            if (kissenbezug)
             {
-                tex_Titlestring = "Crochet Tutorial - Childrens Blanket";
+                if (deu)
+                {
+                    tex_Titlestring = "H\"akelanleitung - Kissenbezug";
+                }
+                if (eng)
+                {
+                    tex_Titlestring = "Crochet Tutorial - Pillowcase";
+                }
+                inhalt_texfile_Main =
+                    "\\author{Denise die Wollmaus}\r\n" +
+                    "\\newcommand{\\motivbreite}{" + Originalbild.Width + "}\r\n" +
+                    "\\newcommand{\\breitbild}{" + Breitbild + "}\r\n" +
+                    "\\newcommand{\\erstefarbe}{" + entferneUmlautefuerLaTex(Farbnameerstespixel) + "}\r\n" +
+                    "\\newcommand{\\motivtitel}{" + entferneUmlautefuerLaTex(Bildtitel) + "}\r\n" +
+                    "\\newcommand{\\motivtitelohnesonderzeichen}{" + entferneUmlautefuerDateinamen(Bildtitel) + "}\r\n" +
+                    "\\title{" + tex_Titlestring + " (\\motivtitel)}\r\n" +
+                    "\\input{struktur_kissenbezug_allgemein" + file_langsuffix + ".tex}\r\n";
             }
-            inhalt_texfile_Main =
-                "\\author{Denise die Wollmaus}\r\n" +
-                "\\newcommand{\\motivbreite}{" + Originalbild.Width + "}\r\n" +
-                "\\newcommand{\\breitbild}{" + Breitbild + "}\r\n" +
-                "\\newcommand{\\erstefarbe}{" + entferneUmlautefuerLaTex(Farbnameerstespixel) + "}\r\n" +
-                "\\newcommand{\\deckenbreite}{" + Math.Round(Breite_Masche * Originalbild.Width + 10).ToString() + "}\r\n" +
-                "\\newcommand{\\deckenhoehe}{" + Math.Round(Hoehe_Masche * Originalbild.Height + 10).ToString() + "}\r\n" +
-                "\\newcommand{\\motivtitel}{" + entferneUmlautefuerLaTex(Bildtitel) + "}\r\n" +
-                "\\newcommand{\\motivtitelohnesonderzeichen}{" + entferneUmlautefuerDateinamen(Bildtitel) + "}\r\n" +
-                "\\title{" + tex_Titlestring + " (\\motivtitel)}\r\n" +
-                "\\input{struktur_allgemein" + file_langsuffix + ".tex}\r\n";
+
+
+
+
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(name_texfile_Main))
             {
                 sw.Write(inhalt_texfile_Main);
